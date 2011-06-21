@@ -1,0 +1,71 @@
+class AuditLogEntry:
+    serialNumber = 0
+    PEBNumber = 0
+    entryType = ''
+    dateTime = ''
+    eventNumber = 0
+    eventDescription = ''
+
+    def __init__(self, l):
+        if len(l) < 6:
+            raise Exception('length of list < 6')
+
+        self.serialNumber = l[0]
+        self.PEBNumber = l[1]
+        self.entryType = l[2]
+        self.dateTime = l[3]
+        self.eventNumber = l[4]
+        self.eventDescription = l[5]
+        
+    def __str__(self):
+        return '' + self.serialNumber + ', ' + self.PEBNumber + ', ' + self.entryType + ', ' + self.dateTime + \
+                ', ' + self.eventNumber + ', ' + self.eventDescription
+
+class AuditLog:
+    runDate = 0
+    electionID = 0
+    entryList = []
+
+    def parse(self, fh):
+        """Parse the given audit log file into a list of entries"""
+        import re
+
+        linePattern = r"^(\d*?)\s+(\d*?)\s+(\w{3})\s+(\d{2}/\d{2}/\d{4}\s+\d{2}:\d{2}:\d{2})\s+(\d{7})\s+(.*?)\s+$"
+        lineRe = re.compile(linePattern)
+        parsed = []
+        
+        for line in fh:
+            r = lineRe.match(line)
+            parsedLine = []
+            if r:
+                for i in range(0, 6):
+                    parsedLine.append(r.group(i + 1) if not r.group(i + 1) == '' else lastParsedLine[i])
+                parsed.append(AuditLogEntry(parsedLine))
+                lastParsedLine = parsedLine
+        return parsed
+
+    def __init__(self, fh):
+        # constructor / parser
+        if fh != None:
+            self.entryList = self.parse(fh)
+        #TODO must also look for runDate, electionID
+
+    def __iter__(self):
+        #iterator for entries
+        return iter(self.entryList)
+
+    def isEmpty(self):
+        return len(self.entryList) == 0
+
+    def getEntryList(self):
+        return self.entryList
+
+    def getEntry(self, index):
+        return self.entryList[index]
+
+    def __getitem__(self, index):
+        return self.entryList[index]
+
+    def __len__(self):
+        return len(self.entryList)
+
