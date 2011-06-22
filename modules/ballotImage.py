@@ -1,5 +1,5 @@
 class BallotImage:
-    def __init__(self, fh=None):    #string: el155
+    def __init__(self, fh=None):    #fh: open el155 file handle
         file = fh
         list = []
         machinePrecinctMap = {}     #<machine serial #, precinct(name+num)>
