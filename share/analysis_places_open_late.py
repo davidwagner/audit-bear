@@ -120,3 +120,4 @@ for key in dicTC:
        continue
    else:
        print "Machine #"+ key + " was open late " + dicTC[key]+ " hours."
+
