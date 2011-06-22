@@ -76,8 +76,7 @@ class BallotImageParser:
 				x = u[1]
 			machinePrecinctNumMap[m] = y
 			machinePrecinctNameMap[m] = x
-			precinctMap[y] = x
-		self.a = analysis.AnomalousEvents(string2, string)		
+			precinctMap[y] = x		
 		self.machinePrecinctNumMap = machinePrecinctNumMap
 		self.machinePrecinctNameMap = machinePrecinctNameMap
 		self.precinctMap = precinctMap
@@ -105,7 +104,8 @@ class BallotImageParser:
 				newMap[mpnMap[x]] = [x]
 		return newMap
 
-	def checkMachines(self):	
+	def checkMachines(self, string, string2):
+		self.a = analysis.AnomalousEvents(string2, string)	
 		notCountedList = []	#the list of machines that appear in el152, but not in el155
 		for x in self.a.getList():
 			if x[0] not in self.machinePrecinctNumMap and (x[3] == '0001510' or x[3] == '0001511'):
