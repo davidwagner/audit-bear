@@ -23,6 +23,10 @@ class AuditLogEntry:
         return '' + self.serialNumber + ', ' + self.PEBNumber + ', ' + self.entryType + ', ' + self.dateTime + \
                 ', ' + self.eventNumber + ', ' + self.eventDescription
 
+    def __getitem__(self, index):
+        return [self.serialNumber, self.PEBNumber, self.entryType, self.dateTime, self.eventNumber, \
+            self.eventDescription][index]
+
 class AuditLog:
     runDate = ''
     electionID = ''
