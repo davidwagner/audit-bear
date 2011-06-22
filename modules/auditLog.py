@@ -1,3 +1,5 @@
+import re
+
 class AuditLogEntry:
     serialNumber = 0
     PEBNumber = 0
@@ -22,13 +24,12 @@ class AuditLogEntry:
                 ', ' + self.eventNumber + ', ' + self.eventDescription
 
 class AuditLog:
-    runDate = 0
-    electionID = 0
+    runDate = ''
+    electionID = ''
     entryList = []
 
     def parse(self, fh):
         """Parse the given audit log file into a list of entries"""
-        import re
 
         linePattern = r"^(\d*?)\s+(\d*?)\s+(\w{3})\s+(\d{2}/\d{2}/\d{4}\s+\d{2}:\d{2}:\d{2})\s+(\d{7})\s+(.*?)\s+$"
         lineRe = re.compile(linePattern)
@@ -44,11 +45,22 @@ class AuditLog:
                 lastParsedLine = parsedLine
         return parsed
 
-    def __init__(self, fh):
+    def parseHeader(self, fh):
+        headerPattern = r"^RUN DATE:(.*?)\s+?(.*?)\s+?([APM]{2})\s+?ELECTION ID:\s(\d+?)\s+$"
+        headerRe = re.compile(headerPattern, re.IGNORECASE)
+        for line in fh:
+            r = headerRe.match(line)
+            if r:
+                return (r.group(1) + ' ' + r.group(2) + ' ' + r.group(3), r.group(4))
+
+        return '0', '0'
+
+    def __init__(self, fh = None):
         # constructor / parser
         if fh != None:
             self.entryList = self.parse(fh)
-        #TODO must also look for runDate, electionID
+        fh.seek(0)
+        self.runDate, self.electionID = self.parseHeader(fh)
 
     def __iter__(self):
         #iterator for entries
