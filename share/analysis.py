@@ -6,6 +6,7 @@ import datetime
 import matplotlib
 import math
 import operator
+import ballotImage
 
 class AnomalousEvents:
 	def __init__(self, string, string2):
@@ -340,4 +341,13 @@ class AnomalousEvents:
 			print "\n"
 			f.write("\n")
 			#print me, meMap[me]
+
+	def checkMachines(self, fh):
+		b = ballotImage.BallotImage(fh)
+		notCountedList = []	#the list of machines that appear in el152, but not in el155
+		for x in self.getList():
+			if x[0] not in b.machinePrecinctNumMap and (x[3] == '0001510' or x[3] == '0001511'):
+				if x[0] not in notCountedList:
+					notCountedList.append(x[0])
+		return notCountedList
 		
