@@ -10,7 +10,7 @@ class AuditLogEntry:
 
     def __init__(self, l):
         if len(l) < 6:
-            raise Exception('length of list < 6')
+            raise Exception('length of given entry list < 6')
 
         self.serialNumber = l[0]
         self.PEBNumber = l[1]

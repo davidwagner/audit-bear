@@ -112,5 +112,4 @@ class BallotImageParser:
                 if x[0] not in notCountedList:
                     notCountedList.append(x[0])
         return notCountedList
-        
-        
+
