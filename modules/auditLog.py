@@ -59,8 +59,8 @@ class AuditLog:
         # constructor / parser
         if fh != None:
             self.entryList = self.parse(fh)
-        fh.seek(0)
-        self.runDate, self.electionID = self.parseHeader(fh)
+            fh.seek(0)
+            self.runDate, self.electionID = self.parseHeader(fh)
 
     def __iter__(self):
         #iterator for entries
