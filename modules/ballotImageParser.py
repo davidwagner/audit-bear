@@ -1,5 +1,6 @@
 import analysis
 
+
 class BallotImageParser:
     def __init__(self, string, string2):    #string: el155      string2: el152
         file = open(string, 'r')
