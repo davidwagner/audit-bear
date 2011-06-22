@@ -1,6 +1,6 @@
 #Created by Keishla and Ana
-#read the audit log file
-from __future__ import division
+
+#read the audit log file and store each line in the data list.
 def readData(path):
     data = []
     inputFile = open(path, "r")
@@ -18,17 +18,16 @@ def readData(path):
     inputFile.close()
     return data
 
+#create two dictionaries which keys are the serial numbers and the values of the first one is a list with the time of each vote cast by voter or poll worker.
+#The second dictionary contains the serial numbers as keys and the difference between the last vote and the closing time (7:00 PM) as values,
+#to determine if the machine was open late (after 7:00PM).
 def open_late(data):
     
     import dateutil.parser
     import datetime
     dic = {}
     dic2 = {}
-    foundFirst = False
-    foundSecond = False
-    #create two dictionaries which keys are the serial numbers and the values of the first one is a list with the hours that the terminal
-    #time to close and close terminal events occurs.  The second dictionary contains the serial numbers as keys
-    #and the time between the time to close and close terminal events as values.
+    
     for line in data:
         if not line[0] in dic:
             dic[line[0]] = []
@@ -43,18 +42,9 @@ def open_late(data):
             else:
                 delta = t2 - t1
                 dic2[line[0]] = str(delta)
-                
-      
-    #for key in dic2:
-     #   if dic2[key]) == "" or dic2[key][:2] == "-1":
-      #      del dic2[key]
-       # else:
-        #    continue
-        
-    #print dic.items()
-    #print dic2.items()
     return dic2
 
+#creates the graph, which shows how many machines were open late.
 def graphOpenLate(dic):
     import numpy as np
     import matplotlib.pyplot as plt
@@ -107,17 +97,17 @@ def graphOpenLate(dic):
     ax.set_title('Machines stayed open after 7:00PM')
     plt.grid(True)
     plt.show()
-    return 
-#main
+    return
+
+#main program
 import dateutil.parser
 import datetime
 data = readData("greenville_co_03_08_11_el152.txt")
 dicTC = open_late(data)
-#dTC = sorted(dicTC.iteritems(), key=lambda (k,v):(v,k), reverse=True)
 graphOpenLate(dicTC)
+
 for key in dicTC:
    if dicTC[key] == '' or dicTC[key][:2] == "-1":
        continue
    else:
        print "Machine #"+ key + " was open late " + dicTC[key]+ " hours."
-
