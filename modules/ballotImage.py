@@ -1,8 +1,6 @@
-import analysis
-
-class BallotImageParser:
-    def __init__(self, string, string2):    #string: el155      string2: el152
-        file = open(string, 'r')
+class BallotImage:
+    def __init__(self, fh=None):    #string: el155
+        file = fh
         list = []
         machinePrecinctMap = {}     #<machine serial #, precinct(name+num)>
         machinePrecinctNameMap = {} #<machine serial #, precinct name>
@@ -12,8 +10,8 @@ class BallotImageParser:
         pCombinedMap = {}       #<precinct (name+num), same location precincts (name+num)> 
         currentPrecinct = None
         pCurrentPrecinct = None
-            for line in file:
-                list.append(line)
+        for line in file:
+            list.append(line)
         for i,l in enumerate(list):
             s = l.split("  ")
             t = l.split(" ")
@@ -81,6 +79,15 @@ class BallotImageParser:
         self.machinePrecinctNameMap = machinePrecinctNameMap
         self.precinctMap = precinctMap
         self.combinedMap = pCombinedMap
+        
+        mpnMap = self.machinePrecinctNumMap
+        machinesPerPrecinct = {}
+        for x in mpnMap:        #creates a new map: <precinct #, list of machine serial #s>
+            if machinesPerPrecinct.has_key(mpnMap[x]):
+                machinesPerPrecinct[mpnMap[x]] += [x]
+            else:
+                machinesPerPrecinct[mpnMap[x]] = [x]
+        self.machinesPerPrecinct = machinesPerPrecinct
     
     def getPrecinctNumMap(self):
         return self.machinePrecinctNumMap   #<machine serial #, precinct #>
@@ -95,21 +102,5 @@ class BallotImageParser:
         return self.combinedMap         #<precinct (name+num), same location precincts (name+num)> 
 
     def getMachinesPerPrecinct(self):
-        mpnMap = self.machinePrecinctNumMap
-        newMap = {}
-        for x in mpnMap:        #creates a new map: <precinct #, list of machine serial #s>
-            if newMap.has_key(mpnMap[x]):
-                newMap[mpnMap[x]] += [x]
-            else:
-                newMap[mpnMap[x]] = [x]
-        return newMap
-
-    def checkMachines(self, string, string2):
-        self.a = analysis.AnomalousEvents(string2, string)  
-        notCountedList = [] #the list of machines that appear in el152, but not in el155
-        for x in self.a.getList():
-            if x[0] not in self.machinePrecinctNumMap and (x[3] == '0001510' or x[3] == '0001511'):
-                if x[0] not in notCountedList:
-                    notCountedList.append(x[0])
-        return notCountedList
+        return self.machinesPerPrecinct
 
