@@ -23,11 +23,21 @@
 
 ------------------------
 """
+    
+"""
+NOTE:
+I added the imports here because I was having issues in that if I imported this file into 
+a testing script, it could not access the auditLog module despite it being imported into
+the testing script.  I think this is harmless for now, but it would be useful in the future
+if someone knew how to avoid this
+"""
+import auditLog
+import datetime
+import dateutil.parser
 
 
 class DateMod:
-
-    #These Variables are dependant on a valid path and date parse from the 68a text file
+        #These Variables are dependant on a valid path and date parse from the 68a text file
     pdata = [] #AuditLog Object for all Pre-Voting
     edata = [] #AuditLog Object for all Election-Day Voting
     odata = [] #AuditLog Object for all days after election days and > 15 days before
@@ -42,7 +52,7 @@ class DateMod:
         if self.daygrab(path):
              self.splitDays(data, self.eday, self.pday)
         else:
-            raise Exception('Must pass valid path with l68a file')
+            raise Exception('Path to l68a bad or date was not parsed')
  
     """
     Gets date from l68a file or returns blank string. Its a little ugly, but it works for now
@@ -53,6 +63,7 @@ class DateMod:
         except: return False
         else:
             line = [f.next() for x in xrange(4)]
+            f.close()
             try:
                 self.eday = dateutil.parser.parse(' '.join(line[3].split()[0:3])).date()
             except ValueError:
@@ -76,8 +87,9 @@ class DateMod:
                 self.edata.append(line)
             else:
                 try: 
-                    temp = dateutil.parser.parse(line.dateTime[0:10]).date()
-                except ValueError:
+                    temp = dateutil.parser.parse(line.dateTime).date()
+                except :
+                    print 'FUUUCK'
                     self.odata.append(line)
                 else:
                     if temp < eday and temp >= pday: self.pdata.append(line)
@@ -86,16 +98,62 @@ class DateMod:
         return True
 
 """
+-Checks for the following day anomolies:
+    -Votes before designated pre-voting day
+    -Any dates after election day
+    -Unparsible datetimes
+-Can be passed either a normal full set of data or just the odata
+
+-Trim option: modifies the data set passed (NOT IMPLEMENTED)
+    -0: Do not trim
+    -1: Trim anomolous days by event
+    -2: Trim anomolous days by machine with occurances
+
+"""
+def check(odata, eday, pday):
+
+    #Dictionarys to record anomolies.  Use event and day as key, occurances as value
+    #d1 holds events after election day
+    d1 = {}
+    #d2 holds unparsible datetimes
+    d2 = {}
+    #d3 holds votes before Prevoting
+    d3 = {}
+ 
+    for line in odata:
+        key = (line.serialNumber, line.dateTime[0:10])
+        try:
+            cday = dateutil.parser.parse(line.dateTime).date()
+        except ValueError:
+            #Unparsible Datetime
+            if key in d3:
+                d3[key] += 1
+            else:
+                d3.update({key: 1}) 
+        else:
+            #Past Election Day
+            if (cday > eday):
+                if key in d1:
+                    d1[key] += 1
+                else:
+                    d1.update({key: 1})
+            #Votes before Prevoting Day
+            elif (cday < pday) and (line.eventNumber == '0001511' or line.eventNumber == '0001510'):
+                if key in d2:
+                    d2[key] +=1
+                else:
+                    d2.update({key:1})
+                
+    return [d1,d2,d3]
+
+"""
 ---Main---
-This only executes if you run this as a script.  This serves more as an example then anything else. All imports here are required for this module. Make sure you import this module into a file that already has these imports listed.
+This only executes if you run this file as a script.  This serves more as an example then anything else. I also have a test file under /misc/patrick that has more updated uses of this module.
 ----------
 """
         
 if __name__== "__main__":
 
-    import auditLog
-    import datetime
-    import dateutil.parser
 
     path1 = "/home/patrick/documents/data/anderson_co_01_14_11_el152.txt"
     path2 = "/home/patrick/documents/data/anderson_co_03_07_11_el68a.txt"
@@ -119,27 +177,7 @@ if __name__== "__main__":
 
 
 
-"""
-#Checks dates that are past the election date and clearly wrong
-def daycheck(pdata, day):
-    day = dateutil.parser.parse(day)
-    flag = True
-    # This dict uses the machine and date as a key in a tuple and the value is the # of lines
-    d = {}
-
-    for line in pdata:
-        try:
-            cday = dateutil.parser.parse(line[3])
-        except ValueError:
-            pass #pass here because we'll look at unparsible dates in another function
-        else:
-            if (dateutil.parser.parse(line[3]) - day) > datetime.timedelta(0):
-                if (line[0], line[3]) in d:
-                    d[(line[0],line[3])] += 1
-                else:
-                    d.update({(line[0],line[3]): 1})
-                flag = False
-    return (flag, d)
+"""""
 
 #Checks data for any events not in increaseing order by time stamp
 def eventsinorder(data):
