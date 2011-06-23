@@ -8,6 +8,8 @@ class BallotImage:
         precinctMap = {}        #<precinct #, precinct name>
         problemMap = {}     
         pCombinedMap = {}       #<precinct (name+num), same location precincts (name+num)> 
+        earlyVotingList = []
+        failsafeList = []
         currentPrecinct = None
         pCurrentPrecinct = None
         for line in file:
@@ -17,20 +19,33 @@ class BallotImage:
             t = l.split(" ")
             if t[0] == 'RUN':
                 if t[32] == 'Absentee' or t[32] == 'Failsafe' or t[32] == 'ABSENTEE' or t[32] == 'FAILSAFE':
-                    break       #stops parsing the file when it reaches absentee and failsafe precincts (they are listed last)
-                if s[13] == '':
+                    currentPrecinct = t[32]
+                    #break       #stops parsing the file when it reaches absentee and failsafe precincts (they are listed last)
+                elif s[13] == '':
                     currentPrecinct = s[14]
                 else:
                     currentPrecinct = s[13]
                 for x in machinePrecinctMap.values():   #checks for multiple precincts in one location
                     r = x.split(" - ")
                     r2 = currentPrecinct.split(" - ")
-                    r = r[1].split(" ")
-                    r2 = r2[1].split(" ")
-                    if r[0] in r2[0]:
-                        currentPrecinct = x
+                    if r[1]:
+                        r = r[1].split(" ")
+                        if len(r2) > 1:
+                            r2 = r2[1].split(" ")
+                            if r[0] in r2[0]:
+                                currentPrecinct = x
             if len(s[0]) == 7:
-                if machinePrecinctMap.has_key(s[0]):
+                if currentPrecinct == 'Absentee' or currentPrecinct == 'ABSENTEE':
+                    if s[0] in earlyVotingList:
+                        continue
+                    else:
+                        earlyVotingList.append(s[0])
+                elif currentPrecinct == 'Failsafe' or currentPrecinct == 'FAILSAFE':
+                    if s[0] in failsafeList:
+                        continue
+                    else:
+                        failsafeList.append(s[0])
+                elif machinePrecinctMap.has_key(s[0]):
                     if machinePrecinctMap[s[0]] != currentPrecinct:     #checks for multiple precincts in one location
                         if problemMap.has_key(s[0]):
                             if currentPrecinct in problemMap[s[0]]:
@@ -79,6 +94,8 @@ class BallotImage:
         self.machinePrecinctNameMap = machinePrecinctNameMap
         self.precinctMap = precinctMap
         self.combinedMap = pCombinedMap
+        self.earlyVotingList = earlyVotingList
+        self.failsafeList = failsafeList
         
         mpnMap = self.machinePrecinctNumMap
         machinesPerPrecinct = {}
