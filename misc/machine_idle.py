@@ -1,7 +1,5 @@
-#Prepared by Keishla and Ana
-
 #!/usr/bin/python
-
+#Prepared by Keishla and Ana
 #The program determines the time that each machine was idle.
 import os, sys
 cmd_folder = os.getenv('HOME') + '/audit-bear/modules'
