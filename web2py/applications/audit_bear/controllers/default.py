@@ -9,7 +9,7 @@
 # index shows the homepage and form, accepts both 152 and 155 file
 def index():
     form = FORM('upload audit log:', INPUT(_name='audit_log', _type='file'),
-        INPUT(_name='ballot_image', _type='file'),
+        'ballot image:', INPUT(_name='ballot_image', _type='file'),
         INPUT(_type='submit'), _action='results')
     return dict(message='Say hello to Audit Bear', form=form)
 
