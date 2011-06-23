@@ -9,22 +9,10 @@ def readData(path):
         sys.path.insert(0, cmd_folder)
 
     from auditLog import AuditLog
-
-    data = []
-    inputFile = open(path, "r")
-    for line in inputFile:
-        if line[0] == "5":
-            data.append(line.split())
-            last = line.split()[0:2]
-        elif line[0] == ' ':
-            if '0' < line[9] <= '9':
-                data.append([last[0]] + line.split())
-            elif line[9] == ' ':
-                data.append(last[0:2] + line.split())
-        else:
-            continue
-    inputFile.close()
-    return data
+    
+    parsedLog = AuditLog(open(path, "r"))
+    
+    return parsedLog
 
 #create two dictionaries which keys are the serial numbers and the values of the first one is a list with the time of each vote cast by voter or poll worker.
 #The second dictionary contains the serial numbers as keys and the difference between the last vote and the closing time (7:00 PM) as values,
@@ -40,8 +28,8 @@ def open_late(data):
         if not line[0] in dic:
             dic[line[0]] = []
             dic2[line[0]] = ""
-        if line[5] in "0001510" or line[5] in "0001511":
-            dic[line[0]].insert(0, line[3] + " "+line[4])
+        if line[4] in "0001510" or line[4] in "0001511":
+            dic[line[0]].insert(0, line[3])
             try:
                 t2 = dateutil.parser.parse(dic[line[0]][0])
                 t1 = dateutil.parser.parse(dic[line[0]][0][:10]+ " 19:00:00")
