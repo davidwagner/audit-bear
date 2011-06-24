@@ -11,8 +11,10 @@ def index():
     form = FORM('upload audit log:', INPUT(_name='audit_log', _type='file'),
         'ballot image:', INPUT(_name='ballot_image', _type='file'),
         INPUT(_type='submit'), _action='results')
+    
+    audit_log = AuditLog()
     return dict(message='Say hello to Audit Bear', form=form)
 
 # all the results
 def results():
-    return dict(message='YOUR RESULTS: LOLOLOLOL')
+    return dict(message='YOUR RESULTS: 42')
