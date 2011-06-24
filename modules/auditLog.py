@@ -35,7 +35,7 @@ class AuditLog:
     def parse(self, fh):
         """Parse the given audit log file into a list of entries"""
 
-        linePattern = r"^(\d*?)\s+(\d*?)\s+(\w{3})\s+(\d{2}/\d{2}/\d{4}\s+\d{2}:\d{2}:\d{2})\s+(\d{7})\s+(.*?)\s+$"
+        linePattern = r"^(\d*?)\s+(\d*?)\s+(\w+?)\s+(\d+?/\d+?/\d+?\s+\d+?:\d+?:\d+?)\s+(\d+?)\s+(.*?)\s+$"
         lineRe = re.compile(linePattern)
         parsed = []
         
