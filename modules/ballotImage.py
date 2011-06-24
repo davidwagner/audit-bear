@@ -121,3 +121,9 @@ class BallotImage:
     def getMachinesPerPrecinct(self):
         return self.machinesPerPrecinct
 
+    def getEarlyVotingList(self):
+        return self.earlyVotingList
+
+    def getFailsafeList(self):
+        return self.failsafeList
+
