@@ -7,11 +7,16 @@ if cmd_folder not in sys.path:
     sys.path.insert(0, cmd_folder)
     
 from auditLog import AuditLog
+from ballotImage import BallotImage
 
 import datetime
 import dateutil.parser
+
 path = sys.argv[1]
+path2 = sys.argv[2]
 fh = AuditLog(open(path, 'r'))
+parsedBallotImage = BallotImage(open(path2, 'r'))
+
 term_open = False
 dic_idle = {}
 dic2 = {}
@@ -47,5 +52,17 @@ for machine in dic2:
         dicM[machine] = str(s)
         #print s
 
+dicNew = {}
+earlyVotingList = parsedBallotImage.getEarlyVotingList()
 for key in dicM:
+    if not key in earlyVotingList:
+        dicNew[key] = dicM[key]
+
+for key in dicNew:
     print "Machine #"+ key+" was idle for "+ dicM[key] +" (hh:mm:ss)."
+
+#print "Early voting " + str(len(earlyVotingList))
+#print "dicM " + str(len(dicM))
+#print "dicNew " + str(len(dicNew))
+#parsedBallotImage.getEarlyVotingList()
+
