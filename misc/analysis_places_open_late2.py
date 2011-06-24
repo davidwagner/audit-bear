@@ -1,5 +1,4 @@
 #!/usr/bin/python
-#Created by Keishla and Ana
 #read the audit log file and store each line in the data list.
 
 def readData(path):
@@ -100,7 +99,7 @@ import dateutil.parser
 import datetime
 import sys
 path = sys.argv[1]
-#path = "greenville_co_03_08_11_el152.txt"
+#path = "anderson_co_01_14_11_el152.txt"
 data = readData(path)
 dicTC = open_late(data)
 graphOpenLate(dicTC)

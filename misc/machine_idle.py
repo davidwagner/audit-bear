@@ -1,6 +1,7 @@
 #!/usr/bin/python
-#Prepared by Keishla and Ana
-#The program determines the time that each machine was idle.
+
+#The program determines the time that each machine was idle, and matches
+#the times to the precinct of each machine.
 import os, sys
 cmd_folder = os.getenv('HOME') + '/audit-bear/modules'
 if cmd_folder not in sys.path:
@@ -54,6 +55,7 @@ for machine in dic2:
 
 dicNew = {}
 earlyVotingList = parsedBallotImage.getEarlyVotingList()
+
 for key in dicM:
     if not key in earlyVotingList:
         dicNew[key] = dicM[key]
@@ -61,6 +63,14 @@ for key in dicM:
 for key in dicNew:
     print "Machine #"+ key+" was idle for "+ dicM[key] +" (hh:mm:ss)."
 
+precinctNumMap = parsedBallotImage.getPrecinctNumMap()
+pMap = {}
+for key2 in dicNew:
+    if precinctNumMap.has_key(key2):
+        pMap.setdefault(precinctNumMap[key2],[]).append(dicNew[key2])
+
+for key in pMap:
+    print "Precinct #"+key+" had machines idle for the times: "+str(pMap[key])       
 #print "Early voting " + str(len(earlyVotingList))
 #print "dicM " + str(len(dicM))
 #print "dicNew " + str(len(dicNew))
