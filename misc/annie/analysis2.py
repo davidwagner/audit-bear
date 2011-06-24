@@ -76,13 +76,12 @@ class analysis2:
         ax2.set_title('Throughput for Precinct %s Every Hour' % (throughputMap.keys()[15],))
         plt.show()
 
-    def getShutdownTimes(self):
+    def getEarlyShutdownTimes(self):
         sdTimeMap = {}
         sdMachineTimeMap = {}
         count = 0
         for x in self.a.getEntryList():
             if x.eventNumber == '0001628':
-                print "here"
                 s = x.dateTime.split(" ")
                 t = s[1].split(":")
                 if stri.atoi(t[0]) > 7 and stri.atoi(t[0]) < 19:
@@ -94,7 +93,6 @@ class analysis2:
                     sdTimeMap[s[1]] = temp
                 else:
                     sdTimeMap[s[1]] = 1
-        print count
         for m in sdMachineTimeMap:
             print m, sdMachineTimeMap[m]
 
