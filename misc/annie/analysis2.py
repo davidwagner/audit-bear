@@ -140,6 +140,14 @@ class analysis2:
                 print "%d instances of event %s" % (meMap[me][me2], me2)
             print "\n"
 
+    def checkMachines2(self):
+        ballotImageMachines = self.b.machinePrecinctNumMap.keys()
+        for x in self.a.getEntryList():
+            if x.serialNumber in ballotImageMachines:
+                ballotImageMachines.remove(x.serialNumber)
+        for y in ballotImageMachines:
+            print y
+
     def checkMachines(self):
         notCountedList = []
         for x in self.a.getEntryList():
