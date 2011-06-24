@@ -88,8 +88,7 @@ class DateMod:
             else:
                 try: 
                     temp = dateutil.parser.parse(line.dateTime).date()
-                except :
-                    print 'FUUUCK'
+                except ValueError:
                     self.odata.append(line)
                 else:
                     if temp < eday and temp >= pday: self.pdata.append(line)
@@ -145,6 +144,54 @@ def check(odata, eday, pday):
                     d2.update({key:1})
                 
     return [d1,d2,d3]
+"""
+-Returns List of machines and hours they stayed open with any adjustments for datetime changes
+-I think we decided it would be best to focus on election days only here and thus this function is
+intended for use with the edata variable.
+-Machines opened throughout pre-voting are ignored
+-Returns list of machines and times opened
+
+CANADDFEATURES:
+-If someone wants its easy allow this to record machines neither opened or closed and machines opened but not closedand machines closed but not open.  This could mean different things in the context of the data you are passing it.
+
+Limitations:  Will not handle unparsible dates or deal with real bad date errors.  This would work with edata, pdata, or both sets combined.  Will not deal with a machine with multible openings or closings unless they occur in the data with a different machine inbetween.  This could change.
+"""
+def timeopen(edata):
+    temp = edata[0].serialNumber
+    times = []
+    ostate = False 
+    eventseen = False 
+    for line in edata:
+        if line.serialNumber != temp:
+            #Machine Neither Closed Nor Opened
+            if not eventseen:
+                print "Machine", temp, "not Closed or Opened"
+                
+            #Machine Closed Sucessfully
+            elif not ostate:
+                times.append([temp,end-start])
+            #Machine Opened and Not Closed
+            else: 
+                print 'Machine', temp, 'Not Closed' 
+            temp = line.serialNumber
+            eventseen = False
+        if line.eventNumber == '0001672': 
+            ostate = 1
+            start = dateutil.parser.parse(line.dateTime)
+            eventseen = True
+        elif line.eventNumber == '0001673':
+            eventseen = True
+            if ostate == 1:
+                ostate  = 0
+                end = dateutil.parser.parse(line.dateTime)
+            #Machine Closed with an Open
+            elif ostate == 0:
+                #In context of edata being passed this is a machine open since pre-voting
+                print 'Machine', temp, 'Opened before Election Day without closing'
+
+    return times
+
+
 
 """
 ---Main---
