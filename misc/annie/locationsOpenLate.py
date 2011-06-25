@@ -15,10 +15,10 @@ class locations:
         self.a = auditLog.AuditLog(fha)
         self.b = ballotImage.BallotImage(fhb)
         path = '/home/annie/audit-bear/misc/annie/colleton_co_02_01_11_el152.lst'
-        self.data = analysis_places_open_late.readData(path)
+        self.data = analysis_places_open_late2.readData(fha)
 
     def openLatePrecinctNum(self):
-        m = analysis_places_open_late.open_late(self.data)
+        m = analysis_places_open_late2.open_late(self.data)
         pMap = {}
         for key in m:
             if self.b.machinePrecinctNumMap.has_key(key):

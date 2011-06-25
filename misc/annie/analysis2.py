@@ -15,6 +15,37 @@ class analysis2:
     def __init__(self, fha, fhb):
         self.a = auditLog.AuditLog(fha)
         self.b = ballotImage.BallotImage(fhb)
+        print self.b.machinesPerPrecinct
+
+    def getVotesPerMachine(self):
+        machineToVotes = {}
+        for x in self.a.getEntryList():
+            if x.eventNumber == '0001510' or x.eventNumber == '0001511':
+                if machineToVotes.has_key(x.serialNumber):
+                    temp = machineToVotes[x.serialNumber]
+                    temp = temp + 1
+                    machineToVotes[x.serialNumber] = temp
+                else:
+                    machineToVotes[x.serialNumber] = 1
+        for y in machineToVotes:
+            print y, machineToVotes[y]
+        return machineToVotes
+
+    def compareVotesPerMachine(self):
+        ballotsPerMachine = self.b.machineVotesMap
+        votesPerMachine = self.getVotesPerMachine()
+        noBallots = self.checkMachines()
+        noVotes = self.checkMachines2()
+        print '***************************************************************************************'
+        for x in votesPerMachine:
+            for y in ballotsPerMachine:
+                if x == y:
+                    if votesPerMachine[x] != ballotsPerMachine[y]:
+                        print "For machine %s, the audit log has recorded %d votes, but the ballot images has recorded %d ballots" % (x, votesPerMachine[x], ballotsPerMachine[x])
+                    if y in noVotes:
+                        print "For machine %s, the audit log had no record of votes, but the ballot images recorded %d votes" % (y, ballotsPerMachine[y])
+            if x in noBallots:
+                print "For machine %s, the audit log recorded %d votes, but the ballot images had no record of this machine" % (x, votesPerMachine[x])
 
     def getNumMachinesPerEvent(self):
         emMap = {}
@@ -138,6 +169,14 @@ class analysis2:
                 print "%d instances of event %s" % (meMap[me][me2], me2)
             print "\n"
 
+    def getTotalVotes(self):
+        count = 0
+        for x in self.a.getEntryList():
+            if x.eventNumber == '0001510' or x.eventNumber == '0001511':
+                count = count + 1  
+        print count
+        return count
+
     def checkMachines2(self):
         ballotImageMachines = self.b.machinePrecinctNumMap.keys()
         for x in self.a.getEntryList():
@@ -145,11 +184,15 @@ class analysis2:
                 ballotImageMachines.remove(x.serialNumber)
         for y in ballotImageMachines:
             print y
+        return ballotImageMachines
 
     def checkMachines(self):
         notCountedList = []
         for x in self.a.getEntryList():
             if x.serialNumber not in self.b.machinePrecinctNumMap and (x.eventNumber == '0001510' or x.eventNumber == '0001511'):
-                if x.serialNumber not in notCountedList:
-                    notCountedList.append(x.serialNumber)
+                if x.serialNumber not in self.b.failsafeList and (x.eventNumber == '0001510' or x.eventNumber == '00015110'):
+                    if x.serialNumber not in self.b.earlyVotingList and (x.eventNumber == '0001510' or x.eventNumber == '0001511'):
+                        if x.serialNumber not in notCountedList:
+                            notCountedList.append(x.serialNumber)
         print notCountedList
+        return notCountedList
