@@ -8,13 +8,25 @@
 
 # index shows the homepage and form, accepts both 152 and 155 file
 def index():
-    form = FORM('upload audit log:', INPUT(_name='audit_log', _type='file'),
-        'ballot image:', INPUT(_name='ballot_image', _type='file'),
+    form = FORM(
+        # for now, just input a file to make one analysis or multiple files in a zipped package
+        #'upload audit log:', INPUT(_name='audit_log', _type='file'),
+        #'ballot image:', INPUT(_name='ballot_image', _type='file'),
+        #'election report managing tabulation log:', INPUT(_name='erm_log', _type='file'),
+        'zipped files:', INPUT(_name='zipped_files', _type='file'),
         INPUT(_type='submit'), _action='results')
     
-    audit_log = AuditLog()
     return dict(message='Say hello to Audit Bear', form=form)
 
 # all the results
 def results():
+    # do not use attribute fp, use file
+    f = request.vars.zipped_files.file
+    f.seek(0)
+    
+    el152, el155 = extractLogs([f]) # extractLogs uses a list of files
+    
+    print "el152 is", el152
+    print "el155 is", el155
+    
     return dict(message='YOUR RESULTS: 42')
