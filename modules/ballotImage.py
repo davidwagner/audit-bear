@@ -8,15 +8,34 @@ class BallotImage:
         precinctMap = {}        #<precinct #, precinct name>
         problemMap = {}     
         pCombinedMap = {}       #<precinct (name+num), same location precincts (name+num)> 
+        machineVotesMap = {}
+        precinctVotesMap = {}
+        voteCount = 0
         earlyVotingList = []
         failsafeList = []
         currentPrecinct = None
         pCurrentPrecinct = None
+        votes1 = 0
+        votes2 = 0
+        runDate = ''
+        electionID = ''
         for line in file:
             list.append(line)
+        s0 = list[1]
+        t1 = s0.split(" ")
+        t2 = t1[1].split(":")
+        runDate = t2[1]+" "+t1[2]+" "+t1[3]
+        electionID = t1[len(t1)-1]
+        self.runDate = runDate
+        self.electionID = electionID
+        print self.runDate
+        print self.electionID
         for i,l in enumerate(list):
             s = l.split("  ")
             t = l.split(" ")
+            for c in t:
+                if c == '*':
+                    voteCount = voteCount + 1
             if t[0] == 'RUN':
                 if t[32] == 'Absentee' or t[32] == 'Failsafe' or t[32] == 'ABSENTEE' or t[32] == 'FAILSAFE':
                     currentPrecinct = t[32]
@@ -35,6 +54,20 @@ class BallotImage:
                             if r[0] in r2[0]:
                                 currentPrecinct = x
             if len(s[0]) == 7:
+                if t[5] == '*' or t[4] == '*' or t[3] == '*':
+                    if precinctVotesMap.has_key(currentPrecinct):
+                        temp = precinctVotesMap[currentPrecinct]
+                        temp = temp + 1
+                        precinctVotesMap[currentPrecinct] = temp
+                    else:
+                        precinctVotesMap[currentPrecinct] = 1
+
+                    if machineVotesMap.has_key(s[0]):
+                        temp = machineVotesMap[s[0]]
+                        temp = temp + 1
+                        machineVotesMap[s[0]] = temp
+                    else:
+                        machineVotesMap[s[0]] = 1
                 if currentPrecinct == 'Absentee' or currentPrecinct == 'ABSENTEE':
                     if s[0] in earlyVotingList:
                         continue
@@ -96,6 +129,17 @@ class BallotImage:
         self.combinedMap = pCombinedMap
         self.earlyVotingList = earlyVotingList
         self.failsafeList = failsafeList
+        self.machineVotesMap = machineVotesMap
+        self.precinctVotesMap = precinctVotesMap
+
+        for v in precinctVotesMap.values():
+            votes1 = votes1 + v
+        for v2 in machineVotesMap.values():
+            votes2 = votes2 + v2
+
+        print votes1
+        print votes2
+        print voteCount
         
         mpnMap = self.machinePrecinctNumMap
         machinesPerPrecinct = {}
