@@ -12,11 +12,18 @@ import auditLog
 import ballotImage
 
 class analysis2:
+
+
+    """
+    The constructor initializes an auditLog and a ballotImage.  The global variables hold instances of the appropriate data structure.
+    """
     def __init__(self, fha, fhb):
         self.a = auditLog.AuditLog(fha)
         self.b = ballotImage.BallotImage(fhb)
-        print self.b.machinesPerPrecinct
 
+    """
+    This function returns a map of the number of votes per machine in a county.  Keys: machines    Values: # of votes
+    """
     def getVotesPerMachine(self):
         machineToVotes = {}
         for x in self.a.getEntryList():
@@ -27,16 +34,19 @@ class analysis2:
                     machineToVotes[x.serialNumber] = temp
                 else:
                     machineToVotes[x.serialNumber] = 1
-        for y in machineToVotes:
-            print y, machineToVotes[y]
+        #for y in machineToVotes:
+        #    print y, machineToVotes[y]
         return machineToVotes
 
+    """
+    This function compares the number votes on machine x in the event log to the number of votes on the same machine in the ballot images.
+    """
     def compareVotesPerMachine(self):
         ballotsPerMachine = self.b.machineVotesMap
         votesPerMachine = self.getVotesPerMachine()
         noBallots = self.checkMachines()
         noVotes = self.checkMachines2()
-        print '***************************************************************************************'
+        #print '***************************************************************************************'
         for x in votesPerMachine:
             for y in ballotsPerMachine:
                 if x == y:
@@ -47,6 +57,9 @@ class analysis2:
             if x in noBallots:
                 print "For machine %s, the audit log recorded %d votes, but the ballot images had no record of this machine" % (x, votesPerMachine[x])
 
+    """
+    This function gets the events that occurred on the least number of machines.  It only prints the machine serial number and event number for the events that occurred on 1 machine (this can be changed). 
+    """
     def getNumMachinesPerEvent(self):
         emMap = {}
         emMap2 = {}
@@ -66,6 +79,9 @@ class analysis2:
             if x3[1] == 1:
                 print "Machine %s has 1 occurence of event %s" % (emMap[x3[0]][0], x3[0])
 
+    """
+    This function gets the average throughput per hour of all the machines in one polling location.  It displays the information on a graph.  Currently, the precinct number is hard-coded into the function (this could change).
+    """
     def getThroughput(self):
         mpMap = self.b.getMachinesPerPrecinct()
         throughputMap = {}
@@ -97,8 +113,8 @@ class analysis2:
                 t = throughputMap[y][y2]
                 t = t/len(locationMap2[y])
                 throughputMap[y][y2] = t 
-        for z in throughputMap:
-           print z, throughputMap[z]
+        #for z in throughputMap:
+           #print z, throughputMap[z]
         fig = plt.figure(figsize=(22,10))
         ax2 = fig.add_axes([0.1, 0.1, .8, .8])
         matplotlib.pyplot.plot(throughputMap[throughputMap.keys()[15]].keys(), throughputMap[throughputMap.keys()[15]].values())
@@ -107,6 +123,9 @@ class analysis2:
         ax2.set_title('Throughput for Precinct %s Every Hour' % (throughputMap.keys()[15],))
         plt.show()
 
+    """
+    This function checks for machines that have an early shutdown event between 7am and 7pm.  The early shutdown event has event number 0001628: Warning - terminal closed early.  It returns a map of the format <machine serial number, time of early shutdown event>.
+    """
     def getEarlyShutdownTimes(self):
         sdTimeMap = {}
         sdMachineTimeMap = {}
@@ -124,9 +143,12 @@ class analysis2:
                     sdTimeMap[s[1]] = temp
                 else:
                     sdTimeMap[s[1]] = 1
-        for m in sdMachineTimeMap:
-            print m, sdMachineTimeMap[m]
+        #for m in sdMachineTimeMap:
+            #print m, sdMachineTimeMap[m]
 
+    """
+    This function checks the auditLog for a specific list of events.  It returns a map in the format <machine serial number, <event number, # of instances of this event>>.  
+    """
     def getAnomalousEvents(self):
         eventOccurrencesMap = {}
         anomalousEventsMap = {}
@@ -134,7 +156,7 @@ class analysis2:
         mean = 0
         p = 0
         stdev = 0
-        badEvents = ['0001518', '0002400', '0001635', '0000712', '0000706', '0001003', '0000713', '0002406', '0002405', '0001302', '0001702', '0001656', '0001655', '0002210', '0001725', '0001634', '0001718', '0001720', '0001721', '0001628', '0001703', '0001704', '0001651']
+        badEvents = ['0001518', '0002400', '0001635', '0000712', '0000706', '0001003', '0000713', '0002406', '0002405', '0001302', '0001702', '0001656', '0001655', '0002210', '0001725', '0001634', '0001718', '0001720', '0001721', '0001628', '0001703', '0001704', '0001651', '0001206']
         for x in self.a.getEntryList():
             if x.eventNumber in badEvents:
                 if meMap.has_key(x.serialNumber):
@@ -163,20 +185,27 @@ class analysis2:
         for e in eventOccurrencesMap:
             if eventOccurrencesMap[e] < (mean-(4*stdev)) or eventOccurrencesMap[e] > ((4*stdev)+mean):
                 anomalousEventsMap[e] = eventOccurrencesMap[e]
-        for me in meMap:
-            print "There may be a problem with machine %s because it exhibited the following behavior:\n" % (me, )
-            for me2 in meMap[me]:
-                print "%d instances of event %s" % (meMap[me][me2], me2)
-            print "\n"
+        #for me in meMap:
+            #print "There may be a problem with machine %s because it exhibited the following behavior:\n" % (me, )
+            #for me2 in meMap[me]:
+                #print "%d instances of event %s" % (meMap[me][me2], me2)
+            #print "\n"
+        return meMap
 
+    """
+    This function returns the number of votes in the audit log (both voter and poll worker votes).
+    """
     def getTotalVotes(self):
         count = 0
         for x in self.a.getEntryList():
             if x.eventNumber == '0001510' or x.eventNumber == '0001511':
                 count = count + 1  
-        print count
+        #print count
         return count
 
+    """
+    This function checks if there are any machines listed in the ballot images that are not found in the event log.
+    """
     def checkMachines2(self):
         ballotImageMachines = self.b.machinePrecinctNumMap.keys()
         for x in self.a.getEntryList():
@@ -186,6 +215,9 @@ class analysis2:
             print y
         return ballotImageMachines
 
+    """
+    This function checks if there are any machines listed in the event log that are not found in the ballot images.
+    """
     def checkMachines(self):
         notCountedList = []
         for x in self.a.getEntryList():
