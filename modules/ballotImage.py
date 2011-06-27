@@ -1,13 +1,20 @@
 class BallotImage:
-    def __init__(self, fh=None):    #fh: open el155 file handle
+
+    """
+    Parses the ballot images and creates the datastructure(s).  The argument passed to this constructor is an already opened el155 file.
+    """ 
+    def __init__(self, fh=None):
+        """
+        The variables used in creating the data structures.
+        """
         file = fh
         list = []
-        machinePrecinctMap = {}     #<machine serial #, precinct(name+num)>
-        machinePrecinctNameMap = {} #<machine serial #, precinct name>
-        machinePrecinctNumMap = {}  #<machine serial #, precinct number>
-        precinctMap = {}        #<precinct #, precinct name>
+        machinePrecinctMap = {}
+        machinePrecinctNameMap = {}
+        machinePrecinctNumMap = {}
+        precinctMap = {}
         problemMap = {}     
-        pCombinedMap = {}       #<precinct (name+num), same location precincts (name+num)> 
+        pCombinedMap = {}
         machineVotesMap = {}
         precinctVotesMap = {}
         voteCount = 0
@@ -19,6 +26,10 @@ class BallotImage:
         votes2 = 0
         runDate = ''
         electionID = ''
+        """
+        Parses the Ballot Images and fills the maps appropriately.
+        Gets the correct run date and election ID.
+        """
         for line in file:
             list.append(line)
         s0 = list[1]
@@ -36,15 +47,17 @@ class BallotImage:
             for c in t:
                 if c == '*':
                     voteCount = voteCount + 1
+            """
+            If the first string in the line is 'RUN', then the current precinct is updated.
+            """
             if t[0] == 'RUN':
                 if t[32] == 'Absentee' or t[32] == 'Failsafe' or t[32] == 'ABSENTEE' or t[32] == 'FAILSAFE':
                     currentPrecinct = t[32]
-                    #break       #stops parsing the file when it reaches absentee and failsafe precincts (they are listed last)
                 elif s[13] == '':
                     currentPrecinct = s[14]
                 else:
                     currentPrecinct = s[13]
-                for x in machinePrecinctMap.values():   #checks for multiple precincts in one location
+                for x in machinePrecinctMap.values():
                     r = x.split(" - ")
                     r2 = currentPrecinct.split(" - ")
                     if r[1]:
@@ -53,6 +66,9 @@ class BallotImage:
                             r2 = r2[1].split(" ")
                             if r[0] in r2[0]:
                                 currentPrecinct = x
+            """
+            If the first string in the line is 7 characters long and an asterisk is present, then the vote count per machine and per precinct is adjusted accordingly.
+            """
             if len(s[0]) == 7:
                 if t[5] == '*' or t[4] == '*' or t[3] == '*':
                     if precinctVotesMap.has_key(currentPrecinct):
@@ -68,6 +84,9 @@ class BallotImage:
                         machineVotesMap[s[0]] = temp
                     else:
                         machineVotesMap[s[0]] = 1
+                """
+                If the current precinct is Absentee (early voting), then the machine serial number is added to the early voting list.  Else if the current precinct is Failsafe (provisional votes), then the machine serial number is added to the failsafe list.  In any other case (than the ones mentioned), where the first string is still 7 characters long, the machine serial number is put into the correct locations in the maps.
+                """
                 if currentPrecinct == 'Absentee' or currentPrecinct == 'ABSENTEE':
                     if s[0] in earlyVotingList:
                         continue
@@ -79,7 +98,7 @@ class BallotImage:
                     else:
                         failsafeList.append(s[0])
                 elif machinePrecinctMap.has_key(s[0]):
-                    if machinePrecinctMap[s[0]] != currentPrecinct:     #checks for multiple precincts in one location
+                    if machinePrecinctMap[s[0]] != currentPrecinct: 
                         if problemMap.has_key(s[0]):
                             if currentPrecinct in problemMap[s[0]]:
                                 continue
@@ -93,7 +112,10 @@ class BallotImage:
                             problemMap[s[0]] = [currentPrecinct, machinePrecinctMap[s[0]]]
                 else:
                     machinePrecinctMap[s[0]] = currentPrecinct
-        for f in problemMap:    #handles precincts that were combined
+        """
+        If there were precincts that were combined, their numbers are combined and they are viewed as a single precinct.
+        """
+        for f in problemMap:
             pCurrentPrecinct = problemMap[f][0]
             if not pCombinedMap.has_key(pCurrentPrecinct):
                 pCombinedMap[pCurrentPrecinct] = []
@@ -103,7 +125,10 @@ class BallotImage:
                 if pCurrentPrecinct in problemMap[f2]:
                     problemMap[f2] = [pCurrentPrecinct]
                     machinePrecinctMap[f2] = pCurrentPrecinct
-        for m in machinePrecinctMap:    #parses name and number for various mappings
+        """
+        Parses the name and number of the precincts for the various mappings.
+        """
+        for m in machinePrecinctMap:
             x = ''
             y = ''
             t = machinePrecinctMap[m]
@@ -122,7 +147,10 @@ class BallotImage:
                 x = u[1]
             machinePrecinctNumMap[m] = y
             machinePrecinctNameMap[m] = x
-            precinctMap[y] = x      
+            precinctMap[y] = x     
+        """
+        Creates the global variables of the maps.
+        """ 
         self.machinePrecinctNumMap = machinePrecinctNumMap
         self.machinePrecinctNameMap = machinePrecinctNameMap
         self.precinctMap = precinctMap
@@ -131,7 +159,9 @@ class BallotImage:
         self.failsafeList = failsafeList
         self.machineVotesMap = machineVotesMap
         self.precinctVotesMap = precinctVotesMap
-
+        """
+        Counts the number of votes per precinct and votes per machine.
+        """
         for v in precinctVotesMap.values():
             votes1 = votes1 + v
         for v2 in machineVotesMap.values():
@@ -141,33 +171,57 @@ class BallotImage:
         print votes2
         print voteCount
         
+        """
+        Creates a map from the other maps.  It is of the format <precinct number, [list of machine serial numbers]>.
+        """
         mpnMap = self.machinePrecinctNumMap
         machinesPerPrecinct = {}
-        for x in mpnMap:        #creates a new map: <precinct #, list of machine serial #s>
+        for x in mpnMap:
             if machinesPerPrecinct.has_key(mpnMap[x]):
                 machinesPerPrecinct[mpnMap[x]] += [x]
             else:
                 machinesPerPrecinct[mpnMap[x]] = [x]
         self.machinesPerPrecinct = machinesPerPrecinct
-    
+
+    """
+    Returns the map of the format <machine serial number, precinct number>
+    """    
     def getPrecinctNumMap(self):
-        return self.machinePrecinctNumMap   #<machine serial #, precinct #>
+        return self.machinePrecinctNumMap
 
+    """
+    Returns the map of the format <machine serial number, precinct name>
+    """
     def getPrecinctNameMap(self):
-        return self.machinePrecinctNameMap  #<machine serial #, precinct name>
+        return self.machinePrecinctNameMap 
 
+    """
+    Returns the map of the format <precinct number, precinct name>
+    """
     def getPrecinctMap(self):
-        return self.precinctMap         #<precinct #, precinct name>
+        return self.precinctMap 
 
+    """
+    Returns the map of the format <precinct name and number, [list of precincts name and number in the same location]>
+    """
     def getCombinedMap(self):
-        return self.combinedMap         #<precinct (name+num), same location precincts (name+num)> 
+        return self.combinedMap
 
+    """
+    Returns the map of the format <precinct number, [list of machines]>
+    """
     def getMachinesPerPrecinct(self):
         return self.machinesPerPrecinct
 
+    """
+    Returns the list of machines used in the Absentee precincts (early voting).
+    """
     def getEarlyVotingList(self):
         return self.earlyVotingList
 
+    """
+    Returns the list machines used in the Failsafe precincts (provisional votes).
+    """
     def getFailsafeList(self):
         return self.failsafeList
 
