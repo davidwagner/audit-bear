@@ -39,8 +39,6 @@ class BallotImage:
         electionID = t1[len(t1)-1]
         self.runDate = runDate
         self.electionID = electionID
-        print self.runDate
-        print self.electionID
         for i,l in enumerate(list):
             s = l.split("  ")
             t = l.split(" ")
@@ -51,6 +49,7 @@ class BallotImage:
             If the first string in the line is 'RUN', then the current precinct is updated.
             """
             if t[0] == 'RUN':
+
                 if t[32] == 'Absentee' or t[32] == 'Failsafe' or t[32] == 'ABSENTEE' or t[32] == 'FAILSAFE':
                     currentPrecinct = t[32]
                 elif s[13] == '':
@@ -58,14 +57,36 @@ class BallotImage:
                 else:
                     currentPrecinct = s[13]
                 for x in machinePrecinctMap.values():
+                    newName = ''
+                    isSameLocation = False
                     r = x.split(" - ")
                     r2 = currentPrecinct.split(" - ")
                     if r[1]:
                         r = r[1].split(" ")
                         if len(r2) > 1:
                             r2 = r2[1].split(" ")
-                            if r[0] in r2[0]:
+                            for i,c in enumerate(r):
+                                if i == (len(r)-1):
+                                    continue
+                                elif r[i] == r2[i]:
+                                    newName += r[i]+" "
+                                    isSameLocation = True
+                                elif r[i] != r2[i]:
+                                    isSameLocation = False
+                                    break
+                            if isSameLocation == True:
+                                #if pCombinedMap.has_key(currentPrecinct):
+                                    #if x not in pCombinedMap[currentPrecinct]:
+                                        #pCombinedMap[currentPrecinct] += [x]
+                                #else:
+                                    #pCombinedMap[currentPrecinct] = [x]
+                                #if pCombinedMap.has_key(x):
+                                    #if currentPrecinct not in pCombinedMap[x]:
+                                        #pCombinedMap[x] += [currentPrecinct]
+                                #else:
+                                    #pCombinedMap[x] = [currentPrecinct]
                                 currentPrecinct = x
+                                
             """
             If the first string in the line is 7 characters long and an asterisk is present, then the vote count per machine and per precinct is adjusted accordingly.
             """
@@ -167,9 +188,9 @@ class BallotImage:
         for v2 in machineVotesMap.values():
             votes2 = votes2 + v2
 
-        print votes1
-        print votes2
-        print voteCount
+        #print votes1
+        #print votes2
+        #print voteCount
         
         """
         Creates a map from the other maps.  It is of the format <precinct number, [list of machine serial numbers]>.
