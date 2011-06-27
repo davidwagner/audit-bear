@@ -7,16 +7,20 @@ import zipfile
 # these three boolean functions could be implemented in the
 # data structure classes instead...
 def is_68(fh):
+    fh.seek(0)
     # TODO implement this function
     return False
 
 def is_152(fh):
+    fh.seek(0)
     # check first couple of lines
     pattern = r"^(\d*?)\s+(\d*?)\s+(\w+?)\s+(\d+?/\d+?/\d+?\s+\d+?:\d+?:\d+?)\s+(\d+?)\s+(.*?)\s+$"
     lineRe = re.compile(pattern)
     i = 0
+    # there is a problem with the file handle...
     for l in fh:
-        if lineRe.match(l):
+        r = lineRe.match(l)
+        if r:
             return True
         elif i >= 10:
             break
@@ -25,12 +29,14 @@ def is_152(fh):
     return False
 
 def is_155(fh):
+    fh.seek(0)
     # check header...
     precinctPattern = r"PRECINCT\s*(\d+)\s*-\s*(.*)ELECTION"
     precinctRe = re.compile(precinctPattern, re.IGNORECASE)
     i = 0
     for l in fh:
-        if precinctRe.search(l):
+        r = precinctRe.search(l)
+        if r:
             return True
         elif i >= 10:
             break
@@ -45,8 +51,16 @@ def extractLogs(files):
             # extract
             z = zipfile.ZipFile(f, 'r')
             for member in z.infolist():
-                m = z.open(member)
-                totalReceivedFiles.append(m)
+                m = z.open(member, 'r')
+                # m is NOT SEEKABLE
+                # make a new file and pass everything to a seekable one...
+                import StringIO
+                fNew = StringIO.StringIO()
+                for l in m:
+                    fNew.writelines(m.readlines())
+                totalReceivedFiles.append(fNew)
+
+            z.close()
         else:
             totalReceivedFiles.append(f)
 
@@ -77,8 +91,14 @@ def extractLogs(files):
             # the file is not recognized, ignore it
             pass
 
-    return (first152, first155)
-    # TODO uncomment next line after implementing el68 stuff...
-    #return (first68, first152, first155)
+    # reset all seeks
+    if first68 != None:
+        first68.seek(0)
+    if first152 != None:
+        first152.seek(0)
+    if first155 != None:
+        first155.seek(0)
 
-    
+    return (first152, first155)
+    # TODO uncomment next line after el68 implemented
+    #return (first68, first152, first155)

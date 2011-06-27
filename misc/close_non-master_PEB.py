@@ -18,27 +18,32 @@ def close_nm_PEB():
 
     import dateutil.parser
     import datetime
-    mapNM = {}
+    mapNM = {} # new machine temp map
+    # machine# -> PEB#, DateTime, vote count
     non_master = False
 
-#This for loop finds the machines closed on a non-master PEB and creates a #dictionary which includes serial number (key) and values of PEB serial number, #date and time and total votes cast on the machine
+#This for loop finds the machines closed on a non-master PEB and creates 
+#a dictionary which includes serial number (key) and values of PEB 
+#serial number, date and time and total votes cast on the machine
     for line in parsedLog:
         if not line[0] in mapNM:
             count = 0
             non_master = False
             mapNM[line[0]] = []
-        if line[4] in "0001206":
+        if line[4] == "0001206":
             non_master = True
             mapNM[line[0]].append(line[1])
             mapNM[line[0]].append(line[3])
-        if line[4] in "0001510" or line[4] in "0001511":
+        if line[4] == "0001510" or line[4] == "0001511":
             count += 1
-        if line[4] in "0001673" and non_master:
+        if line[4] == "0001673" and non_master:
             mapNM[line[0]].append(count)
     
     map2 = {}
  
-#This for loop verifies the machines that have the event 0001206 and stores it #in a new map, the machines that don't have the event 0001206 are excluded if #the condition in the loop is False.
+#This for loop verifies the machines that have the event 0001206 and stores it
+#in a new map, the machines that don't have the event 0001206 are excluded if 
+#the condition in the loop is False.
     for key in mapNM:
         if len(mapNM[key]) is not 0:
             map2[key] = mapNM[key]
@@ -62,6 +67,16 @@ def close_nm_PEB():
         if precinctNumMap.has_key(key2):
             map3[key2].append(precinctNumMap[key2])
         print key2, map3[key2]
+
+    # added by samuel
+    for key in sorted(precinctNumMap):
+        print key + ' ' + precinctNumMap[key]
+
+    combinedMap = parsedBallotImage.getCombinedMap()
+
+    for key in sorted(combinedMap):
+        print key + ' ' + combinedMap[key]
+
     #return map3
     #key, map3[key][0]
     #print "------------------------------------------------------------"
@@ -74,4 +89,5 @@ def close_nm_PEB():
         #print key, map3[key]
             
 #TEST THE FUNCTION
-#close_nm_PEB()
+close_nm_PEB()
+

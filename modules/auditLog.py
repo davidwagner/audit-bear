@@ -1,3 +1,4 @@
+# coding: utf8
 import re
 
 class AuditLogEntry:
@@ -84,4 +85,3 @@ class AuditLog:
 
     def __len__(self):
         return len(self.entryList)
-

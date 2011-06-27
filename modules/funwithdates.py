@@ -1,4 +1,3 @@
-#!/usr/bin/python
 """
 -----Fun With Dates!-----
 -Scope: This module is a collection of related functions that are hopfully useful in dealing with date anomalies and splitting up the main data structure based on Election-Day Voting, Pre-Voting Days, and Other days
@@ -31,6 +30,12 @@ a testing script, it could not access the auditLog module despite it being impor
 the testing script.  I think this is harmless for now, but it would be useful in the future
 if someone knew how to avoid this
 """
+
+import os, sys
+cmd_folder = os.getenv('HOME') + '/audit-bear/modules'
+if cmd_folder not in sys.path:
+    sys.path.insert(0, cmd_folder)
+
 import auditLog
 import datetime
 import dateutil.parser

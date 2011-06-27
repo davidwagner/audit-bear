@@ -23,7 +23,7 @@ def results():
     # do not use attribute fp, use file
     f = request.vars.zipped_files.file
     f.seek(0)
-    el152, el155 = extractLogs([f]) # extractLogs uses a list of files
+    el152, el155 = extractLogs([f]) # extractLogs receives a list of files
     
     # pass these to the dispatcher, which will collect all reports and pass
     # the resulting dictionary to the view
