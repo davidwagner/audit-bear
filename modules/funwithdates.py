@@ -23,13 +23,6 @@
 ------------------------
 """
     
-"""
-NOTE:
-I added the imports here because I was having issues in that if I imported this file into 
-a testing script, it could not access the auditLog module despite it being imported into
-the testing script.  I think this is harmless for now, but it would be useful in the future
-if someone knew how to avoid this
-"""
 
 import os, sys
 cmd_folder = os.getenv('HOME') + '/audit-bear/modules'
@@ -164,8 +157,11 @@ Limitations:  Will not handle unparsible dates or deal with real bad date errors
 def timeopen(edata):
     temp = edata[0].serialNumber
     times = []
+    openearly = []
     ostate = False 
     eventseen = False 
+    timeset = False
+    startset = False
     for line in edata:
         if line.serialNumber != temp:
             #Machine Neither Closed Nor Opened
@@ -174,12 +170,16 @@ def timeopen(edata):
                 
             #Machine Closed Sucessfully
             elif not ostate:
-                times.append([temp,end-start])
+                if timeset: 
+                    times.append([temp,end-start+diff])
+                    print 'Machine:',temp,'adjusted by:', diff, 'from', (end-start)
+                else:       times.append([temp,end-start])
             #Machine Opened and Not Closed
             else: 
                 print 'Machine', temp, 'Not Closed' 
             temp = line.serialNumber
             eventseen = False
+            timeset = False
         if line.eventNumber == '0001672': 
             ostate = 1
             start = dateutil.parser.parse(line.dateTime)
@@ -192,9 +192,17 @@ def timeopen(edata):
             #Machine Closed with an Open
             elif ostate == 0:
                 #In context of edata being passed this is a machine open since pre-voting
-                print 'Machine', temp, 'Opened before Election Day without closing'
-
-    return times
+                openearly.append(temp)
+        #If time was adjusted while machine was open, account for that
+        elif line.eventNumber == '0000117' and ostate == 1:
+            diff = dateutil.parser.parse(line.dateTime)
+            startset = False
+        elif line.eventNumber == '0001656' and startset:
+            diff =  diff - dateutil.parser.parse(line.dateTime)
+            timeset = True
+            startset = False
+            
+    return (times, openearly)
 
 
 
@@ -251,35 +259,6 @@ def eventsinorder(data):
             lasttime = dateutil.parser.parse(currenttime)
 
     return events
-
-#Checks that each machine was opened and closed returns true for success
-#Added a list that returns hours each machine was open for histogram purposes
-def isclosed(data):
-    temp = data[0][0]
-    times = []
-    ostate = 0 
-    success = True
-    for line in data:
-        if line[0] != temp:
-            if ostate == 0: 
-                print temp, (end-start)
-                times.append(end-start)
-            else: 
-                print 'Machine', temp, 'Not Closed' 
-                success = False
-            temp = line[0]
-        if line[5] == '0001672': 
-            ostate = 1
-            start = dateutil.parser.parse(' '.join(line[3:5]))
-        elif line[5] == '0001673':
-            if ostate == 1:
-                ostate  = 0
-                end = dateutil.parser.parse(' '.join(line[3:5]))
-            elif ostate == 0:
-                #This applys when edata is passed and so far only occurs then
-                print 'Machine', temp, 'Opened before Election Day without closing'
-
-    return times
 
 #Returns list of times of day in minutes for each opening
 def datesopened(data): #histogram2

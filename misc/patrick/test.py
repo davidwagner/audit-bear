@@ -32,8 +32,8 @@ print dateclass.eday
 print dateclass.pday
 
 #Timeopen Function. 
-d = funwithdates.timeopen(dateclass.edata)
-for line in d:
+e, o = funwithdates.timeopen(dateclass.edata)
+for line in e:
     print 'Machine', line[0], 'was open', line[1],'hours'
 
 #Find anomolous dates and print
@@ -41,10 +41,14 @@ l = funwithdates.check(dateclass.odata, dateclass.eday, dateclass.pday)
 
 print "These machines had events after Election Day:"
 for k,v in l[0].iteritems():
-    print 'Machine',k[0],'had',v,'events on',k[1]
-print "These machines had votes 16 days or more before Election Day:"
-for k,v in l[1].iteritems():
-    print 'Machine',k[0],'had',v,'votes on',k[1]
+    print '  Machine',k[0],'had',v,'events on',k[1]
+
+if len(l[1]) == 0:
+    print "No Machines Voted before Pre-Voting"
+else:
+    print "These machines had votes 16 days or more before Election Day:"
+    for k,v in l[1].iteritems(): print '  Machine',k[0],'had',v,'votes on',k[1]
+
 if len(l[2]) == 1:
     print l[2]
 else:
