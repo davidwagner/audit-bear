@@ -14,7 +14,7 @@ class locations:
     def __init__(self, fha, fhb):
         self.a = auditLog.AuditLog(fha)
         self.b = ballotImage.BallotImage(fhb)
-        path = '/home/annie/audit-bear/misc/annie/colleton_co_02_01_11_el152.lst'
+        #path = '/home/annie/audit-bear/misc/annie/colleton_co_02_01_11_el152.lst'
         self.data = analysis_places_open_late2.readData(fha)
 
     def openLatePrecinctNum(self):

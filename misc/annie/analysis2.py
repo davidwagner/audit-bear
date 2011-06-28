@@ -20,6 +20,8 @@ class analysis2:
     def __init__(self, fha, fhb):
         self.a = auditLog.AuditLog(fha)
         self.b = ballotImage.BallotImage(fhb)
+        for x in self.b.precinctVotesMap:
+            print x, self.b.precinctVotesMap[x]
 
     """
     This function returns a map of the number of votes per machine in a county.  Keys: machines    Values: # of votes
@@ -156,7 +158,7 @@ class analysis2:
         mean = 0
         p = 0
         stdev = 0
-        badEvents = ['0001518', '0002400', '0001635', '0000712', '0000706', '0001003', '0000713', '0002406', '0002405', '0001302', '0001702', '0001656', '0001655', '0002210', '0001725', '0001634', '0001718', '0001720', '0001721', '0001628', '0001703', '0001704', '0001651', '0001206']
+        badEvents = ['0001518', '0001635', '0000712', '0001702', '0002210', '0001725', '0001634', '0001628', '0001703', '0001651', '0001206', '0001625']
         for x in self.a.getEntryList():
             if x.eventNumber in badEvents:
                 if meMap.has_key(x.serialNumber):
