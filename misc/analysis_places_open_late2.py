@@ -1,29 +1,33 @@
 #!/usr/bin/python
 #read the audit log file and store each line in the data list.
 
-def readData(path):
+#def readData(path):
+    #return parsedLog
+
+#create two dictionaries which keys are the serial numbers and the values of the first one is a list with the time of each vote cast by voter or poll worker.
+#The second dictionary contains the serial numbers as keys and the difference between the last vote and the closing time (7:00 PM) as values,
+#to determine if the machine was open late (after 7:00PM).
+def open_late():
     import os, sys
     cmd_folder = os.getenv('HOME') + '/audit-bear/modules'
     if cmd_folder not in sys.path:
         sys.path.insert(0, cmd_folder)
 
     from auditLog import AuditLog
+    from ballotImage import BallotImage
     
-    parsedLog = AuditLog(open(path, "r"))
-    
-    return parsedLog
+    path = sys.argv[1]
+    path2 = sys.argv[2]
 
-#create two dictionaries which keys are the serial numbers and the values of the first one is a list with the time of each vote cast by voter or poll worker.
-#The second dictionary contains the serial numbers as keys and the difference between the last vote and the closing time (7:00 PM) as values,
-#to determine if the machine was open late (after 7:00PM).
-def open_late(data):
-    
+    parsedLog = AuditLog(open(path, "r"))
+    parsedBallotImage = BallotImage(open(path2, 'r'))
+
     import dateutil.parser
     import datetime
     dic = {}
     dic2 = {}
     
-    for line in data:
+    for line in parsedLog:
         if not line[0] in dic:
             dic[line[0]] = []
             dic2[line[0]] = ""
@@ -36,8 +40,53 @@ def open_late(data):
                 continue
             else:
                 delta = t2 - t1
-                dic2[line[0]] = str(delta)
-    return dic2
+                dic2[line[0]] = delta
+
+    earlyVotingList = parsedBallotImage.getEarlyVotingList()
+    mapM = {}    
+    for key in dic2:
+        if not key in earlyVotingList and str(dic2[key])[:2] != "-1":
+            mapM[key] = dic2[key]
+            #print "Machine #"+ key + " was open late: " + str(mapM[key])+ " hours."
+    
+    precinctNumMap = parsedBallotImage.getPrecinctNumMap()
+    pMap = {}
+    
+    # match the times that the machines were open late with their precincts
+    for key2 in mapM:
+        if precinctNumMap.has_key(key2):
+            pMap.setdefault(precinctNumMap[key2],[]).append(mapM[key2])
+    
+    #for key in pMap:
+        #print key, pMap[key]
+    
+    #calculate the average time in which each precinct was open late.
+    pMapAv = {}
+    for precinct in pMap:
+        t = datetime.timedelta(0)
+        pMapAv[int(precinct)] = t
+        
+        #sum the time in which the last vote was cast in each machine
+        for time in pMap[precinct]:
+            t += time
+        
+        #calculate the time average
+        a = t/len(pMap[precinct])
+        sec = a.seconds
+        hours = sec / 3600
+        sec = sec % 3600
+        minutes = sec / 60
+        sec = sec % 60
+        totalTime = datetime.timedelta(seconds = sec, minutes = minutes, hours = hours)
+        
+        pMapAv[int(precinct)] = totalTime
+    now = datetime.datetime.now()
+
+    print "RUN DATE:"+now.strftime("%Y-%m-%d %H:%M")
+    print "Precinct Number    "+" Time Opened after 7:00 PM (hh:mm:ss)"
+    for p in sorted(pMapAv):
+        print str(p) +"              "+"     "+str(pMapAv[p])
+    #return dic2
 
 #creates the graph, which shows how many machines were open late.
 def graphOpenLate(dic):
@@ -95,17 +144,19 @@ def graphOpenLate(dic):
     return
 
 #main program
-import dateutil.parser
-import datetime
-import sys
-path = sys.argv[1]
+#TEST THE FUNCTION
+open_late()
+#import dateutil.parser
+#import datetime
+#import sys
+#path = sys.argv[1]
 #path = "anderson_co_01_14_11_el152.txt"
-data = readData(path)
-dicTC = open_late(data)
-graphOpenLate(dicTC)
+#data = readData(path)
+#dicTC = open_late(data)
+#graphOpenLate(dicTC)
 
-for key in dicTC:
-   if dicTC[key] == '' or dicTC[key][:2] == "-1":
-       continue
-   else:
-       print "Machine #"+ key + " was open late " + dicTC[key]+ " hours."
+#for key in dicTC:
+   #if dicTC[key] == '' or dicTC[key][:2] == "-1":
+       #continue
+   #else:
+       #print "Machine #"+ key + " was open late " + dicTC[key]+ " hours."

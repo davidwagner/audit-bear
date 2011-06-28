@@ -32,19 +32,21 @@ for entry in fh:
         term_open = True
         time1 = dateutil.parser.parse(entry[3])
         continue
-    if entry[4] != "0001633" and term_open and not idle:
-        time1 = dateutil.parser.parse(entry[3])
-        
-    if entry[4] == "0001633" and term_open and not idle:
+    if (entry[4] != "0001633") and (term_open and not idle):
+        if entry[4] != "0001635":
+            time1 = dateutil.parser.parse(entry[3])
+
+    if (entry[4] == "0001633" or entry[4] == "0001635") and (term_open and not idle):
         idle = True
         
-    if entry[4] != "0001633" and term_open and idle:
-        idle = False
-        time2 = dateutil.parser.parse(entry[3])
-        delta = time2 - time1
-        dic2[entry[0]].append(delta)
-        time1= time2
-        
+    if (entry[4] != "0001633") and (term_open and idle):
+        if entry[4] != "0001635":
+            idle = False
+            time2 = dateutil.parser.parse(entry[3])
+            delta = time2 - time1
+            dic2[entry[0]].append(delta)
+            time1 = time2
+
 dicM = {}
 for machine in dic2:
     s = datetime.timedelta(0)
