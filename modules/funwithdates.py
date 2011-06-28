@@ -56,20 +56,16 @@ class DateMod:
     Gets date from l68a file or returns blank string. Its a little ugly, but it works for now
     TO-DO: Would be more robust with regex but still avoid reading entire file (Sammy!?)
     """
-    def daygrab(self,path):
-        try: f = open(path, 'r') 
-        except: return False
+    def daygrab(self,f):
+        line = [f.next() for x in xrange(4)]
+        try:
+            self.eday = dateutil.parser.parse(' '.join(line[3].split()[0:3])).date()
+        except ValueError:
+            print 'Could not parse date from 168.lst'
+            return False
         else:
-            line = [f.next() for x in xrange(4)]
-            f.close()
-            try:
-                self.eday = dateutil.parser.parse(' '.join(line[3].split()[0:3])).date()
-            except ValueError:
-                print 'Could not parse date from 168.lst'
-                return False
-            else:
-                self.pday = self.eday - datetime.timedelta(15)
-                return True 
+            self.pday = self.eday - datetime.timedelta(15)
+            return True 
 
     """
     Creates 3 AuditLog objects based on pdate and edate.
@@ -196,7 +192,7 @@ def timeopen(edata):
         #If time was adjusted while machine was open, account for that
         elif line.eventNumber == '0000117' and ostate == 1:
             diff = dateutil.parser.parse(line.dateTime)
-            startset = False
+            startset = True
         elif line.eventNumber == '0001656' and startset:
             diff =  diff - dateutil.parser.parse(line.dateTime)
             timeset = True
@@ -224,7 +220,9 @@ if __name__== "__main__":
 
     print data[0]
 
-    dateclass = DateMod(data, path2)
+    f = open(path2, 'r')
+    dateclass = DateMod(data, f)
+    f.close()
     print dateclass.eday
     print dateclass.pday
 

@@ -15,6 +15,7 @@ import ballotImage
 from math import ceil
 import matplotlib.pyplot as plot
 
+"""
 #Anderson
 path1 = os.getenv('HOME') + '/documents/audit-bear/data/anderson/anderson_co_01_14_11_el152.txt'
 path2 = os.getenv('HOME') + '/documents/audit-bear/data/anderson/anderson_co_03_07_11_el68a.txt'
@@ -24,7 +25,6 @@ path3 = os.getenv('HOME') + '/documents/audit-bear/data/anderson/anderson_co_01_
 path1 = os.getenv('HOME') + '/documents/audit-bear/data/berkeley/berkeley_co_11_10_10_el152.lst'
 path2 = os.getenv('HOME') + '/documents/audit-bear/data/berkeley/berkeley_co_11_10_10_el68a.LST'
 path3 = os.getenv('HOME') + '/documents/audit-bear/data/berkeley/berkeley_co_11_10_10_el155.lst'
-"""
 
 #Init
 f = open(path1, 'r')
@@ -35,11 +35,13 @@ f = open(path3, 'r')
 ballot = ballotImage.BallotImage(f)
 f.close()
 
+f = open(path2, 'r')
 dateclass = funwithdates.DateMod(data, path2)
+f.close()
 
 #Dispatch:
 def main():
-    #dateanomalies()
+    dateanomalies()
     openmachines()
     #ballottest()
 
