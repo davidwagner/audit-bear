@@ -20,6 +20,7 @@ class BallotImage:
         voteCount = 0
         earlyVotingList = []
         failsafeList = []
+        newNameList = []
         currentPrecinct = None
         pCurrentPrecinct = None
         votes1 = 0
@@ -37,6 +38,8 @@ class BallotImage:
         t2 = t1[1].split(":")
         runDate = t2[1]+" "+t1[2]+" "+t1[3]
         electionID = t1[len(t1)-1]
+        electionID = electionID.split("\n")
+        electionID = electionID[0]
         self.runDate = runDate
         self.electionID = electionID
         for i,l in enumerate(list):
@@ -64,17 +67,21 @@ class BallotImage:
                     if r[1]:
                         r = r[1].split(" ")
                         if len(r2) > 1:
+                            length = 0
                             r2 = r2[1].split(" ")
                             for i,c in enumerate(r):
                                 if i == (len(r)-1):
                                     continue
                                 elif r[i] == r2[i]:
                                     newName += r[i]+" "
+                                    length = i
                                     isSameLocation = True
                                 elif r[i] != r2[i]:
                                     isSameLocation = False
                                     break
                             if isSameLocation == True:
+                                #if newName not in newNameList:
+                                    #newNameList.append((newName, length))
                                 #if pCombinedMap.has_key(currentPrecinct):
                                     #if x not in pCombinedMap[currentPrecinct]:
                                         #pCombinedMap[currentPrecinct] += [x]
@@ -180,6 +187,7 @@ class BallotImage:
         self.failsafeList = failsafeList
         self.machineVotesMap = machineVotesMap
         self.precinctVotesMap = precinctVotesMap
+        self.newNameList = newNameList
         """
         Counts the number of votes per precinct and votes per machine.
         """
@@ -188,9 +196,9 @@ class BallotImage:
         for v2 in machineVotesMap.values():
             votes2 = votes2 + v2
 
-        #print votes1
-        #print votes2
-        #print voteCount
+        print votes1
+        print votes2
+        print voteCount
         
         """
         Creates a map from the other maps.  It is of the format <precinct number, [list of machine serial numbers]>.
