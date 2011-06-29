@@ -1,3 +1,16 @@
+import operator
+import string as stri
+import matplotlib.pyplot as plt
+import matplotlib
+import math
+import os
+import sys
+cmd_folder = os.getenv('HOME') + '/audit-bear/modules'
+if cmd_folder not in sys.path:
+    sys.path.insert(0, cmd_folder)
+import auditLog
+import ballotImage
+
 class CheckFiles:
     
     def __init__(self, fha, fhb):
@@ -9,7 +22,8 @@ class CheckFiles:
     """
     def getMachineVotes(self):
         votes = 0
-        for v2 in machineVotesMap.values():
+        mvMap = self.getVotesPerMachine()
+        for v2 in mvMap.values():
             votes = votes + v2
         return votes
 
@@ -26,7 +40,11 @@ class CheckFiles:
     This function compares electionIDs between the audit log and the ballot images to verify that both files are from the same election.
     """
     def checkElectionIDs(self):
-        if a.electionID == b.electionID:
+        be = self.b.electionID.split("\n")
+        beID = be[0]
+        print self.a.electionID
+        print beID
+        if self.a.electionID == beID:
             return true
         else:
             print "The election ID is not the same on all files."
