@@ -125,23 +125,19 @@ class AnomalousEvents:
                         list1518.append(vcMap[z][z2])
                     elif z2 == '0001519':
                         list1519.append(vcMap[z][z2])
-
             fig = plt.figure(figsize=(22,14))
             ax2 = fig.add_axes([0.15, 0.1, .7, .8])
-
-            #plt.hist(list1514, bins=10, range=(0,10), label='0001514')
             n, bins, patches = plt.hist([list1513, list1514, list1515, list1516, list1517, list1518, list1519], bins=maxNumOccurrences+1, range=(0,maxNumOccurrences+1), align='left', label=['0001513: '+self.a.getEventDescription('0001513'),'0001514: '+self.a.getEventDescription('0001514'), '0001515: '+self.a.getEventDescription('0001515'), '0001516: '+self.a.getEventDescription('0001516'), '0001517: '+self.a.getEventDescription('0001517'), '0001518: '+self.a.getEventDescription('0001518'), '0001519: '+self.a.getEventDescription('0001519')])
-            
             for b in bins:
                 minorTicks += ((b-.5),)
             ax2.set_xticks(minorTicks, minor=True)
             ax2.grid(b=True, which='minor')
-		    ax2.set_xlabel('# of Occurrences')
-		    ax2.set_ylabel('# of Machines')
-		    ax2.set_title('Frequency of Vote Cancelled Events')
+            ax2.set_xlabel('# of Occurrences')
+            ax2.set_ylabel('# of Machines')
+            ax2.set_title('Frequency of Vote Cancelled Events')
             ax2.legend()
-                
-                    
+            plt.show()
+                      
     """
     This function checks the auditLog for the warning events.  
     """
@@ -194,17 +190,24 @@ class AnomalousEvents:
             fig = plt.figure(figsize=(22,14))
             ax2 = fig.add_axes([0.15, 0.1, .7, .8])
 
-            n, bins, patches = plt.hist([list1628, list1651, list1703, list1704], bins=maxNumOccurrences+1, range=(0,maxNumOccurrences+1), align='left', label=['0001628', '0001651', '0001703', '0001704'])
+            print self.a.getEventDescription('0001628')
+            print self.a.getEventDescription('0001651')
+            print self.a.getEventDescription('0001703')
+            print self.a.getEventDescription('0001704')
+
+
+
+            n, bins, patches = plt.hist([list1628, list1651, list1703, list1704], bins=maxNumOccurrences+1, range=(0,maxNumOccurrences+1), align='left', label=['0001628: '+self.a.getEventDescription('0001628'), '0001651: '+self.a.getEventDescription('0001651'), '0001703: '+self.a.getEventDescription('0001703'), '0001704: '+self.a.getEventDescription('0001704')])
         
             for b in bins:
                 minorTicks += ((b-.5),)
             ax2.set_xticks(minorTicks, minor=True)
             ax2.grid(b=True, which='minor')
-		    ax2.set_xlabel('# of Occurrences')
-		    ax2.set_ylabel('# of Machines')
-		    ax2.set_title('Frequency of Warning Events')
+            ax2.set_xlabel('# of Occurrences')
+            ax2.set_ylabel('# of Machines')
+            ax2.set_title('Frequency of Warning Events')
             ax2.legend()                     
-
+            plt.show()
     """
     This function checks the auditLog for a specific list of events.  It returns a map in the format <machine serial number, <event number, # of instances of this event>>.  
     """
