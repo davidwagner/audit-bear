@@ -79,46 +79,49 @@ def open_late():
         sec = sec % 60
         totalTime = datetime.timedelta(seconds = sec, minutes = minutes, hours = hours)
         
-        pMapAv[int(precinct)] = totalTime
+        pMapAv[int(precinct)] = str(totalTime)
+    
     now = datetime.datetime.now()
-
+    
+    #FORMAT OUTPUT
     print "RUN DATE:"+now.strftime("%Y-%m-%d %H:%M")
+    print "NOTE: This report doesn't include early voting terminals nor the precincts that were closed before 7:00 PM"
     print "Precinct Number    "+" Time Opened after 7:00 PM (hh:mm:ss)"
-    for p in sorted(pMapAv):
-        print str(p) +"              "+"     "+str(pMapAv[p])
-    #return dic2
+    #sort in descending order the dictionary by value.
+    for key, value in sorted(pMapAv.iteritems(), key=lambda (k,v): (v,k), reverse = True):
+        print "%3d                 %s" % (key, value)
+    return pMapAv
 
-#creates the graph, which shows how many machines were open late.
+#creates the graph, which shows how many precincts were open late.
 def graphOpenLate(dic):
     import numpy as np
     import matplotlib.pyplot as plt
-    c = 0
-    dicRange = {'0:00:00':0, '0:15:00':0, '0:30:00':0, '0:45:00':0, '1:00:00':0, '1:15:00':0, '1:30:00':0, '1:45:00':0, '2:00:00':0, '2:15:00':0, '2:30:00':0, '2:45:00':0}
+    dicRange = {'0:00:00':0, '0:10:00':0, '0:20:00':0, '0:30:00':0, '0:40:00':0, '0:50:00':0, '1:00:00':0, '1:10:00':0, '1:20:00':0, '1:30:00':0, '1:40:00':0, '1:50:00':0, '2:00:00':0}
     for s in dic:
-        if dic[s][:2] == '' or dic[s][:2] == "-1":
-            c+=1
-        elif ('0:00:00' <= dic[s] < '0:15:00'):
+        if ('0:00:00' <= dic[s] < '0:10:00'):
             dicRange['0:00:00']+=1
-        elif '0:15:00' <= dic[s] < '0:30:00':
-            dicRange['0:15:00']+=1
-        elif '0:30:00' <= dic[s] < '0:45:00':
+        elif '0:10:00' <= dic[s] < '0:20:00':
+            dicRange['0:10:00']+=1
+        elif '0:20:00' <= dic[s] < '0:30:00':
+            dicRange['0:20:00']+=1
+        elif '0:30:00' <= dic[s] < '0:40:00':
             dicRange['0:30:00']+=1
-        elif '0:45:00' <= dic[s] < '1:00:00':
-            dicRange['0:45:00']+=1
-        elif '1:00:00' <= dic[s] < '1:15:00':
+        elif '0:40:00' <= dic[s] < '0:50:00':
+            dicRange['0:40:00']+=1
+        elif '0:50:00' <= dic[s] < '1:00:00':
+            dicRange['0:50:00']+=1
+        elif '1:00:00' <= dic[s] < '1:10:00':
             dicRange['1:00:00']+=1
-        elif '1:15:00' <= dic[s] < '1:30:00':
-            dicRange['1:15:00']+=1
-        elif '1:30:00' <= dic[s] < '1:45:00':
+        elif '1:10:00' <= dic[s] < '1:20:00':
+            dicRange['1:10:00']+=1
+        elif '1:20:00' <= dic[s] < '1:30:00':
+            dicRange['1:20:00']+=1
+        elif '1:30:00' <= dic[s] < '1:40:00':
             dicRange['1:30:00']+=1
-        elif '1:45:00' <= dic[s] < '2:00:00':
-            dicRange['1:45:00']+=1
-        elif '2:00:00' <= dic[s] < '2:15:00':
-            dicRange['2:00:00']+=1
-        elif '2:15:00' <= dic[s] < '2:30:00':
-            dicRange['2:15:00']+=1
-        elif '2:30:00' <= dic[s] < '2:45:00':
-            dicRange['2:30:00']+=1
+        elif '1:40:00' <= dic[s] < '1:50:00':
+            dicRange['1:40:00']+=1
+        elif '1:50:00' <= dic[s] < '2:00:00':
+            dicRange['1:50:00']+=1
 
     kList = []
     vList = []
@@ -127,7 +130,7 @@ def graphOpenLate(dic):
         kList.append(k)
         vList.append(dicRange[k])
         
-    N = 12
+    N = 13
     ind = np.arange(N)
     width = 0.70
     fig = plt.figure()
@@ -135,28 +138,15 @@ def graphOpenLate(dic):
     rects1 = ax.bar(ind, vList, .98, color='r')
     ax.set_xticks(ind+width/100.)
     ax.set_xticklabels(kList)
-    ax.set_yticks(np.arange(0,max(vList)+10, 10))
+    ax.set_yticks(np.arange(0,max(vList)+2, 2))
     ax.set_ylabel('Number of units')
     ax.set_xlabel('Time Opened')
-    ax.set_title('Machines stayed open after 7:00PM')
+    ax.set_title('Precincts stayed open after 7:00PM')
     plt.grid(True)
     plt.show()
     return
 
 #main program
-#TEST THE FUNCTION
-open_late()
-#import dateutil.parser
-#import datetime
-#import sys
-#path = sys.argv[1]
-#path = "anderson_co_01_14_11_el152.txt"
-#data = readData(path)
-#dicTC = open_late(data)
-#graphOpenLate(dicTC)
-
-#for key in dicTC:
-   #if dicTC[key] == '' or dicTC[key][:2] == "-1":
-       #continue
-   #else:
-       #print "Machine #"+ key + " was open late " + dicTC[key]+ " hours."
+#TEST THE FUNCTIONS
+map1 = open_late()
+graphOpenLate(map1)
