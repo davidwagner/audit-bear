@@ -87,6 +87,8 @@ class AuditLog:
         return len(self.entryList)
     
     def getEventDescription(self, eventNumber):
+        eventDescription = ''
         for x in self.getEntryList():
             if x.eventNumber == eventNumber:
-                return x.eventDescription
+                eventDescription = x.eventDescription
+        return eventDescription

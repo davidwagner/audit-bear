@@ -188,6 +188,7 @@ class BallotImage:
         self.machineVotesMap = machineVotesMap
         self.precinctVotesMap = precinctVotesMap
         self.newNameList = newNameList
+
         """
         Counts the number of votes per precinct and votes per machine.
         """
