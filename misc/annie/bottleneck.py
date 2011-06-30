@@ -1,4 +1,4 @@
-import sys
+import os, sys
 cmd_folder = os.getenv('HOME') + '/audit-bear/modules'
 if cmd_folder not in sys.path:
     sys.path.insert(0, cmd_folder)
@@ -11,7 +11,7 @@ class Bottleneck:
         self.a = auditLog.AuditLog(fha)
         self.b = ballotImage.BallotImage(fhb)
 
-  """
+    """
     This function gets the average throughput per hour of all the machines in one polling location.  It displays the information on a graph.  Currently, the precinct number is hard-coded into the function (this could change).
     """
     def getThroughput(self):
@@ -54,4 +54,3 @@ class Bottleneck:
         ax2.set_ylabel('# of Votes Per Machine')
         ax2.set_title('Throughput for Precinct %s Every Hour' % (throughputMap.keys()[15],))
         plt.show()
-
