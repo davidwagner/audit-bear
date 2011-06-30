@@ -1,4 +1,3 @@
-#!/usr/bin/python
 """
 -----Fun With Dates!-----
 -Scope: This module is a collection of related functions that are hopfully useful in dealing with date anomalies and splitting up the main data structure based on Election-Day Voting, Pre-Voting Days, and Other days
@@ -43,12 +42,12 @@ class DateMod:
     eday = ''  #Parsed Election Date from 68.lst file 
     pday = ''  #Election Day Minus 15
     
-    def __init__(self, data, path):
+    def __init__(self, data, day):
 
         if not isinstance(data, auditLog.AuditLog):
             raise Exception('Must pass valid AuditLog object')
 
-        if self.daygrab(path):
+        if self.daygrab(day):
              self.splitDays(data, self.eday, self.pday)
         else:
             raise Exception('Path to l68a bad or date was not parsed')
@@ -58,6 +57,7 @@ class DateMod:
     TO-DO: Would be more robust with regex but still avoid reading entire file (Sammy!?)
     """
     def daygrab(self,f):
+        """
         line = [f.next() for x in xrange(4)]
         try:
             self.eday = dateutil.parser.parse(' '.join(line[3].split()[0:3])).date()
@@ -67,6 +67,11 @@ class DateMod:
         else:
             self.pday = self.eday - datetime.timedelta(15)
             return True 
+        """
+        self.eday = f
+        self.pday = f - datetime.timedelta(15)
+        return True
+
     """
     Creates 3 AuditLog objects based on pdate and edate.
     """
@@ -139,26 +144,21 @@ def check(odata, eday, pday):
                 
     return [d1,d2,d3]
 """
-Return Structure: Returns a dictionary as follows:
-  {machineID:(code, timeopen, timeclosed, totaltime)}
-  {string:(int, datetime, datetime, timedelta)
-  timeopen and totaltimeopen are automatically adjusted if date is changed
+-Returns List of machines and hours they stayed open with any adjustments for datetime changes
+-I think we decided it would be best to focus on election days only here and thus this function is
+intended for use with the edata variable.
+-Machines opened throughout pre-voting are ignored
+-Returns list of machines and times opened
 
-Codes:
- 0 - Machine was opened and closed
- 1 - Machine was closed but not open (for pdata: left open from earlyvoting)
-     Has None for timeopen and totaltime
- 2 - Machine was opened but not closed
-     has none for totaltime and timeclosed
- 3 - Machine was neither opened or closed
-     Has none for all times
+CANADDFEATURES:
+-If someone wants its easy allow this to record machines neither opened or closed and machines opened but not closedand machines closed but not open.  This could mean different things in the context of the data you are passing it.
 
-
-Limitations:  Will not handle unparsible dates.  This will work with edata, pdata, or both sets combined.  Will not deal with a machine with multible openings or closings.
+Limitations:  Will not handle unparsible dates or deal with real bad date errors.  This would work with edata, pdata, or both sets combined.  Will not deal with a machine with multible openings or closings unless they occur in the data with a different machine inbetween.  This could change.
 """
 def timeopen(edata):
     temp = edata[0].serialNumber
-    times = {}
+    times = []
+    openearly = []
     ostate = False 
     eventseen = False 
     timeset = False
@@ -167,24 +167,17 @@ def timeopen(edata):
         if line.serialNumber != temp:
             #Machine Neither Closed Nor Opened
             if not eventseen:
-                times.update({temp:(3, None, None, None)})
-                    
+                print "Machine", temp, "not Closed or Opened"
                 
             #Machine Closed Sucessfully
             elif not ostate:
-                if timeset:
-                    times.update({temp:(0,start-diff, end, end-start+diff)})
+                if timeset: 
+                    times.append([temp,end-start+diff])
                     print 'Machine:',temp,'adjusted by:', diff, 'from', (end-start)
-                else:
-                    times.update({temp:(0,start, end, end-start)})
-
+                else:       times.append([temp,end-start])
             #Machine Opened and Not Closed
             else: 
-                if timeset:
-                    times.update({temp:(2, start-diff, end, None)})
-                else:
-                    times.update({temp:(2, start, end, None)})
-
+                print 'Machine', temp, 'Not Closed' 
             temp = line.serialNumber
             eventseen = False
             timeset = False
@@ -197,10 +190,10 @@ def timeopen(edata):
             if ostate == 1:
                 ostate  = 0
                 end = dateutil.parser.parse(line.dateTime)
-            #Machine Closed without an Open
+            #Machine Closed with an Open
             elif ostate == 0:
-                times.update({temp:(1, None, end, None)})
-
+                #In context of edata being passed this is a machine open since pre-voting
+                openearly.append(temp)
         #If time was adjusted while machine was open, account for that
         elif line.eventNumber == '0000117' and ostate == 1:
             diff = dateutil.parser.parse(line.dateTime)
@@ -210,18 +203,9 @@ def timeopen(edata):
             timeset = True
             startset = False
             
-    return times
-"""
-This function takes the dictionary from timesopen and decides if the datestamp is believeable
-"""
-def timecheck(times):
-    #Catch all machines open more then 12 hours, check for reasonable opening
-    valid = {}
-    for k,v in times.iteritems():
-        if v[0] == 0:
-            if v[3] > datetime.timedelta(hours=12):
-                valid.update({k:v})
-    return valid
+    return (times, openearly)
+
+
 
 """
 ---Main---
@@ -232,18 +216,28 @@ This only executes if you run this file as a script.  This serves more as an exa
 if __name__== "__main__":
 
 
-    path1 = "/home/patrick/audit-bear/data/anderson/anderson_co_01_14_11_el152.txt"
-    path2 = "/home/patrick/audit-bear/data/anderson/anderson_co_03_07_11_el68a.txt"
+    path1 = "/home/patrick/documents/data/anderson_co_01_14_11_el152.txt"
+    path2 = "/home/patrick/documents/data/anderson_co_03_07_11_el68a.txt"
 
     f = open(path1, 'r')
     data = auditLog.AuditLog(f)
     f.close()
 
+    print data[0]
+
     f = open(path2, 'r')
     dateclass = DateMod(data, f)
     f.close()
+    print dateclass.eday
+    print dateclass.pday
 
-    print timecheck(timeopen(dateclass.edata))
+    print 'Election Day:', dateclass.eday
+    for x in xrange(10): print dateclass.edata[x] 
+    print 'PreVoting Days:',dateclass.pday, '+'
+    for x in xrange(10): print dateclass.pdata[x]
+    print 'Other Dates:' 
+    for x in xrange(10): print dateclass.odata[x]
+
 
 
 """""
