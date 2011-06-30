@@ -50,3 +50,7 @@ for peb in pebToPrecinctCount.keys():
 
 print "excludedPEBs", len(excludedPEBs)
 print "excludedPEBs2", len(excludedPEBs2)
+
+for peb in pebToPrecinctCount:
+    print "PEB " + peb + " -> " + str(pebToPrecinctCount[peb])
+

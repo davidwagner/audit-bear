@@ -6,6 +6,7 @@ class EL68AEntry:
     # an entry will contain only some of the information, others will be none
     date = actionString = countedInfoString = precinct = bals = tot = \
     auditedMachine = pebRetrieved = None
+    isError289 = False
 
     def __init__(self, electionDate, dateString, sysString):
         dateString += str(electionDate.year)
@@ -29,6 +30,12 @@ class EL68AEntry:
                 r = re.search(r"PEB votes retrieved for P0(\d+)", self.actionString, re.IGNORECASE)
                 if r:
                     self.pebRetrieved = r.group(1)
+        self.checkError(sysString) # set attribute if error... (could add more)
+
+    def checkError(self, s):
+        r = re.search(r"\d{4}.*Reply was: Don't update", s, re.IGNORECASE)
+        if r:
+            self.isError289 = True
 
     def __str__(self):
         s = str(self.date)
@@ -44,8 +51,8 @@ class EL68A:
     electionID = ''
     runDate = ''
     entryList = []
+    pebToPrecinctCountMap = {}
     auditedMachines = []
-    precinctToCountMap = {}
 
     def __init__(self, fh):
         # parse election date, run date and election id
@@ -67,6 +74,7 @@ class EL68A:
                 pass
 
         # all entries are parsed, fill up needed maps, counts, etc.
+        retrievedPEBs = deque()
         accumulationStartDate = self.parseAccumulationStartDate()
 
         for entry in self.entryList:
@@ -78,13 +86,22 @@ class EL68A:
             if entry.auditedMachine:
                 if not entry.auditedMachine in self.auditedMachines:
                     self.auditedMachines.append(entry.auditedMachine)
+            elif entry.pebRetrieved:
+                print "Retrieved PEB " + entry.pebRetrieved
+                retrievedPEBs.append(entry.pebRetrieved)
+            elif entry.isError289:
+                print "PEB " + retrievedPEBs[0] + " has error."
+                try:
+                    retrievedPEBs.popleft()
+                except:
+                    print "Pop on empty deque, entry = " + str(entry)
+            elif entry.tot and entry.precinct and len(retrievedPEBs) > 0:
+                # check for multiple access to this PEB
+                if retrievedPEBs[0] in self.pebToPrecinctCountMap:
+                    print "PEB " + retrievedPEBs[0] + " was accessed two times " + str(entry)
 
-            if entry.precinct and entry.bals and entry.tot:
-                if not entry.precinct in self.precinctToCountMap:
-                    self.precinctToCountMap[entry.precinct] = [(entry.bals, entry.tot)]
-                else:
-                    self.precinctToCountMap[entry.precinct].append((entry.bals, entry.tot))
-                
+                print "Added PEB " + retrievedPEBs[0] + ' ' + entry.precinct + ', ' + str(entry.tot)
+                self.pebToPrecinctCountMap[retrievedPEBs.popleft()] = (entry.precinct, entry.tot)
 
     def parseAccumulationStartDate(self):
         lastClearedEntry = None
