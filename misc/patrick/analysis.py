@@ -1,42 +1,44 @@
 #!/usr/bin/python
 """
-Adding my analysis(s?) here for now.  Will convert them to use our results data structure later
+Adding my analysis here for now.  Each one should result a result object.
 """
 
 import os, sys
-cmd_folder = os.getenv('HOME') + '/documents/audit-bear/modules'
+cmd_folder = os.getenv('HOME') + '/audit-bear/modules'
 if cmd_folder not in sys.path:
     sys.path.insert(0, cmd_folder)
 
 import auditLog
 import funwithdates
 import ballotImage
+import report
 
 from math import ceil
 import matplotlib.pyplot as plot
 
 """
 #Anderson
-path1 = os.getenv('HOME') + '/documents/audit-bear/data/anderson/anderson_co_01_14_11_el152.txt'
-path2 = os.getenv('HOME') + '/documents/audit-bear/data/anderson/anderson_co_03_07_11_el68a.txt'
-path3 = os.getenv('HOME') + '/documents/audit-bear/data/anderson/anderson_co_01_14_11_el155.txt'
+path1 = os.getenv('HOME') + '/audit-bear/data/anderson/anderson_co_01_14_11_el152.txt'
+path2 = os.getenv('HOME') + '/audit-bear/data/anderson/anderson_co_03_07_11_el68a.txt'
+path3 = os.getenv('HOME') + '/audit-bear/data/anderson/anderson_co_01_14_11_el155.txt'
 #Berkeley
 """
-path1 = os.getenv('HOME') + '/documents/audit-bear/data/berkeley/berkeley_co_11_10_10_el152.lst'
-path2 = os.getenv('HOME') + '/documents/audit-bear/data/berkeley/berkeley_co_11_10_10_el68a.LST'
-path3 = os.getenv('HOME') + '/documents/audit-bear/data/berkeley/berkeley_co_11_10_10_el155.lst'
+path1 = os.getenv('HOME') + '/audit-bear/data/berkeley/berkeley_co_11_10_10_el152.lst'
+path2 = os.getenv('HOME') + '/audit-bear/data/berkeley/berkeley_co_11_10_10_el68a.LST'
+path3 = os.getenv('HOME') + '/audit-bear/data/berkeley/berkeley_co_11_10_10_el155.lst'
 
 #Init
 f = open(path1, 'r')
 data = auditLog.AuditLog(f)
 f.close()
-
+"""
 f = open(path3, 'r')
 ballot = ballotImage.BallotImage(f)
 f.close()
+"""
 
 f = open(path2, 'r')
-dateclass = funwithdates.DateMod(data, path2)
+dateclass = funwithdates.DateMod(data, f)
 f.close()
 
 #Dispatch:
@@ -47,15 +49,15 @@ def main():
 
 def openmachines(bins=10):
     print "-------------Machine Open Times Analysis ------------------"
-    o,e = funwithdates.timeopen(dateclass.edata)
-    if len(e) > 0:
-        print "These machines were left open from Pre-Voting"
-        for line in e:
-            print '    ' , line 
-    #Graph Length of open Machines:
-    x=[]
-    for line in o:
-        x.append(float(str(line[1]).split(':')[0]) + float(str(line[1]).split(':')[1])//60)
+    o = funwithdates.timeopen(dateclass.edata)
+    x = []
+    for k,v in o.iteritems():
+        if v[0] == 1:
+            print 'Machine',k,'open since pre-voting'
+        elif v[0] == 0:
+            x.append(float(str(v[3]).split(':')[0]) + float(str(v[3]).split(':')[1])//60)
+
+
 
     binsize=ceil((max(x)-min(x))/bins)
     maximum = bins*binsize+min(x)
@@ -65,7 +67,7 @@ def openmachines(bins=10):
     plot.xlabel('Hours a Machine Stayed Open')
     plot.ylabel('# of Machines in Range')
     plot.grid(True)
-    plot.xticks([i for i in range(min(x), int(maximum+binsize), int(binsize))])
+    plot.xticks([i for i in range(int(min(x)), int(maximum+binsize), int(binsize))])
     plot.title('Histogram: Hours Machines Were Opened on Election Day')
     plot.show()
     print "This data was based only on events that occured on the election.  It is assumed that machines that weren't opened were opened for pre-voting and left open"

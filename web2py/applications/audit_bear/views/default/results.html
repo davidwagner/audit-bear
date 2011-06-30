@@ -1,2 +1,8 @@
 {{extend 'layout.html'}}
-<h1>{{=message}}</h1>
+{{if message != 'LOLCAT':}}
+{{for line in r.getTextBoxList():}}
+<br>{{=line}}</br>
+{{pass}}
+{{else:}}
+<img src="http://127.0.0.1:8000/audit_bear/static/images/lolcat-edit.jpg" alt="LOL" />
+{{pass}}

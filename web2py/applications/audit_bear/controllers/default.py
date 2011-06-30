@@ -28,5 +28,5 @@ def results():
     # pass these to the dispatcher, which will collect all reports and pass
     # the resulting dictionary to the view
     dictionary = dispatcher(el152=el152, el155=el155)
-    dictionary['message'] = 'YOUR RESULTS: 42'
+    #dictionary['message'] = 'YOUR RESULTS: 42'
     return dictionary

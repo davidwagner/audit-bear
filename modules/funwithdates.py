@@ -66,7 +66,6 @@ class DateMod:
         else:
             self.pday = self.eday - datetime.timedelta(15)
             return True 
-
     """
     Creates 3 AuditLog objects based on pdate and edate.
     """
@@ -139,21 +138,26 @@ def check(odata, eday, pday):
                 
     return [d1,d2,d3]
 """
--Returns List of machines and hours they stayed open with any adjustments for datetime changes
--I think we decided it would be best to focus on election days only here and thus this function is
-intended for use with the edata variable.
--Machines opened throughout pre-voting are ignored
--Returns list of machines and times opened
+Return Structure: Returns a dictionary as follows:
+  {machineID:(code, timeopen, timeclosed, totaltime)}
+  {string:(int, datetime, datetime, timedelta)
+  timeopen and totaltimeopen are automatically adjusted if date is changed
 
-CANADDFEATURES:
--If someone wants its easy allow this to record machines neither opened or closed and machines opened but not closedand machines closed but not open.  This could mean different things in the context of the data you are passing it.
+Codes:
+ 0 - Machine was opened and closed
+ 1 - Machine was closed but not open (for pdata: left open from earlyvoting)
+     Has None for timeopen and totaltime
+ 2 - Machine was opened but not closed
+     has none for totaltime and timeclosed
+ 3 - Machine was neither opened or closed
+     Has none for all times
 
-Limitations:  Will not handle unparsible dates or deal with real bad date errors.  This would work with edata, pdata, or both sets combined.  Will not deal with a machine with multible openings or closings unless they occur in the data with a different machine inbetween.  This could change.
+
+Limitations:  Will not handle unparsible dates.  This will work with edata, pdata, or both sets combined.  Will not deal with a machine with multible openings or closings.
 """
 def timeopen(edata):
     temp = edata[0].serialNumber
-    times = []
-    openearly = []
+    times = {}
     ostate = False 
     eventseen = False 
     timeset = False
@@ -162,17 +166,17 @@ def timeopen(edata):
         if line.serialNumber != temp:
             #Machine Neither Closed Nor Opened
             if not eventseen:
-                print "Machine", temp, "not Closed or Opened"
+                times.update({temp:(3, None, None, None)})
+                    
                 
             #Machine Closed Sucessfully
             elif not ostate:
-                if timeset: 
-                    times.append([temp,end-start+diff])
-                    print 'Machine:',temp,'adjusted by:', diff, 'from', (end-start)
-                else:       times.append([temp,end-start])
+                times.update({temp:(0,start-diff, end, end-start+diff)})
+                print 'Machine:',temp,'adjusted by:', diff, 'from', (end-start)
             #Machine Opened and Not Closed
             else: 
-                print 'Machine', temp, 'Not Closed' 
+                times.update({temp:(2, start-diff, end, None)})
+
             temp = line.serialNumber
             eventseen = False
             timeset = False
@@ -185,10 +189,10 @@ def timeopen(edata):
             if ostate == 1:
                 ostate  = 0
                 end = dateutil.parser.parse(line.dateTime)
-            #Machine Closed with an Open
+            #Machine Closed without an Open
             elif ostate == 0:
-                #In context of edata being passed this is a machine open since pre-voting
-                openearly.append(temp)
+                times.update({temp:(1, None, end, None)})
+
         #If time was adjusted while machine was open, account for that
         elif line.eventNumber == '0000117' and ostate == 1:
             diff = dateutil.parser.parse(line.dateTime)
@@ -197,8 +201,9 @@ def timeopen(edata):
             diff =  diff - dateutil.parser.parse(line.dateTime)
             timeset = True
             startset = False
+        if not timeset: diff = datetime.timedelta(0)
             
-    return (times, openearly)
+    return times
 
 
 
