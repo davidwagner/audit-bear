@@ -1,15 +1,16 @@
 # this is the dispatcher function
 # it will call all analysis programs with the given files
 # and collect the resulting Report structures
+"""
 import os, sys 
 cmd_folder = os.getenv('HOME') + '/audit-bear/modules' 
 if cmd_folder not in sys.path: 
     sys.path.insert(0, cmd_folder)
-
+"""
 import auditLog
 import ballotImage
-import funwithdates
-import dateutil
+import dateMod
+import dateutil.parser
 import report
 
 from dateutil.parser import parse
@@ -26,11 +27,11 @@ def dispatcher(el152=None, el155=None, el68a=None):
 
         #HardCode Eday
         eday = parse('November 2, 2011').date()
-        dateData = funwithdates.DateMod(data, eday)
+        #dateData = dateMod.DateMod(data, eday)
         
         #Start running analysis
-        results.append(dateanomalies(data, dateData))
-        return dict(report=r)
+        #results.append(dateanomalies(data, dateData))
+        return dict(message='files recieved')
         
     else:
         return dict(message='LOLCAT')
@@ -39,7 +40,7 @@ def dateanomalies():
     r = report.Report()
     r.addTextBox('---------Date Anomaly Analysis #1-----------')
     
-    l = funwithdates.check(dateclass.odata, dateclass.eday, dateclass.pday) 
+    l = dateMod.check(dateclass.odata, dateclass.eday, dateclass.pday) 
     if len(l[0]) == 0:
         r.addTextBox('No Machines had events after Election Day')
     else: 
