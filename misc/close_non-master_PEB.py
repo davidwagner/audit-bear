@@ -19,63 +19,91 @@ def close_nm_PEB():
     import dateutil.parser
     import datetime
     mapNM = {} # new machine temp map
+    mapM = {}
     # machine# -> PEB#, DateTime, vote count
     non_master = False
-
-#This for loop finds the machines closed on a non-master PEB and creates 
+    master = False
+    countMachine = 0
+#This for loop finds the machines closed on a non-master PEB and master PEB, then creates 
 #a dictionary which includes serial number (key) and values of PEB 
 #serial number, date and time and total votes cast on the machine
     for line in parsedLog:
         if not line[0] in mapNM:
+            countMachine += 1
             count = 0
             non_master = False
+            master = False
             mapNM[line[0]] = []
+            mapM[line[0]] = []
         if line[4] == "0001206":
             non_master = True
             mapNM[line[0]].append(line[1])
-            mapNM[line[0]].append(line[3])
         if line[4] == "0001510" or line[4] == "0001511":
             count += 1
         if line[4] == "0001673" and non_master:
+            mapNM[line[0]].append(line[3])
             mapNM[line[0]].append(count)
-    
-    map2 = {}
+        if line[4] == "0001673" and not non_master:
+            mapM[line[0]].append(line[1])
+            mapM[line[0]].append(line[3])
+            mapM[line[0]].append(count)
+
+    newMapNM = {}
+    newMapM = {}
  
 #This for loop verifies the machines that have the event 0001206 and stores it
-#in a new map, the machines that don't have the event 0001206 are excluded if 
-#the condition in the loop is False.
+#in a mapNM, the machines that don't have the event 0001206 are stored in mapM.
     for key in mapNM:
         if len(mapNM[key]) is not 0:
-            map2[key] = mapNM[key]
-            #print key, map2[key]
-
-    map3 = {}
+            newMapNM[key] = mapNM[key]
+        if len(mapM[key]) is not 0:
+            newMapM[key] = mapM[key]
+    
+    map2_NM = {}
+    map2_M = {}
     earlyVotingList = parsedBallotImage.getEarlyVotingList()
 
 #This for loop excludes the early voting machines, and stored the other machines
-#in another map. 
-    for key in map2:
+#in another maps. 
+    for key in newMapNM:
         if not key in earlyVotingList:
-            map3[key] = map2[key]
-            #print key, map3[key]
-    
+            map2_NM[key] = newMapNM[key]
+            #print key, newMapNM[key]
+
+    for key2 in newMapM:
+        if not key2 in earlyVotingList:
+            map2_M[key2] = newMapM[key2]
+            #print key2, newMapM[key2] 
     precinctNumMap = parsedBallotImage.getPrecinctNumMap()
 
-#This for loop finds the precinct number of each machine in map3, and
-#append it in map3.
-    for key2 in map3:
-        if precinctNumMap.has_key(key2):
-            map3[key2].append(precinctNumMap[key2])
-        print key2, map3[key2]
+#This for loop finds the precinct number of each machine in map2_NM and map2_M, and
+#append it in both maps.
+    for key in map2_NM:
+        if precinctNumMap.has_key(key):
+            map2_NM[key].append(precinctNumMap[key])
+        #print key, map2_NM[key]
 
+    for key2 in map2_M:
+        if precinctNumMap.has_key(key2):
+            map2_M[key2].append(precinctNumMap[key2])
+        #print key2, map2_M[key2]
     # added by samuel
-    for key in sorted(precinctNumMap):
-        print key + ' ' + precinctNumMap[key]
+    #for key in sorted(precinctNumMap):
+        #print key + ' ' + precinctNumMap[key]
 
     combinedMap = parsedBallotImage.getCombinedMap()
-
-    for key in sorted(combinedMap):
-        print key + ' ' + combinedMap[key]
+    
+    listPEB = []
+    for key in map2_M:
+        if not map2_M[key][0] in listPEB:
+            listPEB.append(map2_M[key][0])
+    for key in map2_NM:
+        if not map2_NM[key][0] in listPEB:
+            listPEB.append(map2_NM[key][0])
+    print listPEB
+    print len(listPEB)
+    #for key in sorted(combinedMap):
+        #print key + ' ' + combinedMap[key]
 
     #return map3
     #key, map3[key][0]
