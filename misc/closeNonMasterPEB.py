@@ -1,21 +1,7 @@
 #!/usr/bin/python
 
 #This function lists the election day terminals closed on a non-master PEB.
-def close_nm_PEB():
-    
-    import os, sys
-    cmd_folder = os.getenv('HOME') + '/audit-bear/modules'
-    if cmd_folder not in sys.path:
-        sys.path.insert(0, cmd_folder)
-    from auditLog import AuditLog   #imports audit log class
-    from ballotImage import BallotImage  #imports ballot image class
-
-    path = sys.argv[1]
-    path2 = sys.argv[2]
-
-    parsedLog = AuditLog(open(path, "r"))
-    parsedBallotImage = BallotImage(open(path2, 'r'))
-
+def close_nm_PEB(parsedLog, parsedBallotImage):
     import dateutil.parser
     import datetime
     mapNM = {} # new machine temp map
@@ -102,6 +88,8 @@ def close_nm_PEB():
             listPEB.append(map2_NM[key][0])
     print listPEB
     print len(listPEB)
+
+    return (map2_M, map2_NM)
     #for key in sorted(combinedMap):
         #print key + ' ' + combinedMap[key]
 
@@ -117,4 +105,4 @@ def close_nm_PEB():
         #print key, map3[key]
             
 #TEST THE FUNCTION
-close_nm_PEB()
+#close_nm_PEB()

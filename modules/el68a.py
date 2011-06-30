@@ -25,7 +25,7 @@ class EL68AEntry:
             if r:
                 self.auditedMachine = r.group(1)
             else:
-                r = re.search(r"PEB votes retrieved for P(\d+)", self.actionString, re.IGNORECASE)
+                r = re.search(r"PEB votes retrieved for P0(\d+)", self.actionString, re.IGNORECASE)
                 if r:
                     self.pebRetrieved = r.group(1)
 
