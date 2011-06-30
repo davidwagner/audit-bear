@@ -1,10 +1,12 @@
 import re
 import dateutil.parser
+from collections import deque
 
 class EL68AEntry:
     # an entry will contain only some of the information, others will be none
     date = actionString = countedInfoString = precinct = bals = tot = \
     auditedMachine = pebRetrieved = None
+    isError289 = False
 
     def __init__(self, electionDate, dateString, sysString):
         dateString += str(electionDate.year)
@@ -28,6 +30,12 @@ class EL68AEntry:
                 r = re.search(r"PEB votes retrieved for P0(\d+)", self.actionString, re.IGNORECASE)
                 if r:
                     self.pebRetrieved = r.group(1)
+        self.checkError(sysString) # set attribute if error INCOMPLETE
+
+    def checkError(self, s):
+        r = re.match(r"0289.*(Reply was: Don't update)", s, re.IGNORECASE)
+        if r:
+            self.isError289 = True
 
     def __str__(self):
         s = str(self.date)
@@ -66,9 +74,8 @@ class EL68A:
                 pass
 
         # all entries are parsed, fill up needed maps, counts, etc.
-        lastRetrievedPEB = None 
+        retrievedPEBs = deque()
         accumulationStartDate = self.parseAccumulationStartDate()
-        print accumulationStartDate
 
         for entry in self.entryList:
             if entry.date < accumulationStartDate:
@@ -80,10 +87,15 @@ class EL68A:
                 if not entry.auditedMachine in self.auditedMachines:
                     self.auditedMachines.append(entry.auditedMachine)
             elif entry.pebRetrieved:
-                lastRetrievedPEB = entry.pebRetrieved
-            elif entry.tot and entry.precinct and lastRetrievedPEB:
+                retrievedPEBs.append(entry.pebRetrieved)
+            elif entry.isError289:
+                try:
+                    retrievedPEBs.popleft()
+                except:
+                    print "Pop on empty deque, entry = " + str(entry)
+            elif entry.tot and entry.precinct and len(retrievedPEBs) > 0:
                 # TODO check if there were multiple accesses to this PEB
-                self.pebToPrecinctCountMap[lastRetrievedPEB] = (entry.precinct, entry.tot)
+                self.pebToPrecinctCountMap[retrievedPEBs.popleft()] = (entry.precinct, entry.tot)
 
     def parseAccumulationStartDate(self):
         lastClearedEntry = None
