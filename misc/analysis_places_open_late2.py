@@ -1,19 +1,18 @@
 #!/usr/bin/python
 #read the audit log file and store each line in the data list.
 
-#def readData(path):
-    #return parsedLog
-
 #create two dictionaries which keys are the serial numbers and the values of the first one is a list with the time of each vote cast by voter or poll worker.
 #The second dictionary contains the serial numbers as keys and the difference between the last vote and the closing time (7:00 PM) as values,
 #to determine if the machine was open late (after 7:00PM).
-def open_late(parsedLog, parsedBallotImage):
+def open_late(parsedLog, parsedBallotImage, validMachines):
     import dateutil.parser
     import datetime
     dic = {}
     dic2 = {}
     
     for line in parsedLog:
+        if not line[0] in validMachines:
+            continue        
         if not line[0] in dic:
             dic[line[0]] = []
             dic2[line[0]] = ""
