@@ -33,15 +33,6 @@ class BallotImage:
         """
         for line in file:
             list.append(line)
-        s0 = list[1]
-        t1 = s0.split(" ")
-        t2 = t1[1].split(":")
-        runDate = t2[1]+" "+t1[2]+" "+t1[3]
-        electionID = t1[len(t1)-1]
-        electionID = electionID.split("\n")
-        electionID = electionID[0]
-        self.runDate = runDate
-        self.electionID = electionID
         for i,l in enumerate(list):
             s = l.split("  ")
             t = l.split(" ")
