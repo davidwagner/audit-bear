@@ -1,5 +1,5 @@
 #!/usr/bin/python
-import despingue
+import inferLongLines
 import os, sys
 
 cmd_folder = os.getenv('HOME') + '/audit-bear/modules'
@@ -23,7 +23,7 @@ dateModObject = dateMod.DateMod(parsedLog, open(path3, 'r'))
 mmap = dateMod.timecheck(dateMod.timeopen(dateModObject.edata))
 validMachines = mmap.keys()
 
-finalMap = despingue.inferLines(parsedLog, parsedBallotImage, validMachines)
+finalMap = inferLongLines.inferLines(parsedLog, parsedBallotImage, validMachines)
 for pollingLocation in finalMap:
     for window in finalMap[pollingLocation]:
         print "Location " + pollingLocation + " busy in window " + str(window) + "? : " + str(finalMap[pollingLocation][window])
