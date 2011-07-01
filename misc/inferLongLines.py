@@ -51,7 +51,7 @@ def inferLines(auditLog, ballotImage, validMachines):
     # finished! now do other stuff...
     # determine busy polling locations
     finishedBPLMap = initFinishedMap(busyPollingLocationsMap.keys())
-    eventThreshold = 4
+    eventThreshold = 3
     for pollingLocation in finishedBPLMap:
         for window in finishedBPLMap[pollingLocation]:
             machinesBusyInWindow = 0
@@ -67,7 +67,18 @@ def inferLines(auditLog, ballotImage, validMachines):
             else:
                 finishedBPLMap[pollingLocation][window] = False
     
-    return finishedBPLMap
+    # last couple lines of code determined finishedBPL map, now determine new map of machines->window->busy or not
+    machinesBusyMap = {}
+    for pollingLocation in busyPollingLocationsMap:
+        for machine in busyPollingLocationsMap[pollingLocation]:
+            machinesBusyMap[machine] = {}
+            for window in busyPollingLocationsMap[pollingLocation][machine]:
+                machinesBusyMap[machine][window] = False
+                count = busyPollingLocationsMap[pollingLocation][machine][window]
+                if count >= eventThreshold:
+                    machinesBusyMap[machine][window] = True
+
+    return (finishedBPLMap, machinesBusyMap)
 
 def initFinishedMap(pollingLocations):
     pollMap = {}
@@ -116,3 +127,7 @@ def generateTimeWindows():
         time += td
 
     return windows
+
+def strTimeWindow(window):
+    return '[' + str(window[0]) + ' -> ' + str(window[1]) + ']'
+

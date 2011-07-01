@@ -23,10 +23,14 @@ dateModObject = dateMod.DateMod(parsedLog, open(path3, 'r'))
 mmap = dateMod.timecheck(dateMod.timeopen(dateModObject.edata))
 validMachines = mmap.keys()
 
-finalMap = inferLongLines.inferLines(parsedLog, parsedBallotImage, validMachines)
+finalMap, machinesBusyMap = inferLongLines.inferLines(parsedLog, parsedBallotImage, validMachines)
 for pollingLocation in finalMap:
-    for window in finalMap[pollingLocation]:
-        print "Location " + pollingLocation + " busy in window " + str(window) + "? : " + str(finalMap[pollingLocation][window])
+    for window in inferLongLines.generateTimeWindows():
+        print "Location " + pollingLocation + " busy in window " + inferLongLines.strTimeWindow(window) + "? : " + str(finalMap[pollingLocation][window])
+
+for machine in machinesBusyMap:
+    for window in inferLongLines.generateTimeWindows():
+        print "Machine " + machine + " busy in window " + inferLongLines.strTimeWindow(window) + "? : " + str(machinesBusyMap[machine][window])
 
 # finished!!!
 
