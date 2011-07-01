@@ -200,7 +200,8 @@ class BallotImage:
         print votes1
         print votes2
         print voteCount
-        
+        #print "the length is %d" % (len(self.machinePrecinctNumMap),)
+        #print "the number of precincts is %d" % (len(self.precinctMap),)
         """
         Creates a map from the other maps.  It is of the format <precinct number, [list of machine serial numbers]>.
         """
