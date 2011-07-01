@@ -1,13 +1,11 @@
 #!/usr/bin/python
 """
------Fun With Dates!-----
+-----Date Module-----
 -Scope: This module is a collection of related functions that are hopfully useful in dealing with date anomalies and splitting up the main data structure based on Election-Day Voting, Pre-Voting Days, and Other days
 
--Usage: The "main" function serves as a usage example  You can import this module in any file you might want access to the functions.  It requies auditLog.py to have been imported.
+-Usage: The "main" function serves as a usage example  You can import this module in any file you might want access to the functions.
 
     -Class DateMod:  Init this class with an AuditLog object and a path to the 68a file.
-    This will duplicate the memory to store the AuditLog, but give you access to the variables below
-    
 
     -Variable Names: These can all be accessed once an DateMod object is created.
         pdata: main data structure split into pre-election voting
@@ -15,8 +13,6 @@
         odata: events neither in the pre-voting or election voting
 
     -Functions: Commented out for the time being
-
--TO-DO: I'll update this as we figure out the easiest and most useful ways to share functions
 
 -Note:
     -Currently Creating a DateMod instance will duplicate the data set and this might have to change in the future
@@ -33,6 +29,7 @@ if cmd_folder not in sys.path:
 import auditLog
 import datetime
 import dateutil.parser
+import ballotImage
 
 
 class DateMod:
@@ -217,11 +214,21 @@ This function takes the dictionary from timesopen and decides if the datestamp i
 def timecheck(times):
     #Catch all machines open more then 12 hours, check for reasonable opening
     valid = {}
+    #Machine must be open by this time to be assumed valid if open for 12 hours+
+    timeopen = dateutil.parser.parse('07:30:00')
     for k,v in times.iteritems():
         if v[0] == 0:
-            if v[3] > datetime.timedelta(hours=12):
+            if v[3] > datetime.timedelta(hours=12) and v[1] < timeopen:
                 valid.update({k:v})
     return valid
+"""
+Since we are exluding a fair amount of machines (mostly by fact that they were not closed and opened on election day) this will report how many machines we are exluding by polling location. Takes dictionary of machines from timecheck()
+"""
+def excluded(valid,ballotclass):
+    mappy = ballotclass.getMachinesPerPrecinct()
+    return mappy
+    
+    
 
 """
 ---Main---
@@ -234,7 +241,7 @@ if __name__== "__main__":
 
     path1 = "/home/patrick/audit-bear/data/anderson/anderson_co_01_14_11_el152.txt"
     path2 = "/home/patrick/audit-bear/data/anderson/anderson_co_03_07_11_el68a.txt"
-
+    path3 = "/home/patrick/audit-bear/data/anderson/anderson_co_01_14_11_el155.txt"
     f = open(path1, 'r')
     data = auditLog.AuditLog(f)
     f.close()
@@ -242,8 +249,14 @@ if __name__== "__main__":
     f = open(path2, 'r')
     dateclass = DateMod(data, f)
     f.close()
+    
+    f = open(path3, 'r')
+    ballotclass = ballotImage.BallotImage(path3)
+    f.close()
 
-    print timecheck(timeopen(dateclass.edata))
+    d =  exluded(timecheck(timeopen(dateclass.edata),ballotclass))
+    for k,v in d.iteritems():
+        print 'Time open:',v[1], 'For:', v[3]
 
 
 """""
