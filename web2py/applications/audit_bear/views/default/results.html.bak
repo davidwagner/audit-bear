@@ -1,4 +1,6 @@
-
 {{extend 'layout.html'}}
-<h1>This is the default/results.html template</h1>
-{{=BEAUTIFY(response._vars)}}
+{{if message != 'LOLCAT':}}
+<br>{{=report1.getTextBoxList()}}</br>
+<br>
+</br>
+{{pass}}

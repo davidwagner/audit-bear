@@ -13,6 +13,9 @@ import dateMod
 import dateutil.parser
 import report
 
+import operator
+import string as stri
+
 from dateutil.parser import parse
 
 
@@ -21,9 +24,10 @@ def dispatcher(el152=None, el155=None, el68a=None):
     results = []
 
     #Adding some basic analysi
-    if el152 != None :
+    if el155 != None and el152 != None:
         #Adding some Init stuff we will all probably need
         data = auditLog.AuditLog(el152)
+        ballot = ballotImage.BallotImage(el155)
 
         #HardCode Eday
         eday = parse('November 2, 2011').date()
@@ -31,7 +35,11 @@ def dispatcher(el152=None, el155=None, el68a=None):
         
         #Start running analysis
         #results.append(dateanomalies(data, dateData))
-        return dict(message='files recieved')
+        result1 = eventAnomalies(data, report.Report())
+        results.append(result1)
+        #report2 = lowBatteryMachines(data,ballot)
+        
+        return dict(message='files recieved', results=results)
         
     else:
         return dict(message='LOLCAT')
@@ -63,4 +71,26 @@ def dateanomalies():
         for x in l[2].keys():
             r.addTextBox('  Machine'+str(x[0])+'had'+str(values)+'events on'+str(x[1]))
     return r
-
+    
+def eventAnomalies(data, r):
+    print r
+    
+    print 'LOLOLOLOLLL', len(r.getTextBoxList())
+    emMap = {}
+    emMap2 = {}
+    emList = []
+    for x in data.getEntryList():
+        if emMap.has_key(x.eventNumber):
+            if x.serialNumber in emMap[x.eventNumber]:
+                continue
+            else:
+                emMap[x.eventNumber] += [x.serialNumber]
+        else:
+            emMap[x.eventNumber] = [x.serialNumber]
+    for x2 in emMap:
+        emMap2[x2] = len(emMap[x2])
+    emList = sorted(emMap2.iteritems(), key=operator.itemgetter(1))
+    for x3 in emList:
+        if x3[1] == 1:
+            r.addTextBox("Machine %s has 1 occurence of event %s" % (emMap[x3[0]][0], x3[0]))
+    return r

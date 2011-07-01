@@ -29,4 +29,4 @@ def results():
     # the resulting dictionary to the view
     dictionary = dispatcher(el152=el152, el155=el155)
     #dictionary['message'] = 'YOUR RESULTS: 42'
-    return dictionary
+    return (dictionary)
