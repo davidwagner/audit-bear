@@ -20,6 +20,8 @@ def index():
 
 # all the results
 def results():
+    from extractLogs import extractLogs
+    from dispatcher import dispatcher
     # do not use attribute fp, use file
     f = request.vars.zipped_files.file
     f.seek(0)

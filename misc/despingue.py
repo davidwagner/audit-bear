@@ -20,7 +20,17 @@ def inferLines(auditLog, ballotImage, validMachines):
             incorrectMachine = ''
 
             # get machine's polling Location and add to map
-            pollingLocation = ballotImage.machinePrecinctNumMap[line.serialNumber]
+            try:
+                pollingLocation = ballotImage.machinePrecinctNumMap[line.serialNumber]
+            except:
+                if line.serialNumber in ballotImage.earlyVotingList:
+                    pollingLocation = '750'
+                elif line.serialNumber in ballotImage.failsafeList:
+                    pollingLocation = '850'
+                else:
+                    incorrectMachine = line.serialNumber
+                    continue
+
             if not pollingLocation in busyPollingLocationsMap:
                 busyPollingLocationsMap[pollingLocation] = {}
             
@@ -40,15 +50,14 @@ def inferLines(auditLog, ballotImage, validMachines):
 
     # finished! now do other stuff...
     # determine busy polling locations
-    finishedBPLMap = initFinishedMap()
-
+    finishedBPLMap = initFinishedMap(busyPollingLocationsMap.keys())
     eventThreshold = 4
     for pollingLocation in finishedBPLMap:
         for window in finishedBPLMap[pollingLocation]:
             machinesBusyInWindow = 0
             for machine in busyPollingLocationsMap[pollingLocation]:
                 count = busyPollingLocationsMap[pollingLocation][machine][window]
-                if count >= n:
+                if count >= eventThreshold:
                     # this machine was busy here
                     machinesBusyInWindow += 1
 

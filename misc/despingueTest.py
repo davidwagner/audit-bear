@@ -26,7 +26,7 @@ validMachines = mmap.keys()
 finalMap = despingue.inferLines(parsedLog, parsedBallotImage, validMachines)
 for pollingLocation in finalMap:
     for window in finalMap[pollingLocation]:
-        print "Location " + pollingLocation + " busy in window " + window + "? : " + str(finalMap[pollingLocation][window])
+        print "Location " + pollingLocation + " busy in window " + str(window) + "? : " + str(finalMap[pollingLocation][window])
 
 # finished!!!
 
