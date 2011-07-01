@@ -7,21 +7,7 @@
 #create two dictionaries which keys are the serial numbers and the values of the first one is a list with the time of each vote cast by voter or poll worker.
 #The second dictionary contains the serial numbers as keys and the difference between the last vote and the closing time (7:00 PM) as values,
 #to determine if the machine was open late (after 7:00PM).
-def open_late():
-    import os, sys
-    cmd_folder = os.getenv('HOME') + '/audit-bear/modules'
-    if cmd_folder not in sys.path:
-        sys.path.insert(0, cmd_folder)
-
-    from auditLog import AuditLog
-    from ballotImage import BallotImage
-    
-    path = sys.argv[1]
-    path2 = sys.argv[2]
-
-    parsedLog = AuditLog(open(path, "r"))
-    parsedBallotImage = BallotImage(open(path2, 'r'))
-
+def open_late(parsedLog, parsedBallotImage):
     import dateutil.parser
     import datetime
     dic = {}
@@ -47,7 +33,6 @@ def open_late():
     for key in dic2:
         if not key in earlyVotingList and str(dic2[key])[:2] != "-1":
             mapM[key] = dic2[key]
-            #print "Machine #"+ key + " was open late: " + str(mapM[key])+ " hours."
     
     precinctNumMap = parsedBallotImage.getPrecinctNumMap()
     pMap = {}
@@ -56,10 +41,7 @@ def open_late():
     for key2 in mapM:
         if precinctNumMap.has_key(key2):
             pMap.setdefault(precinctNumMap[key2],[]).append(mapM[key2])
-    
-    #for key in pMap:
-        #print key, pMap[key]
-    
+   
     #calculate the average time in which each precinct was open late.
     pMapAv = {}
     for precinct in pMap:
@@ -79,7 +61,7 @@ def open_late():
         sec = sec % 60
         totalTime = datetime.timedelta(seconds = sec, minutes = minutes, hours = hours)
         
-        pMapAv[int(precinct)] = str(totalTime)
+        pMapAv[int(precinct)] = totalTime
     
     now = datetime.datetime.now()
     
@@ -94,41 +76,34 @@ def open_late():
 
 #creates the graph, which shows how many precincts were open late.
 def graphOpenLate(dic):
+    import dateutil.parser
+    import datetime
     import numpy as np
     import matplotlib.pyplot as plt
-    dicRange = {'0:00:00':0, '0:10:00':0, '0:20:00':0, '0:30:00':0, '0:40:00':0, '0:50:00':0, '1:00:00':0, '1:10:00':0, '1:20:00':0, '1:30:00':0, '1:40:00':0, '1:50:00':0, '2:00:00':0}
+    dicRange = {}
+    
+    tMax = datetime.timedelta(seconds = 0, minutes = 0, hours = 2)
+    tMin = datetime.timedelta(0)
+    
+    while tMin <= tMax:
+        dicRange[tMin] = 0
+        tMin += datetime.timedelta(minutes=10)
+    
     for s in dic:
-        if ('0:00:00' <= dic[s] < '0:10:00'):
-            dicRange['0:00:00']+=1
-        elif '0:10:00' <= dic[s] < '0:20:00':
-            dicRange['0:10:00']+=1
-        elif '0:20:00' <= dic[s] < '0:30:00':
-            dicRange['0:20:00']+=1
-        elif '0:30:00' <= dic[s] < '0:40:00':
-            dicRange['0:30:00']+=1
-        elif '0:40:00' <= dic[s] < '0:50:00':
-            dicRange['0:40:00']+=1
-        elif '0:50:00' <= dic[s] < '1:00:00':
-            dicRange['0:50:00']+=1
-        elif '1:00:00' <= dic[s] < '1:10:00':
-            dicRange['1:00:00']+=1
-        elif '1:10:00' <= dic[s] < '1:20:00':
-            dicRange['1:10:00']+=1
-        elif '1:20:00' <= dic[s] < '1:30:00':
-            dicRange['1:20:00']+=1
-        elif '1:30:00' <= dic[s] < '1:40:00':
-            dicRange['1:30:00']+=1
-        elif '1:40:00' <= dic[s] < '1:50:00':
-            dicRange['1:40:00']+=1
-        elif '1:50:00' <= dic[s] < '2:00:00':
-            dicRange['1:50:00']+=1
+        for key in dicRange:
+            if key <= dic[s] < (key+datetime.timedelta(minutes=10)):
+                dicRange[key] += 1
+    
+    mapRange = {}
+    for key in dicRange:
+        mapRange[str(key)] = dicRange[key]
 
     kList = []
     vList = []
     
-    for k in sorted(dicRange.keys()):
+    for k in sorted(mapRange.keys()):
         kList.append(k)
-        vList.append(dicRange[k])
+        vList.append(mapRange[k])
         
     N = 13
     ind = np.arange(N)
@@ -139,8 +114,8 @@ def graphOpenLate(dic):
     ax.set_xticks(ind+width/100.)
     ax.set_xticklabels(kList)
     ax.set_yticks(np.arange(0,max(vList)+2, 2))
-    ax.set_ylabel('Number of units')
-    ax.set_xlabel('Time Opened')
+    ax.set_ylabel('Number of polling locations')
+    ax.set_xlabel('Time Opened (hh:mm:ss)')
     ax.set_title('Precincts stayed open after 7:00PM')
     plt.grid(True)
     plt.show()
@@ -148,5 +123,18 @@ def graphOpenLate(dic):
 
 #main program
 #TEST THE FUNCTIONS
-map1 = open_late()
-graphOpenLate(map1)
+#import os, sys
+#cmd_folder = os.getenv('HOME') + '/audit-bear/modules'
+#if cmd_folder not in sys.path:
+    #sys.path.insert(0, cmd_folder)
+
+#from auditLog import AuditLog
+#from ballotImage import BallotImage
+    
+#path = sys.argv[1]
+#path2 = sys.argv[2]
+
+#parsedLog = AuditLog(open(path, "r"))
+#parsedBallotImage = BallotImage(open(path2, 'r'))
+#mapOpenLateTime = open_late(parsedLog, parsedBallotImage)
+#graphOpenLate(mapOpenLateTime)
