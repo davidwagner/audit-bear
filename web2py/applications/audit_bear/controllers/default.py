@@ -7,6 +7,9 @@
 # to view
 
 # index shows the homepage and form, accepts both 152 and 155 file
+import string
+import random
+
 def index():
     form = FORM(
         # for now, just input a file to make one analysis or multiple files in a zipped package
@@ -22,26 +25,74 @@ def index():
 def results():
     from extractLogs import extractLogs
     from dispatcher import dispatcher
-    # do not use attribute fp, use file
+
     f = request.vars.zipped_files.file
     f.seek(0)
     el152, el155 = extractLogs([f]) # extractLogs receives a list of files
+
     # pass these to the dispatcher, which will collect all reports and pass
     # the resulting dictionary to the view
     dictionary = dispatcher(el152=el152, el155=el155)
-    print dictionary['results']
-    session.vcImage = dictionary['results'][3].getImage(0).getData()
-    image = A(IMG(_src=URL(r=request, f='histogram.png'), _alt='histogram'), _href=URL(r=request, f='histogram_download'))
-    dictionary['img'] = image
-    #dictionary['message'] = 'YOUR RESULTS: 42'
-    return (dictionary)
+    # IMAGE IDS MUST BE GENERATED FIRST!!!!!!!!!!!!!!111one!!111one!!1 lim(sin(x)/x as x -> 0)
+    generateImageIDs(dictionary['results'])
+    generateTags(dictionary['results'])
+
+    return dictionary
+
+def generateImageIDs(reports):
+    imageIDs = []
+    random.seed()
+
+    for report in reports:
+        if report.hasImages():
+            for image in report.getImagesList():
+                done = False
+                while not done:
+                    tempID = generateRandomID()
+                    if tempID in imageIDs:
+                        done = False
+                    else:
+                        done = True
+
+                image.setImageID(tempID)
+                imageIDs.append(tempID)
+
+def randAlphaNum():
+    chars = string.letters + string.digits
+    return chars[random.randint(0, len(chars) - 1)]
+
+def generateRandomID(s=10):
+    result = ''
+    for i in range(0, s):
+        result += randAlphaNum()
+    return result
+
+# setEmbedTags and populate session.vcImageMap['imageID'] -> ImageData
+def generateTags(reports):
+    session.vcImageMap = {}
+
+    for report in reports:
+        if report.hasImages():
+            for image in report.getImagesList():
+                session.vcImageMap[image.getImageID()] = image.getData()
+                tag = A(
+                    IMG(_src=URL(r=request, f='histogram/' + image.getImageID() + '.png'), alt=''+image.getImageID()), 
+                    _href=URL(r=request, f='histogram_download/' + image.getImageID() + '.png')
+                )
+                image.setEmbedTags(tag)
     
+# stream requested image to browser
 def histogram():
-    filename='figure1.png'
-    session.vcImage.seek(0)
-    return response.stream(session.vcImage)
+    imageID = request.args(0).split('.')[0]
+    data = session.vcImageMap[imageID]
+    data.seek(0)
+    return response.stream(data)
     
+# send requested image to browser
 def histogram_download():
-    filename='figure1.png'
+    imageID = request.args(0).split('.')[0]
+    filename = 'graph_' + imageID + '.png'
     response.headers['Content-Disposition']='attachment; filename='+filename
-    return response.stream(session.vcImage)
+    data = session.vcImageMap[imageID]
+    data.seek(0)
+    return response.stream(data)

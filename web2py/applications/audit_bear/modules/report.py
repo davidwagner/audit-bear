@@ -17,6 +17,8 @@ class Image:
     # images contain the image data and captions
     data = None
     caption = None
+    embedTags = None
+    ID = None
 
     def __init__(self, data, caption):
         self.data = data
@@ -33,6 +35,21 @@ class Image:
 
     def setCaption(self, caption):
         self.caption = caption
+
+    def setEmbedTags(self, tags):
+        self.embedTags = tags
+
+    def getEmbedTags(self):
+        return self.embedTags
+
+    def getImage(self):
+        return self.embedTags
+
+    def setImageID(self, ID):
+        self.ID = ID
+
+    def getImageID(self):
+        return self.ID
 
 class Report:
     textBoxes = None
@@ -61,3 +78,10 @@ class Report:
 
     def getImagesList(self):
         return self.images
+
+    def hasImages(self):
+        if len(self.images) > 0:
+            return True
+        else:
+            return False
+
