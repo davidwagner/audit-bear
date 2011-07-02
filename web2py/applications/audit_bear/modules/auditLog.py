@@ -85,3 +85,10 @@ class AuditLog:
 
     def __len__(self):
         return len(self.entryList)
+        
+    def getEventDescription(self, eventNumber):
+        eventDescription = ''
+        for x in self.getEntryList():
+            if x.eventNumber == eventNumber:
+                eventDescription = x.eventDescription
+        return eventDescription

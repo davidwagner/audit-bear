@@ -26,9 +26,22 @@ def results():
     f = request.vars.zipped_files.file
     f.seek(0)
     el152, el155 = extractLogs([f]) # extractLogs receives a list of files
-    
     # pass these to the dispatcher, which will collect all reports and pass
     # the resulting dictionary to the view
     dictionary = dispatcher(el152=el152, el155=el155)
+    print dictionary['results']
+    session.vcImage = dictionary['results'][3].getImage(0).getData()
+    image = A(IMG(_src=URL(r=request, f='histogram.png'), _alt='histogram'), _href=URL(r=request, f='histogram_download'))
+    dictionary['img'] = image
     #dictionary['message'] = 'YOUR RESULTS: 42'
     return (dictionary)
+    
+def histogram():
+    filename='figure1.png'
+    session.vcImage.seek(0)
+    return response.stream(session.vcImage)
+    
+def histogram_download():
+    filename='figure1.png'
+    response.headers['Content-Disposition']='attachment; filename='+filename
+    return response.stream(session.vcImage)

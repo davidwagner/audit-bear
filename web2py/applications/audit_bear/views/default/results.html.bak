@@ -1,6 +1,12 @@
 {{extend 'layout.html'}}
 {{if message != 'LOLCAT':}}
-<br>{{=report1.getTextBoxList()}}</br>
-<br>
+<br>{{=results[0].getTextBoxList()}}</br>
+<br>{{=results[1].getTextBoxList()}}
+</br>
+<br>{{=results[2].getTextBoxList()}}
+</br>
+<br>{{=results[3].getTextBoxList()}}
+</br>
+<br>{{=img}}
 </br>
 {{pass}}
