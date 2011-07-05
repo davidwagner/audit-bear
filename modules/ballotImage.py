@@ -50,27 +50,27 @@ class BallotImage:
                     currentPrecinct = s[14]
                 else:
                     currentPrecinct = s[13]
-                for x in machinePrecinctMap.values():
-                    newName = ''
-                    isSameLocation = False
-                    r = x.split(" - ")
-                    r2 = currentPrecinct.split(" - ")
-                    if r[1]:
-                        r = r[1].split(" ")
-                        if len(r2) > 1:
-                            length = 0
-                            r2 = r2[1].split(" ")
-                            for i,c in enumerate(r):
-                                if i == (len(r)-1):
-                                    continue
-                                elif r[i] == r2[i]:
-                                    newName += r[i]+" "
-                                    length = i
-                                    isSameLocation = True
-                                elif r[i] != r2[i]:
-                                    isSameLocation = False
-                                    break
-                            if isSameLocation == True:
+                #for x in machinePrecinctMap.values():
+                #    newName = ''
+                #    isSameLocation = False
+                #    r = x.split(" - ")
+                #    r2 = currentPrecinct.split(" - ")
+                #    if r[1]:
+                #        r = r[1].split(" ")
+                #        if len(r2) > 1:
+                #            length = 0
+                #            r2 = r2[1].split(" ")
+                #            for i,c in enumerate(r):
+                #                if i == (len(r)-1):
+                #                    continue
+                #                elif r[i] == r2[i]:
+                #                    newName += r[i]+" "
+                #                    length = i
+                #                    isSameLocation = True
+                #                elif r[i] != r2[i]:
+                #                    isSameLocation = False
+                #                    break
+                #            if isSameLocation == True:
                                 #if newName not in newNameList:
                                     #newNameList.append((newName, length))
                                 #if pCombinedMap.has_key(currentPrecinct):
@@ -83,7 +83,7 @@ class BallotImage:
                                         #pCombinedMap[x] += [currentPrecinct]
                                 #else:
                                     #pCombinedMap[x] = [currentPrecinct]
-                                currentPrecinct = x
+                 #               currentPrecinct = x
                                 
             """
             If the first string in the line is 7 characters long and an asterisk is present, then the vote count per machine and per precinct is adjusted accordingly.
@@ -118,6 +118,7 @@ class BallotImage:
                         failsafeList.append(s[0])
                 elif machinePrecinctMap.has_key(s[0]):
                     if machinePrecinctMap[s[0]] != currentPrecinct: 
+                        print 'HERE'
                         if problemMap.has_key(s[0]):
                             if currentPrecinct in problemMap[s[0]]:
                                 continue
@@ -134,16 +135,16 @@ class BallotImage:
         """
         If there were precincts that were combined, their numbers are combined and they are viewed as a single precinct.
         """
-        for f in problemMap:
-            pCurrentPrecinct = problemMap[f][0]
-            if not pCombinedMap.has_key(pCurrentPrecinct):
-                pCombinedMap[pCurrentPrecinct] = []
-                for sf in problemMap[f]:
-                    pCombinedMap[pCurrentPrecinct] += [sf]
-            for f2 in problemMap:
-                if pCurrentPrecinct in problemMap[f2]:
-                    problemMap[f2] = [pCurrentPrecinct]
-                    machinePrecinctMap[f2] = pCurrentPrecinct
+        #for f in problemMap:
+        #    pCurrentPrecinct = problemMap[f][0]
+        #    if not pCombinedMap.has_key(pCurrentPrecinct):
+        #        pCombinedMap[pCurrentPrecinct] = []
+        #        for sf in problemMap[f]:
+        #            pCombinedMap[pCurrentPrecinct] += [sf]
+        #    for f2 in problemMap:
+        #        if pCurrentPrecinct in problemMap[f2]:
+        #            problemMap[f2] = [pCurrentPrecinct]
+        #            machinePrecinctMap[f2] = pCurrentPrecinct
         """
         Parses the name and number of the precincts for the various mappings.
         """
@@ -171,6 +172,7 @@ class BallotImage:
         Creates the global variables of the maps.
         """ 
         self.machinePrecinctNumMap = machinePrecinctNumMap
+        self.problemMap = problemMap
         self.machinePrecinctNameMap = machinePrecinctNameMap
         self.precinctMap = precinctMap
         self.combinedMap = pCombinedMap
