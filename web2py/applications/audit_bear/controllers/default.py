@@ -39,6 +39,14 @@ def results():
 
     return dictionary
 
+def about():
+    return dict(message='')
+def privacy():
+    return dict(message='')
+def contact():
+    return dict(message='')
+
+
 def generateImageIDs(reports):
     imageIDs = []
     random.seed()

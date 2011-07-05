@@ -9,7 +9,7 @@ if cmd_folder not in sys.path:
     sys.path.insert(0, cmd_folder)
 
 import auditLog
-import funwithdates
+import dateMod
 
 #Anderson
 path1 = os.getenv('HOME') + '/documents/audit-bear/data/anderson/anderson_co_01_14_11_el152.txt'
@@ -27,17 +27,17 @@ data = auditLog.AuditLog(f)
 f.close()
 
 #Test Date Module
-dateclass = funwithdates.DateMod(data, path2)
+dateclass = dateMod.DateMod(data, path2)
 print dateclass.eday
 print dateclass.pday
 
 #Timeopen Function. 
-e, o = funwithdates.timeopen(dateclass.edata)
+e, o = dateMod.timeopen(dateclass.edata)
 for line in e:
     print 'Machine', line[0], 'was open', line[1],'hours'
 
 #Find anomolous dates and print
-l = funwithdates.check(dateclass.odata, dateclass.eday, dateclass.pday)
+l = dateMod.check(dateclass.odata, dateclass.eday, dateclass.pday)
 
 print "These machines had events after Election Day:"
 for k,v in l[0].iteritems():

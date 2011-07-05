@@ -9,7 +9,7 @@ if cmd_folder not in sys.path:
     sys.path.insert(0, cmd_folder)
 
 import auditLog
-import funwithdates
+import dateMod
 import ballotImage
 import report
 
@@ -38,7 +38,7 @@ f.close()
 """
 
 f = open(path2, 'r')
-dateclass = funwithdates.DateMod(data, f)
+dateclass = dateMod.DateMod(data, f)
 f.close()
 
 #Dispatch:
@@ -49,7 +49,7 @@ def main():
 
 def openmachines(bins=10):
     print "-------------Machine Open Times Analysis ------------------"
-    o = funwithdates.timeopen(dateclass.edata)
+    o = dateMod.timeopen(dateclass.edata)
     x = []
     for k,v in o.iteritems():
         if v[0] == 1:
@@ -74,7 +74,7 @@ def openmachines(bins=10):
 
 def dateanomalies():
     print"-------------Date Anomaly Analysis #1 --------------------"
-    l = funwithdates.check(dateclass.odata, dateclass.eday, dateclass.pday)
+    l = dateMod.check(dateclass.odata, dateclass.eday, dateclass.pday)
     if len(l[0]) >0:
         print "These machines had events after Election Day:"
         for k,v in l[0].iteritems():
