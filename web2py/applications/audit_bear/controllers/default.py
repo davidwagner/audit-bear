@@ -9,6 +9,9 @@
 # index shows the homepage and form, accepts both 152 and 155 file
 import string
 import random
+import cPickle
+from extractLogs import extractLogs
+from dispatcher import dispatcher
 
 def index():
     form = FORM(
@@ -17,27 +20,23 @@ def index():
         #'ballot image:', INPUT(_name='ballot_image', _type='file'),
         #'election report managing tabulation log:', INPUT(_name='erm_log', _type='file'),
         'zipped files:', INPUT(_name='zipped_files', _type='file'),
-        INPUT(_type='submit'), _action='results')
-    
+        INPUT(_type='submit'))
+    if form.accepts(request.vars, session):
+        form.vars.zipped_files.file.seek(0)
+        el152, el155 = extractLogs([form.vars.zipped_files.file])
+        dictionary = dispatcher(el152=el152, el155=el155)
+        generateImageIDs(dictionary['results'])
+        generateTags(dictionary['results'])
+        session.results = dictionary
+        redirect(URL('results'))
     return dict(message='Say hello to Audit Bear', form=form)
 
 # all the results
 def results():
-    from extractLogs import extractLogs
-    from dispatcher import dispatcher
+    if not request.function=='index' and not session.el152:
+        redirect(URL('index'))
 
-    f = request.vars.zipped_files.file
-    f.seek(0)
-    el152, el155 = extractLogs([f]) # extractLogs receives a list of files
-
-    # pass these to the dispatcher, which will collect all reports and pass
-    # the resulting dictionary to the view
-    dictionary = dispatcher(el152=el152, el155=el155)
-    # IMAGE IDS MUST BE GENERATED FIRST!!!!!!!!!!!!!!111one!!111one!!1 lim(sin(x)/x as x -> 0)
-    generateImageIDs(dictionary['results'])
-    generateTags(dictionary['results'])
-
-    return dictionary
+    return session.results
 
 def about():
     return dict(message='')

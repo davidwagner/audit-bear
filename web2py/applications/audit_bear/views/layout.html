@@ -39,16 +39,14 @@
   </head>
 
   <body>
-    <div id="wrapper">
     <div id="container">
 
       <nav>
-        <a href={{URL('default', 'about')}}>About</a> | <a href={{URL('default', 'contact')}}>Contact</a> | <a href={{URL('default', 'privacy')}}>Privacy</a>
+        <a href={{URL(request.application, 'default', 'index')}}>Home</a> | <a href={{URL(request.application, 'default', 'about')}}>About</a> | <a href={{URL('default', 'contact')}}>Contact</a> | <a href={{URL('default', 'privacy')}}>Privacy</a>
       </nav>
 
     {{include}}
 
     </div><!-- container -->		
-    </div>
   </body>
 </html>
