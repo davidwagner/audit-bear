@@ -9,9 +9,6 @@
 # index shows the homepage and form, accepts both 152 and 155 file
 import string
 import random
-import cPickle
-from extractLogs import extractLogs
-from dispatcher import dispatcher
 
 def index():
     form = FORM(
@@ -22,6 +19,9 @@ def index():
         'zipped files:', INPUT(_name='zipped_files', _type='file'),
         INPUT(_type='submit'))
     if form.accepts(request.vars, session):
+        from extractLogs import extractLogs
+        from dispatcher import dispatcher
+
         form.vars.zipped_files.file.seek(0)
         el152, el155 = extractLogs([form.vars.zipped_files.file])
         dictionary = dispatcher(el152=el152, el155=el155)
