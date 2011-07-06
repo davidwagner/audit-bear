@@ -129,11 +129,16 @@ def graphOpenLate(dic):
 
 #from auditLog import AuditLog
 #from ballotImage import BallotImage
-    
+#import dateMod
+
 #path = sys.argv[1]
 #path2 = sys.argv[2]
+#path3 = sys.argv[3]
 
 #parsedLog = AuditLog(open(path, "r"))
 #parsedBallotImage = BallotImage(open(path2, 'r'))
-#mapOpenLateTime = open_late(parsedLog, parsedBallotImage)
+#dateModObject = dateMod.DateMod(parsedLog, open(path3, 'r'))
+#mmap = dateMod.timecheck(dateMod.timeopen(dateModObject.edata))
+#validMachines = mmap.keys()
+#mapOpenLateTime = open_late(parsedLog, parsedBallotImage, validMachines)
 #graphOpenLate(mapOpenLateTime)
