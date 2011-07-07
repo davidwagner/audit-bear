@@ -89,6 +89,8 @@ class EL68A:
     def parseAccumulationStartDate(self):
         lastClearedEntry = None
         for entry in self.entryList:
+            if not self.electionDate:
+                return datetime.datetime(2010, 11, 2)
             if (not entry.actionString) or entry.date < self.electionDate:
                 continue
 
