@@ -10,9 +10,6 @@ def index():
     if form.accepts(request.vars, session) and form.vars.zipped_files != '':
         form.vars.zipped_files.file.seek(0)
         el152, el155, el68a = extractLogs([form.vars.zipped_files.file])
-        print el152
-        print el155
-        print el68a
         dictionary = dispatcher(el152=el152, el155=el155, el68a=el68a)
 
         if dictionary['message'] != 'LOLCAT':

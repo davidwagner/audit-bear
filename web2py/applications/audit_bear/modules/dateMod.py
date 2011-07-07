@@ -57,11 +57,13 @@ class DateMod:
     TO-DO: Would be more robust with regex but still avoid reading entire file (Sammy!?)
     """
     def daygrab(self, data, date):
-        if date == None:
+        print date
+        if not date:
             self.inferEday(data)
             return False
         else:
             self.eday = date.date()
+            return True
     """
     Creates 3 AuditLog objects based on pdate and edate.
     """
