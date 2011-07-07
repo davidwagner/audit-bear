@@ -5,25 +5,34 @@ body {
     font-family: Courier New, Courier;
     overflow-y: scroll;
     text-align:center;
+    margin: 80px auto;
 }
 
 div#container {
-    display: inline-block;
     text-align:left;
     background-color: white;
-    border: 8px solid #006600
+    border: 8px solid #191919;
     margin: 50px auto;
-    padding: 40px 50px;
+    padding: 20px 50px;
     width: 650px;
+}
+div#title {
+    font-family: tahoma, sans-serif;
+    font-weight: bold;
+    text-align: center;
+    color: #060606;
+}    
+
+#appname {
+    color: #cccccc;
 }
 
 h1 {
-    font-size: 1.1em;
-    text-align:center;
+    font-size: 2.0em;
 }
 
 h2 {
-    font-size: 1.0em;
+    font-size: 1.1em;
     margin-top: 30px;
 }
 

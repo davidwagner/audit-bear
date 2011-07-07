@@ -21,23 +21,20 @@ def index():
         #'election report managing tabulation log:', INPUT(_name='erm_log', _type='file'),
         'zipped files:', INPUT(_name='zipped_files', _type='file'),
         INPUT(_type='submit'))
-    if form.accepts(request.vars, session):
+    if form.accepts(request.vars, session) and form.vars.zipped_files != '':
         form.vars.zipped_files.file.seek(0)
         el152, el155 = extractLogs([form.vars.zipped_files.file])
         dictionary = dispatcher(el152=el152, el155=el155)
         generateImageIDs(dictionary['results'])
         generateTags(dictionary['results'])
         session.results = dictionary
-        print 'checking in'
         redirect(URL('results'))
     return dict(message='Say hello to Audit Bear', form=form)
 
 # all the results
 def results():
-    print 'checking out'
-    if not request.function=='index':
-        #redirect(URL('index'))
-        pass
+    if not session.results:
+        redirect(URL('index'))
 
     return session.results
 
