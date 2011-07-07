@@ -63,7 +63,10 @@ def generateTags(reports):
             for image in report.getImagesList():
                 session.vcImageMap[image.getImageID()] = image.getData()
                 tag = A(
-                    IMG(_src=URL(r=request, f='histogram/' + image.getImageID() + '.png'), alt=''+image.getImageID()), 
+                    IMG(_src=URL(r=request, f='histogram/' + image.getImageID() + '.png'),
+                        _alt=''+image.getImageID(), 
+                        _width=640
+                     ),
                     _href=URL(r=request, f='histogram_download/' + image.getImageID() + '.png')
                 )
                 image.setEmbedTags(tag)
