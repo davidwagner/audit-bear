@@ -8,7 +8,17 @@ import zipfile
 # data structure classes instead...
 def is_68(fh):
     fh.seek(0)
-    # TODO implement this function
+    pattern = r"SYSTEM LOG LISTING"
+    lineRe = re.compile(pattern, re.IGNORECASE)
+    i = 0
+    for l in fh:
+        r = lineRe.search(l)
+        if r:
+            return True
+        elif i >= 10:
+            break
+        i += 1
+
     return False
 
 def is_152(fh):
@@ -99,6 +109,4 @@ def extractLogs(files):
     if first155 != None:
         first155.seek(0)
 
-    return (first152, first155)
-    # TODO uncomment next line after el68 implemented
-    #return (first68, first152, first155)
+    return (first152, first155, first68)
