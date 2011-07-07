@@ -19,12 +19,12 @@ div#container {
 div#title {
     font-family: tahoma, sans-serif;
     font-weight: bold;
-    text-align: center;
+    text-align: left;
     color: #060606;
 }    
 
 #appname {
-    color: #cccccc;
+    color: #7E2217;
 }
 
 h1 {
@@ -33,12 +33,12 @@ h1 {
 
 h2 {
     font-size: 1.1em;
-    margin-top: 30px;
+    margin-top: 20px;
 }
 
 nav {
     display:block;
-    padding-bottom: 20px;
+    padding-bottom: 10px;
     text-align: center;
     font-weight:bold;
 }

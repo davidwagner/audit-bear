@@ -20,6 +20,7 @@ def dispatcher(el152=None, el155=None, el68a=None):
 
         #Start running analysis
         results.append(myanalyses.dateanomalies(data, dateclass))
+        results.append(myanalyses.openmachines(dateclass))
         results.append(eventAnomalies(data, report.Report()))
         results.append(lowBatteryMachines(data,ballot,report.Report()))
         results.append(getWarningEvents(data,ballot,report.Report()))

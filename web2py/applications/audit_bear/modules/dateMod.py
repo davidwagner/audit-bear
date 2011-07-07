@@ -41,12 +41,12 @@ class DateMod:
     eday = ''  #Parsed Election Date from 68.lst file 
     pday = ''  #Election Day Minus 15
     
-    def __init__(self, data, f):
+    def __init__(self, data, date):
 
         if not isinstance(data, auditLog.AuditLog):
             raise Exception('Must pass valid AuditLog object')
 
-        if self.daygrab(data, f): print 'Election Date Retrieved from 68a'
+        if self.daygrab(data, date): print 'Election Date Retrieved from 68a'
         else: print 'No 68a Supplied or unable to parse. Inferring Election Day...'
 
         self.pday = self.eday - datetime.timedelta(15)
@@ -56,21 +56,12 @@ class DateMod:
     Gets date from l68a file or returns blank string. Its a little ugly, but it works for now
     TO-DO: Would be more robust with regex but still avoid reading entire file (Sammy!?)
     """
-    def daygrab(self, data, f):
+    def daygrab(self, data, date):
         if f == None:
             self.inferEday(data)
             return False
-            
-        line = [f.next() for x in xrange(4)]
-        try:
-            self.eday = dateutil.parser.parse(' '.join(line[3].split()[0:3])).date()
-        except ValueError:
-            print 'Could not parse date from 168.lst'
-            print 'Inferring Election Day...'
-            self.inferEday(data) 
-            return False
         else:
-            return True 
+            self.eday = date.date()
     """
     Creates 3 AuditLog objects based on pdate and edate.
     """
@@ -126,9 +117,9 @@ def check(odata, eday, pday):
     #Dictionarys to record anomolies.  Use event and day as key, occurances as value
     #d1 holds events after election day
     d1 = {}
-    #d2 holds unparsible datetimes
+    #d2 holds votes before Prevoting
     d2 = {}
-    #d3 holds votes before Prevoting
+    #d3 holds unparsible datetimes
     d3 = {}
  
     for line in odata:
