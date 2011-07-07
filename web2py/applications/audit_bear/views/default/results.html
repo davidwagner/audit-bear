@@ -1,13 +1,18 @@
 {{extend 'layout.html'}}
 {{if message != 'LOLCAT':}}
     {{for result in results:}}
+        <h2>{{=result.title}}</h2>
         {{for textbox in result.getTextBoxList():}}
             {{=textbox}}<br/>
-            {{pass}}
+        {{pass}}
         {{for image in result.getImagesList():}}
             {{=image.getImage()}}<br/>
-            {{pass}}
         {{pass}}
     {{pass}}
-<br/>
+
+{{else:}}
+<center>
+<img src='/audit_bear/static/images/lolcat-edit.jpg' />
+</center>
+{{pass}}
 

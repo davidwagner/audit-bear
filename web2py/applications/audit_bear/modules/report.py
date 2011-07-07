@@ -54,6 +54,8 @@ class Image:
 class Report:
     textBoxes = None
     images = None
+    title = None
+
     # could have chosen a map for association, but StringIO
     # objects are not hashable
 
@@ -66,6 +68,9 @@ class Report:
 
     def addImage(self, image):
         self.images.append(image)
+
+    def addTitle(self, title):
+        self.title = title
 
     def getTextBox(self, index):
         return self.textBoxes[index]

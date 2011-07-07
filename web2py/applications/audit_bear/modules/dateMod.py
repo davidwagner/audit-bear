@@ -58,7 +58,7 @@ class DateMod:
     """
     def daygrab(self, data, f):
         if f == None:
-            inferEday(self, data)
+            self.inferEday(data)
             return False
             
         line = [f.next() for x in xrange(4)]
@@ -67,7 +67,7 @@ class DateMod:
         except ValueError:
             print 'Could not parse date from 168.lst'
             print 'Inferring Election Day...'
-            inferEday(self, data) 
+            self.inferEday(data) 
             return False
         else:
             return True 
@@ -103,7 +103,7 @@ class DateMod:
             else:
                 d.update({key: 1}) 
 
-        self.eday = dateutil.parser.parse(max(d.iterkeys(), key=d.get)) 
+        self.eday = dateutil.parser.parse(max(d.iterkeys(), key=d.get)).date()
         print self.eday
         return
         

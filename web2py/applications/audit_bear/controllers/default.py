@@ -25,8 +25,9 @@ def index():
         form.vars.zipped_files.file.seek(0)
         el152, el155 = extractLogs([form.vars.zipped_files.file])
         dictionary = dispatcher(el152=el152, el155=el155)
-        generateImageIDs(dictionary['results'])
-        generateTags(dictionary['results'])
+        if dictionary['message'] != 'LOLCAT':
+            generateImageIDs(dictionary['results'])
+            generateTags(dictionary['results'])
         session.results = dictionary
         redirect(URL('results'))
     return dict(message='Say hello to Audit Bear', form=form)
@@ -34,6 +35,7 @@ def index():
 # all the results
 def results():
     if not session.results:
+        print 'Redirect'
         redirect(URL('index'))
 
     return session.results
