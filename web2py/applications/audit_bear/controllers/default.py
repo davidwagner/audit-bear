@@ -1,5 +1,3 @@
-import string
-import random
 from extractLogs import extractLogs
 from dispatcher import dispatcher
 from controllerHelpers import *
@@ -55,3 +53,18 @@ def histogram_download():
     data = session.vcImageMap[imageID]
     data.seek(0)
     return response.stream(data)
+
+# setEmbedTags and populate session.vcImageMap['imageID'] -> ImageData
+def generateTags(reports):
+    session.vcImageMap = {}
+
+    for report in reports:
+        if report.hasImages():
+            for image in report.getImagesList():
+                session.vcImageMap[image.getImageID()] = image.getData()
+                tag = A(
+                    IMG(_src=URL(r=request, f='histogram/' + image.getImageID() + '.png'), alt=''+image.getImageID()), 
+                    _href=URL(r=request, f='histogram_download/' + image.getImageID() + '.png')
+                )
+                image.setEmbedTags(tag)
+    

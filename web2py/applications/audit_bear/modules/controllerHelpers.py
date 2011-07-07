@@ -1,4 +1,6 @@
 # helper functions for controller
+import random
+import string
 
 def generateImageIDs(reports):
     imageIDs = []
@@ -28,17 +30,3 @@ def generateRandomID(s=10):
         result += randAlphaNum()
     return result
 
-# setEmbedTags and populate session.vcImageMap['imageID'] -> ImageData
-def generateTags(reports):
-    session.vcImageMap = {}
-
-    for report in reports:
-        if report.hasImages():
-            for image in report.getImagesList():
-                session.vcImageMap[image.getImageID()] = image.getData()
-                tag = A(
-                    IMG(_src=URL(r=request, f='histogram/' + image.getImageID() + '.png'), alt=''+image.getImageID()), 
-                    _href=URL(r=request, f='histogram_download/' + image.getImageID() + '.png')
-                )
-                image.setEmbedTags(tag)
-    
