@@ -102,6 +102,7 @@ class DateMod:
         
 
 """
+UPDATE: Only counts anomalies if machine already open.
 -Checks for the following day anomolies:
     -Votes before designated pre-voting day
     -Any dates after election day

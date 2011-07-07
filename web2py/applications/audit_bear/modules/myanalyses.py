@@ -61,6 +61,7 @@ def openmachines(dateclass, bins=10):
     maximum = bins*binsize+min(x)
     rg = (min(x),maximum)
 
+    plot.figure()
     plot.hist(x, bins=bins, range=rg, color='g', rwidth=1)
     plot.xlabel('Hours a Machine Stayed Open')
     plot.ylabel('# of Machines in Range')
