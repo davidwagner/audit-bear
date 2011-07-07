@@ -51,10 +51,58 @@ class Image:
     def getImageID(self):
         return self.ID
 
+class Table:
+    # tables contain rows and cells for each row
+    rows = None
+    headers = None
+    html = None
+
+    def __init__(self, tableData = None):
+        if tableData:
+            rows = tableData
+            self.generateHTML()
+
+        self.rows = []
+        self.headers = []
+        self.html = ''
+        
+    def generateHTML(self):
+        self.html = '<table border=1>'
+        # TODO add headers
+        if len(self.headers) > 0:
+            self.html += '<tr>'
+            for header in self.headers:
+                self.html += '<th>' + header + '</th>'
+            self.html += '</tr>'
+
+        for row in self.rows:
+            self.html += '<tr>'
+            for cell in row:
+                self.html += '<td>' + cell + '</td>'
+            self.html += '</tr>'
+        self.html += '</table>'
+
+    def addRow(self, cells):
+        # cells must be a list of cells (strings)
+        self.rows.append(cells)
+        self.generateHTML()
+        
+    def addCell(self, index, cell):
+        self.rows[index].append(cell)
+        self.generateHTML()
+
+    def addHeader(self, header):
+        self.headers.append(header)
+        self.generateHTML()
+
+    def getHTML(self):
+        return self.html
+
 class Report:
     textBoxes = None
     images = None
     title = None
+    tables = None
 
     # could have chosen a map for association, but StringIO
     # objects are not hashable
@@ -62,6 +110,7 @@ class Report:
     def __init__(self):
         self.textBoxes = []
         self.images = []
+        self.tables = []
 
     def addTextBox(self, textBox):
         self.textBoxes.append(textBox)
@@ -71,6 +120,9 @@ class Report:
 
     def addTitle(self, title):
         self.title = title
+
+    def addTable(self, table):
+        self.tables.append(table)
 
     def getTextBox(self, index):
         return self.textBoxes[index]
@@ -83,6 +135,9 @@ class Report:
 
     def getImagesList(self):
         return self.images
+
+    def getTablesList(self):
+        return self.tables
 
     def hasImages(self):
         if len(self.images) > 0:

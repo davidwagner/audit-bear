@@ -9,6 +9,9 @@
             {{response.write(textbox, escape=False)}} <br/>
             
         {{pass}}
+        {{for table in result.getTablesList():}}
+            {{response.write(table.getHTML(), escape=False)}}
+        {{pass}}
         {{for image in result.getImagesList():}}
             {{=image.getImage()}}<br/>
         {{pass}}
