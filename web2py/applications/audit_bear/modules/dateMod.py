@@ -57,7 +57,7 @@ class DateMod:
     TO-DO: Would be more robust with regex but still avoid reading entire file (Sammy!?)
     """
     def daygrab(self, data, date):
-        if f == None:
+        if date == None:
             self.inferEday(data)
             return False
         else:
