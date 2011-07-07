@@ -11,7 +11,7 @@ body {
 div#container {
     text-align:left;
     background-color: white;
-    border: 8px solid #191919;
+    border: 8px solid #C68E17;
     margin: 50px auto;
     padding: 20px 50px;
     width: 650px;
@@ -40,6 +40,7 @@ nav {
     display:block;
     padding-bottom: 20px;
     text-align: center;
+    font-weight:bold;
 }
 
 

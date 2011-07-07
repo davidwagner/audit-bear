@@ -1,9 +1,13 @@
 {{extend 'layout.html'}}
 {{if message != 'LOLCAT':}}
+    {{i=0}}
     {{for result in results:}}
-        <h2>{{=result.title}}</h2>
+        {{i+=1}}
+        <h2>Report#{{=i}}:{{=result.title}}</h2>
+        <hr>
         {{for textbox in result.getTextBoxList():}}
-            {{=textbox}}<br/>
+            {{response.write(textbox, escape=False)}} <br/>
+            
         {{pass}}
         {{for image in result.getImagesList():}}
             {{=image.getImage()}}<br/>

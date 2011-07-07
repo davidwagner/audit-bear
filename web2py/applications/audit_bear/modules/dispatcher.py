@@ -13,12 +13,11 @@ def dispatcher(el152=None, el155=None, el68a=None):
     if el155 != None and el152 != None:
         #Adding some Init stuff we will all probably need
         data = auditLog.AuditLog(el152)
-        #dateclass = dateMod.DateMod(data, el68a)
+        dateclass = dateMod.DateMod(data, el68a)
         ballot = ballotImage.BallotImage(el155)
 
         #Start running analysis
-        #results.append(myanalyses.dateanomalies(data, dateclass))
-        #print 'Appended'
+        results.append(myanalyses.dateanomalies(data, dateclass))
         results.append(eventAnomalies(data, report.Report()))
         results.append(lowBatteryMachines(data,ballot,report.Report()))
         results.append(getWarningEvents(data,ballot,report.Report()))
