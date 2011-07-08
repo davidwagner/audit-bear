@@ -1,9 +1,11 @@
+import string as stri
+
 class BallotImage:
 
     """
-    Parses the ballot images and creates the datastructure(s).  The argument passed to this constructor is an already opened el155 file.
+    First constructor in the case that the el68a is not available.  Parses the ballot images and creates the datastructure(s).  The argument passed to this constructor is an already opened el155 file.
     """ 
-    def __init__(self, fh=None):
+    def __init__(self, fh=None, aLog=None, el68a=None):
         """
         The variables used in creating the data structures.
         """
@@ -50,40 +52,6 @@ class BallotImage:
                     currentPrecinct = s[14]
                 else:
                     currentPrecinct = s[13]
-                #for x in machinePrecinctMap.values():
-                #    newName = ''
-                #    isSameLocation = False
-                #    r = x.split(" - ")
-                #    r2 = currentPrecinct.split(" - ")
-                #    if r[1]:
-                #        r = r[1].split(" ")
-                #        if len(r2) > 1:
-                #            length = 0
-                #            r2 = r2[1].split(" ")
-                #            for i,c in enumerate(r):
-                #                if i == (len(r)-1):
-                #                    continue
-                #                elif r[i] == r2[i]:
-                #                    newName += r[i]+" "
-                #                    length = i
-                #                    isSameLocation = True
-                #                elif r[i] != r2[i]:
-                #                    isSameLocation = False
-                #                    break
-                #            if isSameLocation == True:
-                                #if newName not in newNameList:
-                                    #newNameList.append((newName, length))
-                                #if pCombinedMap.has_key(currentPrecinct):
-                                    #if x not in pCombinedMap[currentPrecinct]:
-                                        #pCombinedMap[currentPrecinct] += [x]
-                                #else:
-                                    #pCombinedMap[currentPrecinct] = [x]
-                                #if pCombinedMap.has_key(x):
-                                    #if currentPrecinct not in pCombinedMap[x]:
-                                        #pCombinedMap[x] += [currentPrecinct]
-                                #else:
-                                    #pCombinedMap[x] = [currentPrecinct]
-                 #               currentPrecinct = x
                                 
             """
             If the first string in the line is 7 characters long and an asterisk is present, then the vote count per machine and per precinct is adjusted accordingly.
@@ -118,7 +86,6 @@ class BallotImage:
                         failsafeList.append(s[0])
                 elif machinePrecinctMap.has_key(s[0]):
                     if machinePrecinctMap[s[0]] != currentPrecinct: 
-                        print 'HERE'
                         if problemMap.has_key(s[0]):
                             if currentPrecinct in problemMap[s[0]]:
                                 continue
@@ -182,6 +149,152 @@ class BallotImage:
         self.precinctVotesMap = precinctVotesMap
         self.newNameList = newNameList
 
+        machinePEBMap = {}
+        for x in aLog.getEntryList():
+            if machinePEBMap.has_key(x.serialNumber):
+                if x.eventNumber == '0001672':
+                    if len(machinePEBMap[x.serialNumber]) == 1:
+                        machinePEBMap[x.serialNumber] = [x.PEBNumber]
+                    if len(machinePEBMap[x.serialNumber]) == 2:
+                        print "This shouldn't be happening"
+                elif x.eventNumber == '0001673':
+                    if len(machinePEBMap[x.serialNumber]) == 1:
+                        if stri.atoi(machinePEBMap[x.serialNumber][0]) != stri.atoi(x.PEBNumber):
+                            print "on machine %s it was %s but now it is %s" % (x.serialNumber, machinePEBMap[x.serialNumber][0], x.PEBNumber)
+                        machinePEBMap[x.serialNumber] += [x.PEBNumber]
+                    if len(machinePEBMap[x.serialNumber]) == 2:
+                        temp = machinePEBMap[x.serialNumber]
+                        del temp[1]
+                        temp += [x.PEBNumber]
+                        machinePEBMap[x.serialNumber] = temp
+            else:
+                if x.eventNumber == '0001672':
+                    machinePEBMap[x.serialNumber] = [x.PEBNumber]
+                elif x.eventNumber == '0001673':
+                   print "Does this machine have an opening state?"
+
+        PEBprecinctMap = {}
+        for x in machinePEBMap:
+            if self.machinePrecinctNumMap.has_key(x):
+                if PEBprecinctMap.has_key(machinePEBMap[x][0]):
+                    if PEBprecinctMap[machinePEBMap[x][0]] != self.machinePrecinctNumMap[x]:
+                        print "PROBLEM WITH PEB: %s because it was found in precinct %s and %s on machine %s" % (machinePEBMap[x][0], PEBprecinctMap[machinePEBMap[x][0]], self.machinePrecinctNumMap[x], x) 
+                else:
+                    PEBprecinctMap[machinePEBMap[x][0]] = self.machinePrecinctNumMap[x]
+            else:
+                print "Machine %s is not in the ballot images file." % (x,)
+
+        list1 = []
+        list2 = []
+        combineList = []
+        #check if all machines that consistently occur in the same multiple precincts are the only ones in those precincts and if they all occur in each precinct
+        #for k in self.problemMap:
+        #    for k2 in self.problemMap:
+        #        if self.problemMap[k] == self.problemMap[k2] and k != k2:
+        #            if k not in combineList:
+        #                combineList.append(k)
+        #            if k2 not in combineList:
+        #                combineList.append(k2)
+
+        
+        #check if there are subsets in the problemMap
+        isSubsetList = []
+        isSubsetMachineList = []
+        groupedSubsets = []
+        for k in self.problemMap:
+            for k2 in self.problemMap:
+                isSubset = True
+                currentIndividualLocation = None
+                currentSubset = []
+                for k3 in self.problemMap[k]:
+                    if k3 in self.problemMap[k2] and k != k2:
+                        currentIndividualLocation = self.problemMap[k2][0]
+                        currentSubset = self.problemMap[k2]
+                        continue
+                    elif k3 not in self.problemMap[k2] and k != k2:
+                        isSubset = False
+                if isSubset == True and k != k2:
+                    if k not in isSubsetMachineList:
+                        isSubsetMachineList.append(k)
+                        isSubsetList.append((k, currentIndividualLocation))
+                        if currentSubset not in groupedSubsets:
+                            groupedSubsets.append(currentSubset)
+           
+        for p in problemMap.keys():
+            if p in problemMap.keys() and p not in isSubsetMachineList:
+                if p not in list2:
+                    list2.append((p, problemMap[p]))
+        
+        for j in isSubsetList:
+            del self.problemMap[j[0]]        
+
+        #check if machines in problem map were just used for testing?
+        doNotIncludeList = []
+        isInFile = False
+        onlyInstance = []
+        for machine in self.problemMap.keys():
+            if el68a != None:
+                #check if PEB is uploaded
+                for z in el68a.entryList:
+                    if z.pebRetrieved == machinePEBMap[machine][0]:
+                        continue
+                        #yes-check error message (parser does not include this info)
+                    else:
+                        #no-don't include
+                        if machine not in doNotIncludeList:
+                            print "Machine %s was not uploaded" % (machine, )
+                            doNotIncludeList.append(machine)
+            else:
+                for z2 in aLog.getEntryList():
+                    date = z2.dateTime.split(" ")[0]
+                    if z2.PEBNumber == machinePEBMap[machine][0] and z2.serialNumber != machine and (date == '11/02/2010' and date == '06/08/2010'):
+                        isInFile = True
+                    elif z2.serialNumber == machine and z2.eventNumber == '0001672' and (date == '11/02/2010' or date == '06/08/2010'):
+                        isinFile = True
+                        onlyInstance.append(machine)
+                        if self.problemMap[machine] not in groupedSubsets:
+                            isSubsetList.append((machine, self.problemMap[machine][0]))
+                            groupedSubsets.append(self.problemMap[machine])
+                    else:
+                        continue
+                if isInFile == False:
+                    if machine not in doNotIncludeList and machine not in onlyInstance:
+                        doNotIncludeList.append(machine)
+
+        for machine in doNotIncludeList:
+            del self.machinePrecinctNumMap[machine]
+            del self.machinePrecinctNameMap[machine]
+            del machinePrecinctMap[machine]
+
+        for j in isSubsetList:
+            if j[0] in self.problemMap:
+                del self.problemMap[j[0]]  
+
+        for sub in isSubsetList:
+            machinePrecinctMap[sub[0]] = sub[1]
+            x = ''
+            y = ''
+            t = machinePrecinctMap[sub[0]]
+            t = t.split(" ")
+            u = machinePrecinctMap[sub[0]]
+            u = u.split(" - ")
+            u2 = u[0]
+            u2 = u2.split(" ")
+            if len(u2) > 1:
+                y = u2[1]
+            else:
+                y = u2[0]
+            if len(u) > 2:
+                x = u[1]+" - "+u[2]
+            else:
+                x = u[1]
+            self.machinePrecinctNumMap[sub[0]] = y
+            self.machinePrecinctNameMap[sub[0]] = x
+            self.precinctMap[y] = x  
+
+        print "THE DONOTINCLUDELIST: "
+        print doNotIncludeList
+
         """
         Counts the number of votes per precinct and votes per machine.
         """
@@ -190,11 +303,6 @@ class BallotImage:
         for v2 in machineVotesMap.values():
             votes2 = votes2 + v2
 
-        print votes1
-        print votes2
-        print voteCount
-        #print "the length is %d" % (len(self.machinePrecinctNumMap),)
-        #print "the number of precincts is %d" % (len(self.precinctMap),)
         """
         Creates a map from the other maps.  It is of the format <precinct number, [list of machine serial numbers]>.
         """
@@ -206,6 +314,7 @@ class BallotImage:
             else:
                 machinesPerPrecinct[mpnMap[x]] = [x]
         self.machinesPerPrecinct = machinesPerPrecinct
+
 
     """
     Returns the map of the format <machine serial number, precinct number>
