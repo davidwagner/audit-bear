@@ -39,7 +39,7 @@ def index():
         session.results = dictionary
         redirect(URL('results'))
 
-    return dict(message='Say hello to Audit Bear', form=form)
+    return dict(message=None, form=form)
 
 # all the results
 def results():

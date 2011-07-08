@@ -1,5 +1,9 @@
 {{extend 'layout.html'}}
-<h1>{{=message}}</h1>
+<h1>Audit Bear</h1>
+{{if message:}}
+<h2>{{=message}}</h2>
+{{pass}}
+
 After submitting your zipped file, please be patient.<br/>
 <b>Processing may take several minutes.</b><br/>
 <p/>
