@@ -33,9 +33,7 @@ class BallotImage:
         Parses the Ballot Images and fills the maps appropriately.
         Gets the correct run date and election ID.
         """
-        for line in file:
-            list.append(line)
-        for i,l in enumerate(list):
+        for l in file:
             s = l.split("  ")
             t = l.split(" ")
             for c in t:
