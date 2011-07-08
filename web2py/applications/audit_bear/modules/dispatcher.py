@@ -14,7 +14,7 @@ def dispatcher(el152=None, el155=None, el68a=None):
     if el155 != None and el152 != None:
         #Adding some Init stuff we will all probably need
         data = auditLog.AuditLog(el152)
-        ballot = ballotImage.BallotImage(el155)
+        ballot = ballotImage.BallotImage(el155, data)
         parsedEL68 = el68aParser.EL68A(el68a)
         dateclass = dateMod.DateMod(data, parsedEL68.electionDate)
 
@@ -22,11 +22,10 @@ def dispatcher(el152=None, el155=None, el68a=None):
         results.append(myanalyses.dateanomalies(data, dateclass))
         results.append(myanalyses.openmachines(dateclass))
         results.append(eventAnomalies(data, report.Report()))
-        results.append(lowBatteryMachines(data,ballot,report.Report()))
+        #results.append(lowBatteryMachines(data,ballot,report.Report()))
         results.append(getWarningEvents(data,ballot,report.Report()))
         results.append(getVoteCancelledEvents(data,ballot,report.Report()))
         
         return dict(message='files recieved', results=results)
     else:
         return dict(message='LOLCAT')
-

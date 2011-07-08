@@ -103,10 +103,27 @@ def getWarningEvents(data,ballot,r):
                     list1703.append(wMap[z][z2])
                 elif z2 == '0001704':
                     list1704.append(wMap[z][z2])
-    r.addTextBox(list1628)
-    r.addTextBox(list1651)
-    r.addTextBox(list1703)
-    r.addTextBox(list1704)
+        r.addTextBox(list1628)
+        r.addTextBox(list1651)
+        r.addTextBox(list1703)
+        r.addTextBox(list1704)
+        fig = plt.figure(figsize=(22,14))
+        ax2 = fig.add_axes([0.15, 0.1, .7, .8])
+
+        n, bins, patches = plt.hist([list1628, list1651, list1703, list1704], bins=maxNumOccurrences+1, range=(0,maxNumOccurrences+1), align='left', label=['0001628: '+data.getEventDescription('0001628'), '0001651: '+data.getEventDescription('0001651'), '0001703: '+data.getEventDescription('0001703'), '0001704: '+data.getEventDescription('0001704')])
+        
+        for b in bins:
+            minorTicks += ((b-.5),)
+        ax2.set_xticks(minorTicks, minor=True)
+        ax2.grid(b=True, which='minor')
+        ax2.set_xlabel('Per Machine Occurrences')
+        ax2.set_ylabel('# of Machines')
+        ax2.set_title('Frequency of Warning Events')
+        ax2.legend()  
+        stio = StringIO.StringIO()
+        plt.savefig(stio)
+        im = report.Image(stio, 'Vote Cancelled Events')
+        r.addImage(im)                   
     return r
     
 def getVoteCancelledEvents(data,ballot,r):
@@ -193,10 +210,11 @@ def getVoteCancelledEvents(data,ballot,r):
             ssum = ssum + ((w2[3]-avg)**2)
         ssum2 = ssum/len(totalList)
         stdev = math.sqrt(ssum2)
+        r.addTextBox("%10s %10s %20s %7s %7s %s" % ('Machine #', 'Precinct #', 'Precinct Name', 'Outlier', 'Event #', 'Event Description'))
         for w3 in totalList:
             if w3[3] > (avg + (4*stdev)):
-                t = "%s \t %s: %s  \t %d  \t %s: %s" % (w3[0], w3[1], w3[2], w3[3], w3[4], w3[5])
-                r.addTextBox(t) 
+                #t = "%10s %5s %20s %5d %7s %s" % (w3[0], w3[1], w3[2], w3[3], w3[4], w3[5])
+                r.addTextBox("%10s %5s %20s %5d %7s %s" % (w3[0], w3[1], w3[2], w3[3], w3[4], w3[5])) 
                 
         fig = plt.figure(figsize=(22,14))
         ax2 = fig.add_axes([0.15, 0.1, .7, .8])
@@ -214,5 +232,3 @@ def getVoteCancelledEvents(data,ballot,r):
         im = report.Image(stio, 'Vote Cancelled Events')
         r.addImage(im)
     return r
-
-
