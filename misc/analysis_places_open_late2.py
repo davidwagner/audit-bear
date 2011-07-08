@@ -62,8 +62,6 @@ def open_late(parsedLog, parsedBallotImage, validMachines):
         
         pMapAv[precinct] = totalTime
     
-    now = datetime.datetime.now()
-    
     return pMapAv
 
 #creates the graph, which shows how many precincts were open late.

@@ -6,36 +6,38 @@ def consecutiveVotes(parsedLog, ballotImage, validMachines, pollingLate):
     mapMachines = {}
     mapCountCV = {}
     td = datetime.timedelta(0)
-    countIM = 0
-    countVM = 0
-    for line in parsedLog:
-        if not line[0] in validMachines:
-            continue
-        if not line[0] in mapMachines:
-            mapMachines[line[0]] = 0
-            mapCountCV[line[0]] = 0
+    for i in range(0, len(parsedLog)-1):
+        #if not line[0] in validMachines:
+            #continue
+        if not parsedLog[i][0] in mapMachines:
+            mapMachines[parsedLog[i][0]] = 0
+            mapCountCV[parsedLog[i][0]] = 0
             delta = datetime.timedelta(0)
-            count = 0
-            countVM += 1
-        if line[4] in ("0001510", "0001511", "0001513", "0001514", "0001515", "0001516", "0001517", "0001518", "0001519"):
-            if line[3][11:] >= "19:00:00":
-                count += 1
-                if count == 1:
-                    t1 = dp.parse(line[3])
-                    t1 = datetime.timedelta(hours=t1.hour, minutes=t1.minute, seconds=t1.second)
-                    delta = t1 - delta
-                    t2 = delta
-                else:
-                    t1 = dp.parse(line[3])
-                    t1 = datetime.timedelta(hours=t1.hour, minutes=t1.minute, seconds=t1.second)
-                    delta = (t1 - t2)
-                    t2 = t1
-                    mapMachines[line[0]] += (delta.seconds/60)
-                    mapCountCV[line[0]] += 1
-                    #print line[0] + " "+str(delta)
+            #count = 0
+        if parsedLog[i][4] in ("0001510", "0001511") and parsedLog[i+1][4] in ("0002810") and parsedLog[i+2][4] in ("0001510", "0001511"):
+            if parsedLog[i][3][11:] >= "19:00:00":
+                #count += 1
+                t1 = dp.parse(parsedLog[i][3])
+                t1 = datetime.timedelta(hours=t1.hour, minutes=t1.minute, seconds=t1.second)
+                
+                t2 = dp.parse(parsedLog[i+2][3])
+                t2 = datetime.timedelta(hours=t2.hour, minutes=t2.minute, seconds=t2.second)
+                delta1 = t2 - t1
+                
+                #t3 = dp.parse(parsedLog[i+2][3])
+                #t3 = datetime.timedelta(hours=t3.hour, minutes=t3.minute, seconds=t3.second)
+                
+                #t4 = dp.parse(parsedLog[i+3][3])
+                #t4 = datetime.timedelta(hours=t4.hour, minutes=t4.minute, seconds=t4.second)
+                
+                #delta2 = t4 - t3
+                #delta = delta1 + delta2
+                mapMachines[parsedLog[i][0]] += round(delta1.seconds/60,1)
+                mapCountCV[parsedLog[i][0]] += 1
+                #print parsedLog[i][0] + " "+ str(round(delta1.seconds/60,1))
             else:
                 continue
-    mapMachines2 = {}
+    
     for machine in mapMachines:
         try:
             mapMachines[machine] = round((mapMachines[machine] / mapCountCV[machine]), 1)
@@ -45,13 +47,44 @@ def consecutiveVotes(parsedLog, ballotImage, validMachines, pollingLate):
     precinctNumMap = parsedBallotImage.getPrecinctNumMap()
     pMap = {}
     for key in mapMachines:
-        #countT = 0
         if precinctNumMap.has_key(key) and precinctNumMap[key] in pollingLate.keys():
-            #countT += 1
             pMap.setdefault(precinctNumMap[key],[]).append(mapMachines[key])
-    for key in pMap:
-        print key, pMap[key]
-    #print count
+    
+    pTimeVotes = {}
+    for location in pMap:
+        t = 0
+        for time in pMap[location]:
+            t += time
+
+        a = round(t/len(pMap[location]),1)
+        pTimeVotes[location] = a
+    
+    for key in pTimeVotes:
+        print key, pTimeVotes[key]
+    return pTimeVotes
+
+def graphTimeVotes(mapVotes):
+    import matplotlib.pyplot as plt
+
+    mapRange = {}
+    for key in mapVotes:
+        mapRange[mapVotes[key]] = 0
+    
+    print mapRange.items()
+    
+    for average in mapRange:
+        for location in mapVotes:
+            if mapVotes[location] == average:
+                mapRange[average] += 1
+    
+    #for key in mapRange:
+        #print key, mapRange[key]
+    
+    plt.bar(mapRange.keys(), mapRange.values(), .1)
+    plt.axis([0, max(mapRange.keys()), 0, max(mapRange.values())+1])
+    plt.grid(True)
+    plt.show()
+    return
 #test functions
 import analysis_places_open_late2
 import os, sys
@@ -69,7 +102,7 @@ path2 = sys.argv[2]
 path3 = sys.argv[3]
 
 parsedLog = AuditLog(open(path, 'r'))
-parsedBallotImage = BallotImage(open(path2, 'r'))
+parsedBallotImage = BallotImage(open(path2, 'r'), AuditLog(open(path, 'r')), open(path3, 'r'))
 
 
 # first generate list of valid machines
@@ -77,4 +110,5 @@ dateModObject = dateMod.DateMod(parsedLog, open(path3, 'r'))
 mmap = dateMod.timecheck(dateMod.timeopen(dateModObject.edata))
 validMachines = mmap.keys()
 pollOpenLate = analysis_places_open_late2.open_late(parsedLog, parsedBallotImage, validMachines)
-consecutiveVotes(parsedLog, parsedBallotImage, validMachines, pollOpenLate)
+map = consecutiveVotes(parsedLog, parsedBallotImage, validMachines, pollOpenLate)
+graphTimeVotes(map)
