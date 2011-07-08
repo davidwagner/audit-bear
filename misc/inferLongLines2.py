@@ -106,7 +106,7 @@ def correspondingTimeWindow(t):
 def generateTimeWindows():
     time = datetime.timedelta(hours = 7) # starting time
     td = datetime.timedelta(minutes=15)  # increment
-    mtime = datetime.timedelta(hours=21) # finishing time
+    mtime = datetime.timedelta(hours=23) # finishing time
 
     windows = []
     while time + td <= mtime:

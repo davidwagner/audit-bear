@@ -1,4 +1,4 @@
-
+#!/usr/bin/python
 #test the functions of analysis_places_open_late2
 import dateutil.parser
 import datetime
@@ -29,5 +29,5 @@ print "NOTE: This report doesn't include early voting terminals nor the precinct
 print "Precinct Number    "+" Average Time Opened after 7:00 PM (hh:mm:ss)"
 #sort in descending order the dictionary by value.
 for key, value in sorted(mapOpenLateTime.iteritems(), key=lambda (k,v): (v,k), reverse = True):
-    print "%3d                 %s" % (key, value)
+    print "%3s                 %s" % (key, value)
 analysis_places_open_late2.graphOpenLate(mapOpenLateTime)

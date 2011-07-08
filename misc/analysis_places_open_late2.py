@@ -45,7 +45,7 @@ def open_late(parsedLog, parsedBallotImage, validMachines):
     pMapAv = {}
     for precinct in pMap:
         t = datetime.timedelta(0)
-        pMapAv[int(precinct)] = t
+        pMapAv[precinct] = t
         
         #sum the time in which the last vote was cast in each machine
         for time in pMap[precinct]:
@@ -60,7 +60,7 @@ def open_late(parsedLog, parsedBallotImage, validMachines):
         sec = sec % 60
         totalTime = datetime.timedelta(seconds = sec, minutes = minutes, hours = hours)
         
-        pMapAv[int(precinct)] = totalTime
+        pMapAv[precinct] = totalTime
     
     now = datetime.datetime.now()
     
