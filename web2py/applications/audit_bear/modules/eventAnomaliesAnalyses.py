@@ -35,22 +35,78 @@ def eventAnomalies(data, r):
     return r
     
 def lowBatteryMachines(data, ballot, r):
+    r.addTitle('Machines With Possible Low Batteries')
     lowBatteryList = []
     lowBatteryMap = {}
+    totalList = []
+    avg = 0
+    ssum = 0.00000000
+    ssum2 = 0.00000000
+    stdev = 0.00000000
     for x in data.getEntryList():
         s = x.dateTime.split(" ")
         t = s[1].split(":")
         if t[0] == '':
             continue
-        elif x.eventNumber == '0001635' and s[0] == '11/02/2010' and stri.atoi(t[0]) > 7 and stri.atoi(t[0]) < 19:
+        elif x.eventNumber == '0001635' and (s[0] == '11/02/2010' or s[0] == '06/08/2010') and stri.atoi(t[0]) > 7 and stri.atoi(t[0]) < 19:
             if x.serialNumber not in lowBatteryList and not lowBatteryMap.has_key(x.serialNumber):
                 lowBatteryList.append(x.serialNumber)
-                r.addTextBox(x.serialNumber)
                 lowBatteryMap[x.serialNumber] = 1
             elif lowBatteryMap.has_key(x.serialNumber):
                 temp = lowBatteryMap[x.serialNumber]
                 temp = temp + 1
                 lowBatteryMap[x.serialNumber] = temp
+    if len(lowBatteryMap) < 1:
+        r.addTextBox('This county shows no indication of machines with low battery.')
+    else:
+        for n in lowBatteryMap.values():
+            avg = avg + n
+        avg = avg/len(lowBatteryMap.values())
+        for n2 in lowBatteryMap.values():
+                ssum = ssum + ((n2-avg)**2)
+        ssum2 = ssum/len(lowBatteryMap.values())
+        stdev = math.sqrt(ssum2)
+        print avg
+        print stdev
+        lowBatteryTable = report.Table()
+        for l in lowBatteryMap:
+            precinctNum = None
+            precinctName = None
+            if ballot.machinePrecinctNumMap.has_key(l):
+                precinctNum = ballot.machinePrecinctNumMap[l]
+                precinctName = ballot.machinePrecinctNameMap[l]
+            elif l in ballot.earlyVotingList:
+                precinctNum = '750'
+                precinctName = 'Absentee'
+            elif l in ballot.failsafeList:
+                precinctNum = '850'            
+                precinctName = 'Failsafe'
+            if lowBatteryMap[l] >= (avg + (3*stdev)):
+                totalList.append((l, precinctNum, precinctName, lowBatteryMap[l], '0001635', data.getEventDescription('0001635')))
+        isOutlier = True
+        for t in totalList:
+            if isOutlier == True:
+                lowBatteryTable.addHeader('Precinct Name')
+                lowBatteryTable.addHeader('Precinct #')
+                lowBatteryTable.addHeader('Machine Serial Number')
+                lowBatteryTable.addHeader('Event #')
+                lowBatteryTable.addHeader('Event Description')
+                lowBatteryTable.addHeader('# of Occurences (Outlier)')
+                lowBatteryTable.addHeader('Possible Reasons/ Suggestions')
+                isOutlier = False
+            lowBatteryTable.addRow([t[2], t[1], t[0], t[4], t[5], repr(t[3]), 'TODO'])
+        lowBatteryTable.generateHTML()
+        r.addTable(lowBatteryTable)
+        fig = plt.figure(figsize=(22,14))
+        ax2 = fig.add_axes([0.15, 0.1, .7, .8])
+        n, bins, patches = plt.hist(lowBatteryMap.values(), bins=max(lowBatteryMap.values())+1, range=(0,max(lowBatteryMap.values())+1)) 
+        ax2.set_xlabel('# of Terminal Shutdown - IPS Exit Events Per Machine')
+        ax2.set_ylabel('# of Machines')
+        ax2.set_title('Frequency of Terminal Shutdown Events due to an IPS Exit')
+        stio = StringIO.StringIO()
+        plt.savefig(stio)
+        im = report.Image(stio, 'Vote Cancelled Events')
+        r.addImage(im)           
     return r
     
 def getWarningEvents(data,ballot,r):
