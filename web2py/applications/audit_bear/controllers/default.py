@@ -4,7 +4,7 @@ from controllerHelpers import *
 
 def index():
     form = FORM(
-        'zipped files:', INPUT(_name='zipped_files', _type='file'),
+        'Zipped File:', INPUT(_name='zipped_files', _type='file'),
         INPUT(_type='submit'))
 
     if form.accepts(request.vars, session) and form.vars.zipped_files != '':

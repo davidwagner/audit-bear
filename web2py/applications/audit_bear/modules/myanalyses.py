@@ -41,7 +41,7 @@ def dateanomalies(data, dateclass):
     else: 
         r.addTextBox('<b>These machines had events with invalid dates<br></b>')
         for k,v in l[2].iteritems():
-            r.addTextBox('&nbsp Machine '+str(x[0])+' had '+str(v).zfill(2)+' events on '+str(x[1]))
+            r.addTextBox('&nbsp Machine '+str(k[0])+' had '+str(v).zfill(2)+' events on '+str(k[1]))
     return r
 
 
