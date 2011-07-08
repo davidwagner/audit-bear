@@ -54,14 +54,21 @@ def lowBatteryMachines(data, ballot, r):
     return r
     
 def getWarningEvents(data,ballot,r):
+    r.addTitle('Detection of Anomalous Warning Events')
     wMap = {}
     wNumMap = {}
     list1628 = []
     list1651 = []
     list1703 = []
     list1704 = []
+    list1404 = []
+    totalList = []
     minorTicks = (.5,)
-    maxNumOccurrences = 0        
+    avg = 0
+    maxNumOccurrences = 0   
+    stdev = 0.00000000
+    ssum = 0.00000000
+    ssum2 = 0.00000000     
     wEvents = ['0001628', '0001651', '0001703', '0001704']
     for x in data.getEntryList():
         s = x.dateTime.split(" ")
@@ -89,10 +96,23 @@ def getWarningEvents(data,ballot,r):
             temp = temp + wMap[y][y2]
         wNumMap[y] = temp
     if len(wMap) < 1:
+        r.addTextBox("This county experienced no Warning events.")
         print "This county experienced no 'Warning' events."
     else:
         for z in wMap:
             for z2 in wMap[z]:
+                precinctNum = None
+                precinctName = None
+                if ballot.machinePrecinctNumMap.has_key(z):
+                    precinctNum = ballot.machinePrecinctNumMap[z]
+                    precinctName = ballot.machinePrecinctNameMap[z]
+                elif z in ballot.earlyVotingList:
+                    precinctNum = '750'
+                    precinctName = 'Absentee'
+                elif z in ballot.failsafeList:
+                    precinctNum = '850'
+                    precinctName = 'Absentee'
+                totalList.append((z, precinctNum, precinctName, wMap[z][z2], z2, data.getEventDescription(z2)))
                 if wMap[z][z2] > maxNumOccurrences:
                     maxNumOccurrences = wMap[z][z2] 
                 if z2 == '0001628':
@@ -103,14 +123,43 @@ def getWarningEvents(data,ballot,r):
                     list1703.append(wMap[z][z2])
                 elif z2 == '0001704':
                     list1704.append(wMap[z][z2])
-        r.addTextBox(list1628)
-        r.addTextBox(list1651)
-        r.addTextBox(list1703)
-        r.addTextBox(list1704)
+                elif z2 == '0001404':
+                    list1404.append(wMap[z][z2])
+                    
+        warningTable = report.Table()
+
+        isOutlier = True
+        for w in totalList:
+            avg = avg + w[3]
+        avg = avg/len(totalList)
+        for w2 in totalList:
+            ssum = ssum + ((w2[3]-avg)**2)
+        ssum2 = ssum/len(totalList)
+        stdev = math.sqrt(ssum2)
+        for w3 in totalList:
+            if w3[3] >= math.floor(avg + (2.5*stdev)):
+                if isOutlier == True:
+                    warningTable.addHeader('Precinct Name')
+                    warningTable.addHeader('Precinct #')
+                    warningTable.addHeader('Machine Serial Number')
+                    warningTable.addHeader('Event #')
+                    warningTable.addHeader('Event Description')
+                    warningTable.addHeader('# of Occurrences (Outlier)')
+                    warningTable.addHeader('Possible Reasons/ Suggestions')
+                    isOutlier = False
+                warningTable.addRow([w3[2], w3[1], w3[0], w3[4], w3[5], repr(w3[3]), 'TODO'])
+                #print "%-10s %-5s %-20s %-5d %-7s %s" % (w3[0], w3[1], w3[2], w3[3], w3[4], w3[5])
+        warningTable.generateHTML()
+        r.addTable(warningTable)
+        #r.addTextBox(list1628)
+        #r.addTextBox(list1651)
+        #r.addTextBox(list1703)
+        #r.addTextBox(list1704)
+        #r.addTextBox(list1404)
         fig = plt.figure(figsize=(22,14))
         ax2 = fig.add_axes([0.15, 0.1, .7, .8])
 
-        n, bins, patches = plt.hist([list1628, list1651, list1703, list1704], bins=maxNumOccurrences+1, range=(0,maxNumOccurrences+1), align='left', label=['0001628: '+data.getEventDescription('0001628'), '0001651: '+data.getEventDescription('0001651'), '0001703: '+data.getEventDescription('0001703'), '0001704: '+data.getEventDescription('0001704')])
+        n, bins, patches = plt.hist([list1628, list1651, list1703, list1704, list1404], bins=maxNumOccurrences+1, range=(0,maxNumOccurrences+1), align='left', label=['0001628: '+data.getEventDescription('0001628'), '0001651: '+data.getEventDescription('0001651'), '0001703: '+data.getEventDescription('0001703'), '0001704: '+data.getEventDescription('0001704'), '0001404: '+data.getEventDescription('0001404')])
         
         for b in bins:
             minorTicks += ((b-.5),)
@@ -127,6 +176,7 @@ def getWarningEvents(data,ballot,r):
     return r
     
 def getVoteCancelledEvents(data,ballot,r):
+    r.addTitle('Detection of Anomalous Vote Cancelled Events')
     vcMap = {}
     vcNumMap = {}
     list1513 = []
@@ -171,6 +221,7 @@ def getVoteCancelledEvents(data,ballot,r):
             temp = temp + vcMap[y][y2]
         vcNumMap[y] = temp
     if len(vcMap) < 1:
+        r.addTextBox("This county experienced no Vote Cancelled events.")
         print "This county experienced no 'vote cancelled' events."
     else:
         for z in vcMap:
@@ -210,12 +261,28 @@ def getVoteCancelledEvents(data,ballot,r):
             ssum = ssum + ((w2[3]-avg)**2)
         ssum2 = ssum/len(totalList)
         stdev = math.sqrt(ssum2)
-        r.addTextBox("%10s %10s %20s %7s %7s %s" % ('Machine #', 'Precinct #', 'Precinct Name', 'Outlier', 'Event #', 'Event Description'))
+        voteCancelledTable = report.Table()
+        
+
+        isOutlier = True
+        #r.addTextBox("%10s %10s %20s %7s %7s %s" % ('Machine #', 'Precinct #', 'Precinct Name', 'Outlier', 'Event #', 'Event Description'))
         for w3 in totalList:
             if w3[3] > (avg + (4*stdev)):
+                if isOutlier == True:
+                    voteCancelledTable.addHeader('Precinct Name')
+                    voteCancelledTable.addHeader('Precinct Number')
+                    voteCancelledTable.addHeader('Machine Serial Number')
+                    voteCancelledTable.addHeader('Event #')
+                    voteCancelledTable.addHeader('Event Description')
+                    voteCancelledTable.addHeader('# of Occurences (Outlier)')
+                    voteCancelledTable.addHeader('Possible Reasons/ Suggestions')
+                    isOutlier = False
                 #t = "%10s %5s %20s %5d %7s %s" % (w3[0], w3[1], w3[2], w3[3], w3[4], w3[5])
-                r.addTextBox("%10s %5s %20s %5d %7s %s" % (w3[0], w3[1], w3[2], w3[3], w3[4], w3[5])) 
-                
+                voteCancelledTable.addRow([w3[2], w3[1], w3[0], w3[4], w3[5], repr(w3[3]), 'TODO'])
+                #voteCancelledTable.addRow("%10s %5s %20s %5d %7s %s" % (w3[0], w3[1], w3[2], w3[3], w3[4], w3[5])) 
+        
+        voteCancelledTable.generateHTML()
+        r.addTable(voteCancelledTable)        
         fig = plt.figure(figsize=(22,14))
         ax2 = fig.add_axes([0.15, 0.1, .7, .8])
         n, bins, patches = plt.hist([list1513, list1514, list1515, list1516, list1517, list1518, list1519], bins=maxNumOccurrences+1, range=(0,maxNumOccurrences+1), align='left', label=['0001513: '+data.getEventDescription('0001513'),'0001514: '+data.getEventDescription('0001514'), '0001515: '+data.getEventDescription('0001515'), '0001516: '+data.getEventDescription('0001516'), '0001517: '+data.getEventDescription('0001517'), '0001518: '+data.getEventDescription('0001518'), '0001519: '+data.getEventDescription('0001519')])
