@@ -43,7 +43,9 @@ class BallotImage:
             If the first string in the line is 'RUN', then the current precinct is updated.
             """
             if t[0] == 'RUN':
-
+                electionID = t[len(t)-1]
+                electionID = electionID.strip()
+                print electionID
                 if t[32] == 'Absentee' or t[32] == 'Failsafe' or t[32] == 'ABSENTEE' or t[32] == 'FAILSAFE':
                     currentPrecinct = t[32]
                 elif s[13] == '':
@@ -136,6 +138,7 @@ class BallotImage:
         """
         Creates the global variables of the maps.
         """ 
+        self.electionID = electionID
         self.machinePrecinctNumMap = machinePrecinctNumMap
         self.problemMap = problemMap
         self.machinePrecinctNameMap = machinePrecinctNameMap
