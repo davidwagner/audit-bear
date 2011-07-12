@@ -56,6 +56,7 @@ def is_155(fh):
 
 def extractLogs(files):
     totalReceivedFiles = []
+    i = 0
     for f in files:
         if zipfile.is_zipfile(f):
             # extract
@@ -64,11 +65,17 @@ def extractLogs(files):
                 m = z.open(member, 'r')
                 # m is NOT SEEKABLE
                 # make a new file and pass everything to a seekable one...
-                import StringIO
-                fNew = StringIO.StringIO()
+
+                #import StringIO
+                #fNew = StringIO.StringIO()
+
+                fNew = open("file" + str(i), 'w')
+                fNew.close()
+                fNew = open("file" + str(i), 'r+')
                 for l in m:
-                    fNew.writelines(m.readlines())
+                    fNew.writelines(l)
                 totalReceivedFiles.append(fNew)
+                i += 1
 
             z.close()
         else:
