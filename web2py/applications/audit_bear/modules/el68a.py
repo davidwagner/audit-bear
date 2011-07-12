@@ -5,10 +5,20 @@ from collections import deque
 
 class EL68AEntry:
     # an entry will contain only some of the information, others will be none
-    date = actionString = countedInfoString = precinct = bals = tot = \
-    auditedMachine = pebRetrieved = None
+    def __del__(self):
+        del self.date
+        del self.actionString
+        del self.countedInfoString
+        del self.precinct
+        del self.bals
+        del self.tot
+        del self.auditedMachine
+        del self.pebRetrieved
 
     def __init__(self, electionDate, dateString, sysString):
+        self.date = self.actionString = self.countedInfoString = self.precinct = \
+        self.bals = self.tot = self.auditedMachine = self.pebRetrieved = None
+
         dateString += str(electionDate.year)
         self.date = dateutil.parser.parse(dateString)
         sysString = sysString.strip()
@@ -41,14 +51,23 @@ class EL68AEntry:
         return s
     
 class EL68A:
-    electionDate = ''
-    electionID = ''
-    runDate = ''
-    entryList = []
-    auditedMachines = []
-    precinctToCountMap = {}
 
+    def __del__(self):
+        del self.electionDate
+        del self.electionID
+        del self.runDate
+        del self.entryList
+        del self.auditedMachines
+        del self.precinctToCountMap
+        
     def __init__(self, fh):
+        self.electionDate = ''
+        self.electionID = ''
+        self.runDate = ''
+        self.entryList = []
+        self.auditedMachines = []
+        self.precinctToCountMap = {}
+
         # parse election date, run date and election id
         self.electionDate = self.parseElectionDate(fh)
         self.electionID = self.parseElectionID(fh)

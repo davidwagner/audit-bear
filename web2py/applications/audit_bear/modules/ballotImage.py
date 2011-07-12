@@ -2,6 +2,21 @@ import string as stri
 
 class BallotImage:
 
+    def __del__(self):
+        del self.electionID
+        del self.machinePrecinctNumMap
+        del self.problemMap
+        del self.machinePrecinctNameMap
+        del self.precinctMap
+        del self.combinedMap
+        del self.earlyVotingList
+        del self.failsafeList
+        del self.machineVotesMap
+        del self.precinctVotesMap
+        del self.newNameList
+        del self.machinesPerPrecinct
+        
+
     """
     First constructor in the case that the el68a is not available.  Parses the ballot images and creates the datastructure(s).  The argument passed to this constructor is an already opened el155 file.
     """ 

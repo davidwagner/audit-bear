@@ -2,14 +2,23 @@
 import re
 
 class AuditLogEntry:
-    serialNumber = 0
-    PEBNumber = 0
-    entryType = ''
-    dateTime = ''
-    eventNumber = 0
-    eventDescription = ''
+
+    def __del__(self):
+        del self.serialNumber
+        del self.PEBNumber
+        del self.entryType
+        del self.dateTime
+        del self.eventNumber
+        del self.eventDescription
 
     def __init__(self, l):
+        self.serialNumber = 0
+        self.PEBNumber = 0
+        self.entryType = ''
+        self.dateTime = ''
+        self.eventNumber = 0
+        self.eventDescription = ''
+
         if len(l) < 6:
             raise Exception('length of given entry list < 6')
 
@@ -29,9 +38,11 @@ class AuditLogEntry:
             self.eventDescription][index]
 
 class AuditLog:
-    runDate = ''
-    electionID = ''
-    entryList = []
+
+    def __del__(self):
+        del self.runDate
+        del self.electionID
+        del self.entryList
 
     def parse(self, fh):
         """Parse the given audit log file into a list of entries"""
@@ -61,6 +72,10 @@ class AuditLog:
         return '0', '0'
 
     def __init__(self, fh = None):
+        self.runDate = ''
+        self.electionID = ''
+        self.entryList = []
+
         # constructor / parser
         if fh != None:
             self.entryList = self.parse(fh)
