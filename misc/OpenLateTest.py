@@ -17,7 +17,7 @@ path2 = sys.argv[2]
 path3 = sys.argv[3]
 
 parsedLog = AuditLog(open(path, "r"))
-parsedBallotImage = BallotImage(open(path2, 'r'))
+parsedBallotImage = BallotImage(open(path2, 'r'), AuditLog(open(path, 'r')), open(path3, 'r'))
 dateModObject = dateMod.DateMod(parsedLog, open(path3, 'r'))
 mmap = dateMod.timecheck(dateMod.timeopen(dateModObject.edata))
 validMachines = mmap.keys()
