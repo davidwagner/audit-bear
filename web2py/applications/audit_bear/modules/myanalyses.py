@@ -2,6 +2,7 @@
 import auditLog
 import ballotImage
 import dateMod
+import datetime
 import dateutil.parser
 import report
 
@@ -44,12 +45,35 @@ def dateanomalies(data, dateclass):
             r.addTextBox('&nbsp Machine '+str(k[0])+' had '+str(v).zfill(2)+' events on '+str(k[1]))
     return r
 
+def precinctStats(dateclass, ballotclass):
+    r = report.Report()
+    r.addTitle('Precint Date Stats')
+
+    #report Machines that had dates corrected ON election day
+    #report early voting by precinct AND check for correct dates
+
+    times, adjustedL = dateMod.timeopen(dateclass.edata)
+    precinctMap = ballotclass.getPrecinctNameMap()
+    d = {}
+    for tup in adjustedL:
+        print tup
+        if tup[1] != datetime.timedelta(0):
+            key = precinctMap[tup[0]]
+            if key in d:
+                d[key] += 1
+            else:
+                d.update({key: 0})
+    
+    for k,v in d.iteritems():
+        r.addTextBox(k + ' had ' + str(v) + ' machines adjusted during voting')
+
+    return r
 
 def openmachines(dateclass, bins=10):
     r = report.Report()
-    r.addTitle('Hours DREs Stayed Open Election Day')
+    r.addTitle('Machines whose time was corrected during Election Day (and random Hist)')
 
-    o = dateMod.timeopen(dateclass.edata)
+    o, adjusted = dateMod.timeopen(dateclass.edata)
     x = []
     for k,v in o.iteritems():
         if v[0] == 1:
