@@ -106,7 +106,10 @@ def lowBatteryMachines(data, ballot, r):
         stio = StringIO.StringIO()
         plt.savefig(stio)
         im = report.Image(stio, 'Vote Cancelled Events')
-        r.addImage(im)           
+        r.addImage(im)     
+        del lowBatteryList
+        del lowBatteryMap
+        del totalList      
     return r
     
 def getWarningEvents(data,ballot,r):
