@@ -34,14 +34,15 @@ import ballotImage
 
     
 class DateMod:
-        #These Variables are dependant on a valid path and date parse from the 68a text file
-    pdata = [] #AuditLog Object for all Pre-Voting
-    edata = [] #AuditLog Object for all Election-Day Voting
-    odata = [] #AuditLog Object for all days after election days and > 15 days before
-    eday = ''  #Parsed Election Date from 68.lst file 
-    pday = ''  #Election Day Minus 15
-    
+        
     def __init__(self, data, date):
+        #These Variables are dependant on a valid path and date parse from the 68a text file
+        self.pdata = [] #AuditLog Object for all Pre-Voting
+        self.edata = [] #AuditLog Object for all Election-Day Voting
+        self.odata = [] #AuditLog Object for all days after election days and > 15 days before
+        self.eday = ''  #Parsed Election Date from 68.lst file 
+        self.pday = ''  #Election Day Minus 15
+
 
         if not isinstance(data, auditLog.AuditLog):
             raise Exception('Must pass valid AuditLog object')
