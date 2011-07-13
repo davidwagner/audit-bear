@@ -32,7 +32,7 @@ import datetime
 import dateutil.parser
 import ballotImage
 
-
+    
 class DateMod:
         #These Variables are dependant on a valid path and date parse from the 68a text file
     pdata = [] #AuditLog Object for all Pre-Voting
@@ -51,6 +51,13 @@ class DateMod:
 
         self.pday = self.eday - datetime.timedelta(15)
         self.splitDays(data, self.eday, self.pday)
+
+    def __del__(self):
+        del self.pdata
+        del self.edata
+        del self.odata
+        del self.pday
+        del self.eday
  
     """
     Gets date from l68a file or returns blank string. Its a little ugly, but it works for now
@@ -68,9 +75,6 @@ class DateMod:
     Creates 3 AuditLog objects based on pdate and edate.
     """
     def splitDays(self, data, eday, pday):
-        edata = []
-        pdata = []
-        odata = []
         daystring = str(eday.month).zfill(2) + '/' + str(eday.day).zfill(2) + '/' + str(eday.year)
     
         for line in data:
@@ -102,20 +106,15 @@ class DateMod:
         
 
 """
-UPDATE: Only counts anomalies if machine already open.
 -Checks for the following day anomolies:
     -Votes before designated pre-voting day
     -Any dates after election day
     -Unparsible datetimes
 -Can be passed either a normal full set of data or just the odata
 
--Trim option: modifies the data set passed (NOT IMPLEMENTED)
-    -0: Do not trim
-    -1: Trim anomolous days by event
-    -2: Trim anomolous days by machine with occurances
 
 """
-def check(odata, eday, pday):
+def check(data, eday, pday):
 
     #Dictionarys to record anomolies.  Use event and day as key, occurances as value
     #d1 holds events after election day
@@ -125,7 +124,14 @@ def check(odata, eday, pday):
     #d3 holds unparsible datetimes
     d3 = {}
  
-    for line in odata:
+    ostate = False
+    temp = data[0].serialNumber
+
+    for line in data:
+        if temp != line.serialNumber:
+            ostate = False 
+        if line.eventNumber == '0001672':
+            ostate = True
         key = (line.serialNumber, line.dateTime[0:10])
         try:
             cday = dateutil.parser.parse(line.dateTime).date()
@@ -136,8 +142,8 @@ def check(odata, eday, pday):
             else:
                 d3.update({key: 1}) 
         else:
-            #Past Election Day
-            if (cday > eday):
+            #Past Election Day and machine has been opened (Not at factory)
+            if (cday > eday) and ostate == True:
                 if key in d1:
                     d1[key] += 1
                 else:
@@ -171,6 +177,7 @@ Limitations:  Will not handle unparsible dates.  This will work with edata, pdat
 def timeopen(edata):
     temp = edata[0].serialNumber
     times = {}
+    a = []
     ostate = False 
     eventseen = False 
     timeset = False
@@ -186,7 +193,7 @@ def timeopen(edata):
             elif not ostate:
                 if timeset:
                     times.update({temp:(0,start-diff, end, end-start+diff)})
-                    print 'Machine:',temp,'adjusted by:', diff, 'from', (end-start)
+                    a.append((temp, diff))
                 else:
                     times.update({temp:(0,start, end, end-start)})
 
@@ -222,28 +229,23 @@ def timeopen(edata):
             timeset = True
             startset = False
             
-    return times
+    return times, a
 """
-This function takes the dictionary from timesopen and decides if the datestamp is believeable
+This function takes the dictionary from timesopen and decides if the datestamp is beleavable.  Also tries to determine which machines really don't have the correct date.
+Alot of machines are not sorted into valid or invalid.  As this function becomes more robust it will know what to do with more machines.
 """
 def timecheck(times):
     #Catch all machines open more then 12 hours, check for reasonable opening
     valid = {}
+    invalid = {}
     #Machine must be open by this time to be assumed valid if open for 12 hours+
     timeopen = dateutil.parser.parse('07:30:00')
     for k,v in times.iteritems():
         if v[0] == 0:
             if v[3] > datetime.timedelta(hours=12) and v[1] < timeopen:
                 valid.update({k:v})
+            else: pass
     return valid
-"""
-Since we are excluding a fair amount of machines (mostly by fact that they were not closed and opened on election day) this will report how many machines we are excluding by polling location. Takes dictionary of machines from timecheck()
-"""
-def excluded(valid,ballotclass):
-    mappy = ballotclass.getMachinesPerPrecinct()
-    return mappy
-    
-    
 
 """
 ---Main---
@@ -261,19 +263,22 @@ if __name__== "__main__":
     data = auditLog.AuditLog(f)
     f.close()
 
-    f = open(path2, 'r')
-    dateclass = DateMod(data, f)
-    f.close()
+    dateclass = DateMod(data, None)
     
     f = open(path3, 'r')
-    ballotclass = ballotImage.BallotImage(path3)
+    f6 = open(path2, 'r')
+    ballotclass = ballotImage.BallotImage(f, data, f6)
     f.close()
+    f6.close()
 
-    d =  timecheck(timeopen(dateclass.edata))
-    for k,v in d.iteritems():
-        print 'Time open:',v[1], 'For:', v[3]
+    #Machines adjusted on Election Day
+    d, adjustedMachines = timeopen(dateclass.edata) 
+    MtoP = ballotclass.getPrecinctNameMap() 
+    
 
 
+
+    
 """""
 
 #Checks data for any events not in increaseing order by time stamp
