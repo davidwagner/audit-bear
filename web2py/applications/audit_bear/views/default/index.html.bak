@@ -1,2 +1,17 @@
 {{extend 'layout.html'}}
-<h1>{{=message}}</h1>
+<table width = 650px>
+<tr>
+    <td><div id="title"><h1><span id="appname">Audit</span>Bear</h1></div>
+    <td align=right><img src='/audit_bear/static/images/calbear.gif' />
+</table>
+<p>
+Welcome to AuditBear! If this is your first time here please visit our <b>About</b> page.  To generate a report please upload a .zip file in the box below.  This zip file requires an el152, el155, and an optional el68a log file obtained from an iVotronic DRE.
+</p>
+<p>
+This software is intended to assist those working with election auditing.  Any information discovered through this software is not guarenteed to be accurate or correct.  All of our source code is availble on our Google Code repository, 'audit-bear'.  If you find an errors or have any questions about our work we would love to hear from.  You can contact any of the authors through our <b>Contact</b> page.
+</p>
+
+After submitting your zipped file, please be patient.<br/>
+<b>Processing may take several minutes.</b><br/>
+<p/>
+{{=form}}
