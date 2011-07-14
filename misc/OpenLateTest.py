@@ -26,7 +26,7 @@ mapOpenLateTime = analysis_places_open_late2.open_late(parsedLog, parsedBallotIm
 now = datetime.datetime.now()
 print "RUN DATE:"+now.strftime("%Y-%m-%d %H:%M")
 print "NOTE: This report doesn't include early voting terminals nor the precincts that were closed before 7:00 PM"
-print "Precinct Number    "+" Average Time Opened after 7:00 PM (hh:mm:ss)"
+print "Precinct Number    "+" Average close time after 7:00 PM (hh:mm:ss)"
 #sort in descending order the dictionary by value.
 for key, value in sorted(mapOpenLateTime.iteritems(), key=lambda (k,v): (v,k), reverse = True):
     print "%3s                 %s" % (key, value)

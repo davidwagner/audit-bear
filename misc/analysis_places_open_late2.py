@@ -20,17 +20,20 @@ def open_late(parsedLog, parsedBallotImage, validMachines):
             dic[line[0]].insert(0, line[3])
             try:
                 t2 = dateutil.parser.parse(dic[line[0]][0])
+                t2 = datetime.timedelta(hours=t2.hour, minutes=t2.minute, seconds=t2.second)
+
                 t1 = dateutil.parser.parse(dic[line[0]][0][:10]+ " 19:00:00")
+                t1 = datetime.timedelta(hours=t1.hour, minutes=t1.minute, seconds=t1.second)
             except:
                 continue
             else:
-                delta = t2 - t1
+                delta = (t2 - t1) + datetime.timedelta(hours=7)
                 dic2[line[0]] = delta
 
     earlyVotingList = parsedBallotImage.getEarlyVotingList()
     mapM = {}    
     for key in dic2:
-        if not key in earlyVotingList and str(dic2[key])[:2] != "-1":
+        if not key in earlyVotingList and str(dic2[key])[:1] >= "7":
             mapM[key] = dic2[key]
     
     precinctNumMap = parsedBallotImage.getPrecinctNumMap()
@@ -72,8 +75,8 @@ def graphOpenLate(dic):
     import matplotlib.pyplot as plt
     dicRange = {}
     
-    tMax = datetime.timedelta(seconds = 0, minutes = 0, hours = 2)
-    tMin = datetime.timedelta(0)
+    tMax = datetime.timedelta(hours = 9)
+    tMin = datetime.timedelta(hours = 7)
     
     while tMin <= tMax:
         dicRange[tMin] = 0
@@ -104,9 +107,9 @@ def graphOpenLate(dic):
     ax.set_xticks(ind+width/100.)
     ax.set_xticklabels(kList)
     ax.set_yticks(np.arange(0,max(vList)+2, 2))
-    ax.set_ylabel('Number of polling locations')
-    ax.set_xlabel('Time Opened (hh:mm:ss)')
-    ax.set_title('Precincts stayed open after 7:00PM')
+    ax.set_ylabel('Number of precincts')
+    ax.set_xlabel('Close time (hh:mm:ss)')
+    ax.set_title('Precincts closed after 7:00PM')
     plt.grid(True)
     plt.show()
     return

@@ -5,12 +5,15 @@ def consecutiveVotes(parsedLog, ballotImage, validMachines, pollingLate):
     import dateutil.parser as dp
     import datetime
     import numpy as np
-    mapMachines = {}
-    mapCountCV = {}
-
-    mapMachinesB = {}
-    mapCountCVB = {}
     
+    mapMachines = {} # key->machine serial number, value-> average time between consecutive votes after 7:00PM
+    mapCountCV = {} # key->machine serial number, value-> count each time when a consecutive two votes events is found (votes after 7:00PM)
+
+    mapMachinesB = {} # key->machine serial number, value-> average time between consecutive votes before 7:00PM
+    mapCountCVB = {} # key->machine serial number, value-> count each time when a consecutive two votes events are found (votes before 7:00PM)
+    
+    mapMachinesAllTimes = {} #key->machine serial number, value-> a list of each time two consecutive votes are found in that machine ex: [(2nd vote - 1st vote),1st vote, 2nd vote] (after 7:00 PM)
+    mapMachinesAllTimesB={} #key->machine serial number, value-> a list of each time two consecutive votes are found in that machine ex: [(2nd vote - 1st vote),1st vote, 2nd vote] (before 7:00 PM)
     precinctNumMap = parsedBallotImage.getPrecinctNumMap()
 
     earlyVoting = parsedBallotImage.getEarlyVotingList()
@@ -27,6 +30,7 @@ def consecutiveVotes(parsedLog, ballotImage, validMachines, pollingLate):
                 t2 = datetime.timedelta(hours=t2.hour, minutes=t2.minute, seconds=t2.second)
                 delta1 = t2 - t1
                 
+                mapMachinesAllTimesB.setdefault(parsedLog[i][0],[]).append([round(delta1.seconds/60,1), str(t1), str(t2)])
                 mapMachinesB[parsedLog[i][0]] = mapMachinesB.get(parsedLog[i][0], 0) + round(delta1.seconds/60,1)
                 mapCountCVB[parsedLog[i][0]] = mapCountCVB.get(parsedLog[i][0], 0) + 1
         
@@ -39,6 +43,7 @@ def consecutiveVotes(parsedLog, ballotImage, validMachines, pollingLate):
                 t2 = datetime.timedelta(hours=t2.hour, minutes=t2.minute, seconds=t2.second)
                 delta1 = t2 - t1
                 
+                mapMachinesAllTimesB.setdefault(parsedLog[i][0],[]).append([round(delta1.seconds/60,1), str(t1), str(t2)])
                 mapMachinesB[parsedLog[i][0]] = mapMachinesB.get(parsedLog[i][0], 0) + round(delta1.seconds/60,1)
                 mapCountCVB[parsedLog[i][0]] = mapCountCVB.get(parsedLog[i][0], 0) + 1
 
@@ -52,23 +57,32 @@ def consecutiveVotes(parsedLog, ballotImage, validMachines, pollingLate):
                 t2 = datetime.timedelta(hours=t2.hour, minutes=t2.minute, seconds=t2.second)
                 delta1 = t2 - t1
                 
+                mapMachinesAllTimes.setdefault(parsedLog[i][0],[]).append([round(delta1.seconds/60,1), str(t1), str(t2)])
                 mapMachines[parsedLog[i][0]] = mapMachines.get(parsedLog[i][0], 0) + round(delta1.seconds/60,1)
                 mapCountCV[parsedLog[i][0]] = mapCountCV.get(parsedLog[i][0], 0) + 1
                 
+    #for machine in sorted(mapMachinesAllTimesB):
+        #print machine, mapMachinesAllTimesB[machine]
     #calculate average time between consecutive votes after 7 PM in each machine.
     for machine in mapMachines:
         try:
             mapMachines[machine] = round((mapMachines[machine] / mapCountCV[machine]), 1)
         except:
             continue
-    pMap = {}
+    
+    pMap = {} #key-> precinct number, value-> list of average times between consecutive votes after 7:00 PM (match the average time in each machine with its precinct)
+    
     for key in mapMachines:
         pMap.setdefault(precinctNumMap[key],[]).append(mapMachines[key])
     
-    pTimeVotesA = {}
+    for key in pMap:
+        print key, np.average(pMap[key]), np.std(pMap[key])
+    
+    pTimeVotesA = {}#key-> precinct number, value-> average time between consecutive votes after 7:00 PM
+    
     for location in pMap:
         pTimeVotesA[location] = round(np.average(pMap[location]),1)
-
+    
      #calculate average time between consecutive votes before 7 PM in each machine.
     for machine in mapMachinesB:
         try:
@@ -76,18 +90,15 @@ def consecutiveVotes(parsedLog, ballotImage, validMachines, pollingLate):
         except:
             continue
 
-    #match the machines with their precincts (NOTE: just match the machines that were closed after 7:00 PM)
-    pMapB = {}
+    pMapB = {} #key-> precinct number, value-> list of average times between consecutive votes before 7:00 PM (match the average time in each machine with its precinct)
     for key in mapMachinesB:
         if mapMachines.has_key(key):
             pMapB.setdefault(precinctNumMap[key],[]).append(mapMachinesB[key])
     
-    pTimeVotesB = {}
+    pTimeVotesB = {} #key-> precinct number, value-> average time between consecutive votes before 7:00 PM
     for location in pMapB:
         pTimeVotesB[location] = round(np.average(pMapB[location]),1)
-    
-    for location in pTimeVotesA:
-        print location, pTimeVotesA[location], pTimeVotesB[location]     
+     
     return (pTimeVotesA, pTimeVotesB)
 
 def graphTimePoll(pollTime):
@@ -165,6 +176,9 @@ mmap = dateMod.timecheck(dateMod.timeopen(dateModObject.edata))
 validMachines = mmap.keys()
 pollOpenLate = analysis_places_open_late2.open_late(parsedLog, parsedBallotImage, validMachines)
 pA, pB = consecutiveVotes(parsedLog, parsedBallotImage, validMachines, pollOpenLate)
+#for key, value in sorted(pA.iteritems(), key=lambda (k,v): (v,k), reverse = False):
+    #print "%3s                 %s" % (key, value)
+
 #print map['24']
 graphTimeVotes(pA, 'after')
 graphTimeVotes(pB, 'before')

@@ -6,7 +6,7 @@ def close_nm_PEB(parsedLog, parsedBallotImage):
     import datetime
     mapNM = {} # new machine temp map
     mapM = {}
-    # machine# -> PEB#, DateTime, vote count
+    # machine# -> PEB#, DateTime, vote count, Precinct #
     non_master = False
     master = False
     countMachine = 0
@@ -72,13 +72,7 @@ def close_nm_PEB(parsedLog, parsedBallotImage):
     for key2 in map2_M:
         if precinctNumMap.has_key(key2):
             map2_M[key2].append(precinctNumMap[key2])
-        #print key2, map2_M[key2]
-    # added by samuel
-    #for key in sorted(precinctNumMap):
-        #print key + ' ' + precinctNumMap[key]
 
-    combinedMap = parsedBallotImage.getCombinedMap()
-    
     listPEB = []
     for key in map2_M:
         if not map2_M[key][0] in listPEB:
@@ -86,23 +80,5 @@ def close_nm_PEB(parsedLog, parsedBallotImage):
     for key in map2_NM:
         if not map2_NM[key][0] in listPEB:
             listPEB.append(map2_NM[key][0])
-    print listPEB
-    print len(listPEB)
 
     return (map2_M, map2_NM)
-    #for key in sorted(combinedMap):
-        #print key + ' ' + combinedMap[key]
-
-    #return map3
-    #key, map3[key][0]
-    #print "------------------------------------------------------------"
-    #mmp = parsedBallotImage.getMachinesPerPrecinct()
-    #for key in map3:
-     #   for key2 in mmp:
-      #      for i in range(len(mmp[key2])):
-       #         if mmp[key2][i] == key:
-        #            map3[key].append(key2)
-        #print key, map3[key]
-            
-#TEST THE FUNCTION
-#close_nm_PEB()
