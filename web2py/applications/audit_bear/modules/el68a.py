@@ -155,3 +155,9 @@ class EL68A:
             if r:
                 return dateutil.parser.parse(r.group(1))
 
+    def getUploadedPEBs(self):
+        PEBList = []
+        for entry in self.entryList:
+            if entry.pebRetrieved not in PEBList:
+                PEBList.append(entry.pebRetrieved)
+        return PEBList
