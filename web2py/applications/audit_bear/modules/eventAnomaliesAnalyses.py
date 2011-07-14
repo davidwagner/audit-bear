@@ -68,7 +68,6 @@ def lowBatteryMachines(data, ballot, r):
         stdev = math.sqrt(ssum2)
         print avg
         print stdev
-        lowBatteryTable = report.Table()
         for l in lowBatteryMap:
             precinctNum = None
             precinctName = None
@@ -83,44 +82,88 @@ def lowBatteryMachines(data, ballot, r):
                 precinctName = 'Failsafe'
             if lowBatteryMap[l] >= (avg + (3*stdev)):
                 totalList.append((l, precinctNum, precinctName, lowBatteryMap[l], '0001635', data.getEventDescription('0001635')))
-        isOutlier = True
+                
+        r.addTextBox("The following voting machines have an unusually large number of log messages related to their Internal Power Supply.  The meaning of these messages is not documented.  It is possible that they might indicate potential battery or power supply issues.  You may wish to check whether the battery of these machines is in good working condition.")
+        r.addTextBox(" ")
         for t in totalList:
-            if isOutlier == True:
-                lowBatteryTable.addHeader('Precinct Name')
-                lowBatteryTable.addHeader('Precinct #')
-                lowBatteryTable.addHeader('Machine Serial Number')
-                lowBatteryTable.addHeader('Event #')
-                lowBatteryTable.addHeader('Event Description')
-                lowBatteryTable.addHeader('# of Occurences (Outlier)')
-                lowBatteryTable.addHeader('Possible Reasons/ Suggestions')
-                isOutlier = False
-            lowBatteryTable.addRow([t[2], t[1], t[0], t[4], t[5], repr(t[3]), 'TODO'])
-        lowBatteryTable.generateHTML()
-        r.addTable(lowBatteryTable)
-
-        # creating image causes leak... weak key maps are done everywhere and then never unreferenced...
-        fig = plt.figure(figsize=(22,14))
-        ax2 = fig.add_axes([0.15, 0.1, .7, .8]) # leaky line... fixed (maybe?)
-        n, bins, patches = plt.hist(lowBatteryMap.values(), bins=max(lowBatteryMap.values())+1, range=(0,max(lowBatteryMap.values())+1)) 
-        ax2.set_xlabel('# of Terminal Shutdown - IPS Exit Events Per Machine')
-        ax2.set_ylabel('# of Machines')
-        ax2.set_title('Frequency of Terminal Shutdown Events due to an IPS Exit')
-        stio = StringIO.StringIO()
-        plt.savefig(stio)
-        im = report.Image(stio, 'Vote Cancelled Events')
-        r.addImage(im)     
-
-        # trying to fix leak
-        ax2.clear()
-        plt.delaxes(ax2)
-        plt.cla()
-        plt.delaxes()
-        fig.clf()
-        plt.clf()
-        plt.close('all')
-
+            r.addTextBox("%s (#%s)   %s had %d occurrences of this event." % (t[2], t[1], t[0], t[3])) 
     return r
     
+def getCalibrationEvents(data, ballot, r):
+    r.addTitle('Detection of Anomalous Recalibration Events')
+    numOccurrencesWarningMap = {}
+    numOccurrencesRecalibrationMap = {}
+    timeOccurrencesMap = {}
+    totalWarningList = []
+    totalRecalibrationList = []
+    avg = 0
+    stdev = 0.00000000
+    ssum = 0.00000000
+    ssum2 = 0.00000000
+    for x in data.getEntryList():
+        s = x.dateTime.split(" ")
+        t = s[1].split(":")
+        if t[0] == '':
+            continue
+        elif stri.atoi(t[0]) > 7 and stri.atoi(t[0]) < 19 and (s[0] == '11/02/2010' or s[0] == '06/08/2010'):
+            if x.eventNumber == '0001651':
+                if numOccurrencesWarningMap.has_key(x.serialNumber):
+                    temp = numOccurrencesWarningMap[x.serialNumber]
+                    temp = temp + 1
+                    numOccurrencesWarningMap[x.serialNumber] = temp
+                else:
+                    totalWarningList.append((x.serialNumber, ballot.machinePrecinctNumMap[x.serialNumber], ballot.machinePrecinctNameMap[x.serialNumber]))
+                    numOccurrencesWarningMap[x.serialNumber] = 1
+            elif x.eventNumber == '0001655':
+                if numOccurrencesRecalibrationMap.has_key(x.serialNumber):
+                    temp = numOccurrencesRecalibrationMap[x.serialNumber]
+                    temp = temp + 1
+                    numOccurrencesRecalibrationMap[x.serialNumber] = temp
+                else:
+                    totalRecalibrationList.append((x.serialNumber, ballot.machinePrecinctNumMap[x.serialNumber], ballot.machinePrecinctNameMap[x.serialNumber]))
+                    numOccurrencesRecalibrationMap[x.serialNumber] = 1
+    for w in numOccurrencesWarningMap.values():
+        avg = avg + w
+    avg = avg/len(numOccurrencesWarningMap.values())
+    for w2 in numOccurrencesWarningMap.values():
+        ssum = ssum + ((w2-avg)**2)
+    ssum2 = ssum/len(numOccurrencesWarningMap.values())
+    stdev = math.sqrt(ssum2)
+    b = True
+    for y in numOccurrencesWarningMap:
+        if numOccurrencesWarningMap[y] > (avg + (2.5*stdev)):
+            for y2 in totalWarningList:
+                if y2[0] == y:
+                    if b == True:
+                        r.addTextBox("The following machines have an unusually large number of log messages related to an uncalibrated screen.  The meaning of these messages is not documented.  It is possible that they might indicate a problem with the terminal touch screen.  You may wish to check if the machine is calibrated or if the touch screen is in good working condition.")
+                        r.addTextBox(" ")
+                        b = False
+                    r.addTextBox("%s (#%s)   %s had %d occurrences of this event." % (y2[2], y2[1], y2[0], numOccurrencesWarningMap[y]))
+    b2 = True
+    for z in numOccurrencesWarningMap:
+        if numOccurrencesRecalibrationMap.has_key(z):
+            if numOccurrencesWarningMap[z] != numOccurrencesRecalibrationMap[z]:
+                for z2 in totalRecalibrationList:
+                    for z3 in totalWarningList:
+                        if z2[0] == z == z3[0]:
+                            if b2 == True:
+                                r.addTextBox(" ")
+                                r.addTextBox("The following machines experienced screen calibration issues and were not always recalibrated.  You may wish to check if the screen is calibrated.")
+                                r.addTextBox(" ")
+                                b2 = False
+                            r.addTextBox("%s (#%s)   %s experienced %d events warning about calibration, but it was only recalibrated %d time(s)." % (z3[2], z3[1], z3[0], numOccurrencesWarningMap[z], numOccurrencesRecalibrationMap[z]))
+        else:
+            for z4 in totalWarningList:
+                if z4[0] == z:
+                    if b2 == True:
+                        r.addTextBox(" ")
+                        r.addTextBox("The following machines experienced screen calibration issues and were not always recalibrated.  You may wish to check if the screen is calibrated.")
+                        r.addTextBox(" ")
+                        b2 = False
+                    r.addTextBox("%s (#%s)   %s experienced %d events warning about calibration, but it was never recalibrated." % (z4[2], z4[1], z4[0], numOccurrencesWarningMap[z]))
+    return r
+                    
+   
 def getWarningEvents(data,ballot,r):
     r.addTitle('Detection of Anomalous Warning Events')
     wMap = {}
@@ -143,7 +186,7 @@ def getWarningEvents(data,ballot,r):
         t = s[1].split(":")
         if t[0] == '':
             continue
-        elif stri.atoi(t[0]) > 7 and stri.atoi(t[0]) < 19 and s[0] == '11/02/2010':
+        elif stri.atoi(t[0]) > 7 and stri.atoi(t[0]) < 19 and (s[0] == '11/02/2010' or s[0] == '06/08/2010'):
             if x.eventNumber in wEvents:
                 if wMap.has_key(x.serialNumber):
                     if wMap[x.serialNumber].has_key(x.eventNumber):
@@ -194,9 +237,6 @@ def getWarningEvents(data,ballot,r):
                 elif z2 == '0001404':
                     list1404.append(wMap[z][z2])
                     
-        warningTable = report.Table()
-
-        isOutlier = True
         for w in totalList:
             avg = avg + w[3]
         avg = avg/len(totalList)
@@ -206,49 +246,7 @@ def getWarningEvents(data,ballot,r):
         stdev = math.sqrt(ssum2)
         for w3 in totalList:
             if w3[3] >= math.floor(avg + (2.5*stdev)):
-                if isOutlier == True:
-                    warningTable.addHeader('Precinct Name')
-                    warningTable.addHeader('Precinct #')
-                    warningTable.addHeader('Machine Serial Number')
-                    warningTable.addHeader('Event #')
-                    warningTable.addHeader('Event Description')
-                    warningTable.addHeader('# of Occurrences (Outlier)')
-                    warningTable.addHeader('Possible Reasons/ Suggestions')
-                    isOutlier = False
                 warningTable.addRow([w3[2], w3[1], w3[0], w3[4], w3[5], repr(w3[3]), 'TODO'])
-                #print "%-10s %-5s %-20s %-5d %-7s %s" % (w3[0], w3[1], w3[2], w3[3], w3[4], w3[5])
-        warningTable.generateHTML()
-        r.addTable(warningTable)
-        #r.addTextBox(list1628)
-        #r.addTextBox(list1651)
-        #r.addTextBox(list1703)
-        #r.addTextBox(list1704)
-        #r.addTextBox(list1404)
-        fig = plt.figure(figsize=(22,14))
-        ax2 = fig.add_axes([0.15, 0.1, .7, .8])
-
-        n, bins, patches = plt.hist([list1628, list1651, list1703, list1704, list1404], bins=maxNumOccurrences+1, range=(0,maxNumOccurrences+1), align='left', label=['0001628: '+data.getEventDescription('0001628'), '0001651: '+data.getEventDescription('0001651'), '0001703: '+data.getEventDescription('0001703'), '0001704: '+data.getEventDescription('0001704'), '0001404: '+data.getEventDescription('0001404')])
-        
-        for b in bins:
-            minorTicks += ((b-.5),)
-        ax2.set_xticks(minorTicks, minor=True)
-        ax2.grid(b=True, which='minor')
-        ax2.set_xlabel('Per Machine Occurrences')
-        ax2.set_ylabel('# of Machines')
-        ax2.set_title('Frequency of Warning Events')
-        ax2.legend()  
-        stio = StringIO.StringIO()
-        plt.savefig(stio)
-        im = report.Image(stio, 'Vote Cancelled Events')
-        r.addImage(im)                   
-        
-        ax2.clear()
-        plt.delaxes(ax2)
-        plt.cla()
-        plt.delaxes()
-        fig.clf()
-        plt.clf()
-        plt.close('all')
     return r
     
 def getVoteCancelledEvents(data,ballot,r):
