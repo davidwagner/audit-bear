@@ -97,8 +97,10 @@ def lowBatteryMachines(data, ballot, r):
             lowBatteryTable.addRow([t[2], t[1], t[0], t[4], t[5], repr(t[3]), 'TODO'])
         lowBatteryTable.generateHTML()
         r.addTable(lowBatteryTable)
+
+        # creating image causes leak... weak key maps are done everywhere and then never unreferenced...
         fig = plt.figure(figsize=(22,14))
-        ax2 = fig.add_axes([0.15, 0.1, .7, .8])
+        ax2 = fig.add_axes([0.15, 0.1, .7, .8]) # leaky line... fixed (maybe?)
         n, bins, patches = plt.hist(lowBatteryMap.values(), bins=max(lowBatteryMap.values())+1, range=(0,max(lowBatteryMap.values())+1)) 
         ax2.set_xlabel('# of Terminal Shutdown - IPS Exit Events Per Machine')
         ax2.set_ylabel('# of Machines')
@@ -107,9 +109,16 @@ def lowBatteryMachines(data, ballot, r):
         plt.savefig(stio)
         im = report.Image(stio, 'Vote Cancelled Events')
         r.addImage(im)     
-        del lowBatteryList
-        del lowBatteryMap
-        del totalList      
+
+        # trying to fix leak
+        ax2.clear()
+        plt.delaxes(ax2)
+        plt.cla()
+        plt.delaxes()
+        fig.clf()
+        plt.clf()
+        plt.close('all')
+
     return r
     
 def getWarningEvents(data,ballot,r):
@@ -232,6 +241,14 @@ def getWarningEvents(data,ballot,r):
         plt.savefig(stio)
         im = report.Image(stio, 'Vote Cancelled Events')
         r.addImage(im)                   
+        
+        ax2.clear()
+        plt.delaxes(ax2)
+        plt.cla()
+        plt.delaxes()
+        fig.clf()
+        plt.clf()
+        plt.close('all')
     return r
     
 def getVoteCancelledEvents(data,ballot,r):
@@ -357,4 +374,12 @@ def getVoteCancelledEvents(data,ballot,r):
         plt.savefig(stio)
         im = report.Image(stio, 'Vote Cancelled Events')
         r.addImage(im)
+
+        ax2.clear()
+        plt.delaxes(ax2)
+        plt.cla()
+        plt.delaxes()
+        fig.clf()
+        plt.clf()
+        plt.close('all')
     return r

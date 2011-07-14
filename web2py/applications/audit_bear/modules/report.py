@@ -15,14 +15,17 @@ from gluon.sqlhtml import *
 
 class Image:
     # images contain the image data and captions
-    data = None
-    caption = None
-    embedTags = None
-    ID = None
+    def __del__(self):
+        del self.data
+        del self.caption
+        del self.embedTags
+        del self.ID
 
     def __init__(self, data, caption):
         self.data = data
         self.caption = caption
+        self.embedTags = None
+        self.ID = None
 
     def getData(self):
         return self.data
@@ -53,11 +56,17 @@ class Image:
 
 class Table:
     # tables contain rows and cells for each row
-    rows = None
-    headers = None
-    html = None
+
+    def __del__(self):
+        del self.rows
+        del self.headers
+        del self.html
 
     def __init__(self, tableData = None):
+        self.rows = None
+        self.headers = None
+        self.html = None
+
         if tableData:
             rows = tableData
             self.generateHTML()
@@ -100,18 +109,20 @@ class Table:
         return self.html
 
 class Report:
-    textBoxes = None
-    images = None
-    title = None
-    tables = None
-
     # could have chosen a map for association, but StringIO
     # objects are not hashable
+
+    def __del__(self):
+        del self.textBoxes
+        del self.images
+        del self.tables
+        del self.title
 
     def __init__(self):
         self.textBoxes = []
         self.images = []
         self.tables = []
+        self.title = None
 
     def addTextBox(self, textBox):
         self.textBoxes.append(textBox)

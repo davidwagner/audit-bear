@@ -100,6 +100,10 @@ def openmachines(dateclass, bins=10):
     stio = StringIO.StringIO()
     plot.savefig(stio)
     r.addImage(report.Image(stio, 'Plot 1'))
+
+    plot.cla()
+    plot.clf()
+    plot.close('all')
     
     
     r.addTextBox("<i>This data was based only on events that occured on the election.  It is assumed that machines that weren't opened were opened for pre-voting and left open</i>")
