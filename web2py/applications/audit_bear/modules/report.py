@@ -67,20 +67,21 @@ class Table:
         self.html = ''
         
     def generateHTML(self):
-        self.html = '<table border=1>'
+        self.html = '<table id = "data_collected"> <thead>'
         # TODO add headers
         if len(self.headers) > 0:
             self.html += '<tr>'
             for header in self.headers:
                 self.html += '<th>' + header + '</th>'
             self.html += '</tr>'
+        self.html += '</thead><tbody>'
 
         for row in self.rows:
             self.html += '<tr>'
             for cell in row:
                 self.html += '<td>' + cell + '</td>'
             self.html += '</tr>'
-        self.html += '</table>'
+        self.html += '</tbody></table>'
 
     def addRow(self, cells):
         # cells must be a list of cells (strings)

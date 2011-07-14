@@ -60,7 +60,6 @@ class BallotImage:
             if t[0] == 'RUN':
                 electionID = t[len(t)-1]
                 electionID = electionID.strip()
-                print electionID
                 if t[32] == 'Absentee' or t[32] == 'Failsafe' or t[32] == 'ABSENTEE' or t[32] == 'FAILSAFE':
                     currentPrecinct = t[32]
                 elif s[13] == '':

@@ -47,26 +47,31 @@ def dateanomalies(data, dateclass):
 
 def precinctStats(dateclass, ballotclass):
     r = report.Report()
+    t = report.Table()
     r.addTitle('Precint Date Stats')
 
     #report Machines that had dates corrected ON election day
-    #report early voting by precinct AND check for correct dates
 
     times, adjustedL = dateMod.timeopen(dateclass.edata)
     precinctMap = ballotclass.getPrecinctNameMap()
     d = {}
     for tup in adjustedL:
-        print tup
-        if tup[1] != datetime.timedelta(0):
+        print abs(tup[1])
+        if abs(tup[1]) > datetime.timedelta(0,0,0,0,1): #Adjusted by 1 minute or more?
             key = precinctMap[tup[0]]
             if key in d:
-                d[key] += 1
+                d[key] = (d[key][0]+1, d[key][1] + abs(tup[1]))
             else:
-                d.update({key: 0})
-    
+                d.update({key:(1,abs(tup[1]))})
+    t.addHeader('Precinct')
+    t.addHeader('# of Machines')
+    t.addHeader('Absolute Average Timedelta') 
     for k,v in d.iteritems():
-        r.addTextBox(k + ' had ' + str(v) + ' machines adjusted during voting')
+        t.addRow([k,str(v[0]), str(v[1]/v[0])[:8]])
+    r.addTable(t)
 
+    #report early voting by precinct AND check for correct dates
+     
     return r
 
 def openmachines(dateclass, bins=10):
