@@ -11,7 +11,7 @@ body {
 div#container {
     text-align:left;
     background-color: white;
-    border: 8px solid #C68E17;
+    border: 8px solid #B78727;
     margin: 50px auto;
     padding: 20px 50px;
     width: 650px;
@@ -24,7 +24,7 @@ div#title {
 }    
 
 #appname {
-    color: #7E2217;
+    color: #0F4D92;
 }
 
 h1 {
