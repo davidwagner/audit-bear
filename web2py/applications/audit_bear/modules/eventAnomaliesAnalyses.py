@@ -120,49 +120,78 @@ def getCalibrationEvents(data, ballot, r):
                     temp = temp + 1
                     numOccurrencesRecalibrationMap[x.serialNumber] = temp
                 else:
-                    totalRecalibrationList.append((x.serialNumber, ballot.machinePrecinctNumMap[x.serialNumber], ballot.machinePrecinctNameMap[x.serialNumber]))
+                    if not ballot.machinePrecinctNumMap.has_key(x.serialNumber):
+                        totalRecalibrationList.append((x.serialNumber, " ", " "))
+                    else:
+                        totalRecalibrationList.append((x.serialNumber, ballot.machinePrecinctNumMap[x.serialNumber], ballot.machinePrecinctNameMap[x.serialNumber]))
                     numOccurrencesRecalibrationMap[x.serialNumber] = 1
-    for w in numOccurrencesWarningMap.values():
-        avg = avg + w
-    avg = avg/len(numOccurrencesWarningMap.values())
-    for w2 in numOccurrencesWarningMap.values():
-        ssum = ssum + ((w2-avg)**2)
-    ssum2 = ssum/len(numOccurrencesWarningMap.values())
-    stdev = math.sqrt(ssum2)
-    b = True
-    for y in numOccurrencesWarningMap:
-        if numOccurrencesWarningMap[y] > (avg + (2.5*stdev)):
-            for y2 in totalWarningList:
-                if y2[0] == y:
-                    if b == True:
-                        r.addTextBox("The following machines have an unusually large number of log messages related to an uncalibrated screen.  The meaning of these messages is not documented.  It is possible that they might indicate a problem with the terminal touch screen.  You may wish to check if the machine is calibrated or if the touch screen is in good working condition.")
-                        r.addTextBox(" ")
-                        b = False
-                    r.addTextBox("%s (#%s)   %s had %d occurrences of this event." % (y2[2], y2[1], y2[0], numOccurrencesWarningMap[y]))
-    b2 = True
-    for z in numOccurrencesWarningMap:
-        if numOccurrencesRecalibrationMap.has_key(z):
-            if numOccurrencesWarningMap[z] != numOccurrencesRecalibrationMap[z]:
-                for z2 in totalRecalibrationList:
-                    for z3 in totalWarningList:
-                        if z2[0] == z == z3[0]:
-                            if b2 == True:
-                                r.addTextBox(" ")
-                                r.addTextBox("The following machines experienced screen calibration issues and were not always recalibrated.  You may wish to check if the screen is calibrated.")
-                                r.addTextBox(" ")
-                                b2 = False
-                            r.addTextBox("%s (#%s)   %s experienced %d events warning about calibration, but it was only recalibrated %d time(s)." % (z3[2], z3[1], z3[0], numOccurrencesWarningMap[z], numOccurrencesRecalibrationMap[z]))
-        else:
-            for z4 in totalWarningList:
-                if z4[0] == z:
-                    if b2 == True:
-                        r.addTextBox(" ")
-                        r.addTextBox("The following machines experienced screen calibration issues and were not always recalibrated.  You may wish to check if the screen is calibrated.")
-                        r.addTextBox(" ")
-                        b2 = False
-                    r.addTextBox("%s (#%s)   %s experienced %d events warning about calibration, but it was never recalibrated." % (z4[2], z4[1], z4[0], numOccurrencesWarningMap[z]))
+    if len(numOccurrencesWarningMap) < 1:
+        r.addTextBox("This county experienced no callibration problems.")
+    else:
+        for w in numOccurrencesWarningMap.values():
+            avg = avg + w
+        avg = avg/len(numOccurrencesWarningMap.values())
+        for w2 in numOccurrencesWarningMap.values():
+            ssum = ssum + ((w2-avg)**2)
+        ssum2 = ssum/len(numOccurrencesWarningMap.values())
+        stdev = math.sqrt(ssum2)
+        b = True
+        for y in numOccurrencesWarningMap:
+            if numOccurrencesWarningMap[y] > (avg + (2.5*stdev)):
+                for y2 in totalWarningList:
+                    if y2[0] == y:
+                        if b == True:
+                            r.addTextBox("The following machines have an unusually large number of log messages related to an uncalibrated screen.  The meaning of these messages is not documented.  It is possible that they might indicate a problem with the terminal touch screen.  You may wish to check if the machine is calibrated or if the touch screen is in good working condition.")
+                            r.addTextBox(" ")
+                            b = False
+                        r.addTextBox("%s (#%s)   %s had %d occurrences of this event." % (y2[2], y2[1], y2[0], numOccurrencesWarningMap[y]))
+        b2 = True
+        for z in numOccurrencesWarningMap:
+            if numOccurrencesRecalibrationMap.has_key(z):
+                if numOccurrencesWarningMap[z] != numOccurrencesRecalibrationMap[z]:
+                    for z2 in totalRecalibrationList:
+                        for z3 in totalWarningList:
+                            if z2[0] == z == z3[0]:
+                                if b2 == True:
+                                    r.addTextBox(" ")
+                                    r.addTextBox("The following machines experienced screen calibration issues and were not always recalibrated.  You may wish to check if the screen is calibrated.")
+                                    r.addTextBox(" ")
+                                    b2 = False
+                                r.addTextBox("%s (#%s)   %s experienced %d events warning about calibration, but it was only recalibrated %d time(s)." % (z3[2], z3[1], z3[0], numOccurrencesWarningMap[z], numOccurrencesRecalibrationMap[z]))
+            else:
+                for z4 in totalWarningList:
+                    if z4[0] == z:
+                        if b2 == True:
+                            r.addTextBox(" ")
+                            r.addTextBox("The following machines experienced screen calibration issues and were not always recalibrated.  You may wish to check if the screen is calibrated.")
+                            r.addTextBox(" ")
+                            b2 = False
+                        r.addTextBox("%s (#%s)   %s experienced %d events warning about calibration, but it was never recalibrated." % (z4[2], z4[1], z4[0], numOccurrencesWarningMap[z]))
     return r
-                    
+                   
+def getTerminalClosedEarlyEvents(data, ballot, r):
+    r.addTitle('Detection of Terminals Closed Early')
+    totalEarlyList = []
+    for x in data.getEntryList():
+        s = x.dateTime.split(" ")
+        t = s[1].split(":")
+        if t[0] == '':
+            continue
+        elif stri.atoi(t[0]) > 7 and stri.atoi(t[0]) < 19 and (s[0] == '11/02/2010' or s[0] == '06/08/2010'):
+            if x.eventNumber == '0001628':
+                if x.serialNumber not in ballot.earlyVotingList and x.serialNumber not in ballot.failsafeList:
+                    totalEarlyList.append((x.serialNumber, s[1], ballot.machinePrecinctNumMap[x.serialNumber], ballot.machinePrecinctNameMap[x.serialNumber]))
+    b = True
+    if len(totalEarlyList) > 0:
+        if b == True:
+            r.addTextBox('The following machines experienced at least one log message related to the terminal closing early.  The detail meaning of this event is not documented.  You may wish to check if there was a problem on these terminals that would prevent votes being cast accurately.')
+            r.addTextBox(" ")
+            b = False
+        for y in totalEarlyList:
+            r.addTextBox("%s (#%s)   %s was closed at %s" % (y[3], y[2], y[0], y[1]))
+    else:
+        r.addTextBox("This county experienced no anomalous terminals closing early.")
+    return r        
    
 def getWarningEvents(data,ballot,r):
     r.addTitle('Detection of Anomalous Warning Events')
@@ -246,7 +275,7 @@ def getWarningEvents(data,ballot,r):
         stdev = math.sqrt(ssum2)
         for w3 in totalList:
             if w3[3] >= math.floor(avg + (2.5*stdev)):
-                warningTable.addRow([w3[2], w3[1], w3[0], w3[4], w3[5], repr(w3[3]), 'TODO'])
+                print w3[3]
     return r
     
 def getVoteCancelledEvents(data,ballot,r):
