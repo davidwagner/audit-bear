@@ -117,24 +117,29 @@ class Report:
         del self.images
         del self.tables
         del self.title
+        del self.elements
 
     def __init__(self):
         self.textBoxes = []
         self.images = []
         self.tables = []
+        self.elements = []
         self.title = None
 
     def addTextBox(self, textBox):
         self.textBoxes.append(textBox)
+        self.elements.append(textBox)
 
     def addImage(self, image):
         self.images.append(image)
+        self.elements.append(image)
 
     def addTitle(self, title):
         self.title = title
 
     def addTable(self, table):
         self.tables.append(table)
+        self.elements.append(table)
 
     def getTextBox(self, index):
         return self.textBoxes[index]
@@ -157,3 +162,5 @@ class Report:
         else:
             return False
 
+    def __iter__(self):
+        return self.elements.__iter__()

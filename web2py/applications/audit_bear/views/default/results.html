@@ -1,4 +1,5 @@
 {{extend 'layout.html'}}
+
 {{if message != 'LOLCAT':}}
 <div id="title"><h1><span id="appname">Audit</span>Results</h1></div>
     {{i=0}}
@@ -6,18 +7,18 @@
         {{i+=1}}
         <h2>Report#{{=i}}:{{=result.title}}</h2>
         <hr>
-        {{for textbox in result.getTextBoxList():}}
-            {{response.write(textbox, escape=False)}} <br/>
-            
-        {{pass}}
-        {{for table in result.getTablesList():}}
-            {{response.write(table.getHTML(), escape=False)}}
-        {{pass}}
-        {{for image in result.getImagesList():}}
-            {{=image.getImage()}}<br/>
-        {{pass}}
+        {{
+        for element in result:
+            if element.__class__.__name__ == 'str':
+                response.write(element + '<br/>', escape=False)
+            elif element.__class__.__name__ == 'Table':
+                response.write(element.getHTML(), escape=False)
+            else:
+                response.write(element.getImage())
+            pass
+        pass
+        }}
     {{pass}}
-
 {{else:}}
 <center>
 <img src='/audit_bear/static/images/lolcat-edit.jpg' />
