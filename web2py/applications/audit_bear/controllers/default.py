@@ -4,6 +4,7 @@ from controllerHelpers import *
 from auditLog import AuditLog
 from ballotImage import BallotImage
 from el68a import EL68A
+import os
 
 def index():
     form = FORM(
@@ -12,21 +13,26 @@ def index():
 
     if form.accepts(request.vars, session) and form.vars.zipped_files != '':
         form.vars.zipped_files.file.seek(0)
-        el152, el155, el68a = extractLogs([form.vars.zipped_files.file])
+        el152, el155, el68a = extractLogs([form.vars.zipped_files.file], request.folder)
         del form.vars.zipped_files
 
+        # file name is in el152.name etc.
         # create parsed logs and delete files...
         p_el152 = p_el155 = p_el68a = None
         if el152:
             p_el152 = AuditLog(el152)
+            os.unlink(os.path.join(request.folder, 'uploads', el152.name))
             del el152
         if el155 and el68a:
             p_el68a = EL68A(el68a)
+            os.unlink(os.path.join(request.folder, 'uploads', el68a.name))
             del el68a
             p_el155 = BallotImage(el155, p_el152, p_el68a)
+            os.unlink(os.path.join(request.folder, 'uploads', el155.name))
             del el155
         elif el155 and not el68a:
             p_el155 = BallotImage(el155, p_el152)
+            os.unlink(os.path.join(request.folder, 'uploads', el155.name))
             del el155
          
         # parsed logs are passed to dispatcher

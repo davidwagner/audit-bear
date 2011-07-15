@@ -4,6 +4,7 @@
 
 import re
 import zipfile
+import os
 # these three boolean functions could be implemented in the
 # data structure classes instead...
 def is_68(fh):
@@ -54,9 +55,26 @@ def is_155(fh):
 
     return False
 
-def extractLogs(files):
-    totalReceivedFiles = []
+def choosePath(applicationDirectory):
+    uploadPath = os.path.join(applicationDirectory, 'uploads')
+    #TODO this might not be thread safe
+
+    # check for file[num] and pick a number that is not being used
     i = 0
+    done = False
+    fullPath = None
+    while not done:
+        i += 1
+        fullPath = os.path.join(uploadPath, 'file' + str(i).zfill(4))
+        if os.path.isfile(fullPath):
+            done = False
+        else:
+            done = True
+
+    return fullPath
+    
+def extractLogs(files, applicationDirectory):
+    totalReceivedFiles = []
     for f in files:
         if zipfile.is_zipfile(f):
             # extract
@@ -64,14 +82,14 @@ def extractLogs(files):
             for member in z.infolist():
                 m = z.open(member, 'r')
                 # re-write, choose better filename
-                fNew = open("file" + str(i), 'w')
+                path = choosePath(applicationDirectory)
+                fNew = open(path, 'w')
                 fNew.close()
-                fNew = open("file" + str(i), 'r+')
+                fNew = open(path, 'r+')
                 for l in m:
                     fNew.write(l)
                 fNew.flush()
                 totalReceivedFiles.append(fNew)
-                i += 1
 
             z.close()
         else:
@@ -101,8 +119,8 @@ def extractLogs(files):
             else:
                 first155 = f
         else:
-            # the file is not recognized, ignore it
-            pass
+            # the file is not recognized, ignore it and delete file path
+            os.unlink(os.path.join(applicationDirectory, 'uploads', f.name))
 
     # reset all seeks
     if first68 != None:
