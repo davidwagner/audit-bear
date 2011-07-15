@@ -15,7 +15,6 @@ import matplotlib.pyplot as plt
 from dateutil.parser import parse
 
 def eventAnomalies(data, r):
-    plt.ioff()
     emMap = {}
     emMap2 = {}
     emList = []
@@ -59,8 +58,9 @@ def lowBatteryMachines(data, ballot, r):
                 temp = temp + 1
                 lowBatteryMap[x.serialNumber] = temp
     if len(lowBatteryMap) < 1:
-        r.addTextBox('This county shows no indication of machines with low battery.')
+        lowBatteryTable.addRow('This county shows no indication of machines with low battery.')
     else:
+        lowBatteryTable = report.Table()
         for n in lowBatteryMap.values():
             avg = avg + n
         avg = avg/len(lowBatteryMap.values())
@@ -88,8 +88,52 @@ def lowBatteryMachines(data, ballot, r):
         r.addTextBox("The following voting machines have an unusually large number of log messages related to their Internal Power Supply.  The meaning of these messages is not documented.  It is possible that they might indicate potential battery or power supply issues.  You may wish to check whether the battery of these machines is in good working condition.")
         r.addTextBox(" ")
         for t in totalList:
-            r.addTextBox("%s (#%s)   %s had %d occurrences of this event." % (t[2], t[1], t[0], t[3])) 
+            lowBatteryTable.addRow(['%s (#%s)  ' % (t[2], t[1]), '   ', '%s had %d occurrences of this event.' % (t[0], t[3])])
+        lowBatteryTable.generateHTML()
+        r.addTable(lowBatteryTable)
     return r
+    
+def getCalibrationEvents2(data, ballot, r):
+    r.addTitle("Detecting Votes Cast when the Terminal Screen is Not Calibrated")
+    calMap = {}
+    for x in data.getEntryList():
+        s = x.dateTime.split(" ")
+        t = s[1].split(":")
+        if t[0] == '':
+            continue
+        elif stri.atoi(t[0]) > 6 and stri.atoi(t[0]) < 19 and (s[0] == '11/02/2010' or s[0] == '06/08/2010'):
+            if x.eventNumber == '0001651':
+                if calMap.has_key(x.serialNumber):
+                    if calMap[x.serialNumber] == 0:
+                        continue
+                    elif calMap[x.serialNumber] == 2:
+                        calMap[x.serialNumber] == 0
+                else:
+                    calMap[x.serialNumber] = False
+            elif x.eventNumber == '0001510' or x.eventNumber == '0001511':
+                if calMap.has_key(x.serialNumber):
+                    if calMap[x.serialNumber] == 0:
+                        calMap[x.serialNumber] = 1
+            elif x.eventNumber == '0001655':
+                if calMap.has_key(x.serialNumber):
+                    if calMap[x.serialNumber] == 0:
+                        calMap[x.serialNumber] = 2
+                    elif calMap[x.serialNumber] == 1:
+                        calMap[x.serialNumber] = 2
+    b = True
+    calTable = report.Table()
+    for y in calMap:
+        if calMap[y] == 1:
+            if b == True:
+                r.addTextBox("The following machines experienced votes being cast while the terminal screen was not calibrated correctly.  You may wish to check if the machine is calibrated and verify the votes.")
+                r.addTextBox(" ")
+                b = False
+            calTable.addRow(["%s (#%s)  " % (ballot.machinePrecinctNameMap[y], ballot.machinePrecinctNumMap[y]), "%s" % (y,)])
+    calTable.generateHTML()
+    r.addTable(calTable)
+    return r
+                
+            
     
 def getCalibrationEvents(data, ballot, r):
     plt.ioff()
@@ -108,7 +152,7 @@ def getCalibrationEvents(data, ballot, r):
         t = s[1].split(":")
         if t[0] == '':
             continue
-        elif stri.atoi(t[0]) > 7 and stri.atoi(t[0]) < 19 and (s[0] == '11/02/2010' or s[0] == '06/08/2010'):
+        elif stri.atoi(t[0]) > 6 and stri.atoi(t[0]) < 19 and (s[0] == '11/02/2010' or s[0] == '06/08/2010'):
             if x.eventNumber == '0001651':
                 if numOccurrencesWarningMap.has_key(x.serialNumber):
                     temp = numOccurrencesWarningMap[x.serialNumber]
@@ -128,8 +172,10 @@ def getCalibrationEvents(data, ballot, r):
                     else:
                         totalRecalibrationList.append((x.serialNumber, ballot.machinePrecinctNumMap[x.serialNumber], ballot.machinePrecinctNameMap[x.serialNumber]))
                     numOccurrencesRecalibrationMap[x.serialNumber] = 1
+    warningTable = report.Table()
     if len(numOccurrencesWarningMap) < 1:
-        r.addTextBox("This county experienced no callibration problems.")
+        warningTable.addRow("This county experienced no callibration problems.")
+        #r.addTextBox("This county experienced no callibration problems.")
     else:
         for w in numOccurrencesWarningMap.values():
             avg = avg + w
@@ -147,7 +193,9 @@ def getCalibrationEvents(data, ballot, r):
                             r.addTextBox("The following machines have an unusually large number of log messages related to an uncalibrated screen.  The meaning of these messages is not documented.  It is possible that they might indicate a problem with the terminal touch screen.  You may wish to check if the machine is calibrated or if the touch screen is in good working condition.")
                             r.addTextBox(" ")
                             b = False
-                        r.addTextBox("%s (#%s)   %s had %d occurrences of this event." % (y2[2], y2[1], y2[0], numOccurrencesWarningMap[y]))
+                        warningTable.addRow(["%s (#%s) " % (y2[2], y2[1]), "  %s had %d occurrences of this event." % (y2[0], numOccurrencesWarningMap[y])])
+                        #r.addTextBox("%s (#%s)   %s had %d occurrences of this event." % (y2[2], y2[1], y2[0], numOccurrencesWarningMap[y]))
+        warningTable2 = report.Table()
         b2 = True
         for z in numOccurrencesWarningMap:
             if numOccurrencesRecalibrationMap.has_key(z):
@@ -160,7 +208,8 @@ def getCalibrationEvents(data, ballot, r):
                                     r.addTextBox("The following machines experienced screen calibration issues and were not always recalibrated.  You may wish to check if the screen is calibrated.")
                                     r.addTextBox(" ")
                                     b2 = False
-                                r.addTextBox("%s (#%s)   %s experienced %d events warning about calibration, but it was only recalibrated %d time(s)." % (z3[2], z3[1], z3[0], numOccurrencesWarningMap[z], numOccurrencesRecalibrationMap[z]))
+                                warningTable2.addRow(["%s (#%s) " % (z3[2], z3[1]), "  %s experienced %d events warning about calibration, but it was only recalibrated %d time(s)." % (z3[0], numOccurrencesWarningMap[z], numOccurrencesRecalibrationMap[z])])
+                                #r.addTextBox("%s (#%s)   %s experienced %d events warning about calibration, but it was only recalibrated %d time(s)." % (z3[2], z3[1], z3[0], numOccurrencesWarningMap[z], numOccurrencesRecalibrationMap[z]))
             else:
                 for z4 in totalWarningList:
                     if z4[0] == z:
@@ -169,7 +218,12 @@ def getCalibrationEvents(data, ballot, r):
                             r.addTextBox("The following machines experienced screen calibration issues and were not always recalibrated.  You may wish to check if the screen is calibrated.")
                             r.addTextBox(" ")
                             b2 = False
-                        r.addTextBox("%s (#%s)   %s experienced %d events warning about calibration, but it was never recalibrated." % (z4[2], z4[1], z4[0], numOccurrencesWarningMap[z]))
+                        warningTable2.addRow(["%s (#%s)  " % (z4[2], z4[1]), "  %s experienced %d events warning about calibration, but it was never recalibrated." % (z4[0], numOccurrencesWarningMap[z])])
+                        #r.addTextBox("%s (#%s)   %s experienced %d events warning about calibration, but it was never recalibrated." % (z4[2], z4[1], z4[0], numOccurrencesWarningMap[z]))
+        warningTable.generateHTML()
+        warningTable2.generateHTML()
+        r.addTable(warningTable)
+        r.addTable(warningTable2)
     return r
                    
 def getTerminalClosedEarlyEvents(data, ballot, r):
@@ -185,6 +239,7 @@ def getTerminalClosedEarlyEvents(data, ballot, r):
             if x.eventNumber == '0001628':
                 if x.serialNumber not in ballot.earlyVotingList and x.serialNumber not in ballot.failsafeList:
                     totalEarlyList.append((x.serialNumber, s[1], ballot.machinePrecinctNumMap[x.serialNumber], ballot.machinePrecinctNameMap[x.serialNumber]))
+    earlyTable = report.Table()
     b = True
     if len(totalEarlyList) > 0:
         if b == True:
@@ -192,10 +247,54 @@ def getTerminalClosedEarlyEvents(data, ballot, r):
             r.addTextBox(" ")
             b = False
         for y in totalEarlyList:
-            r.addTextBox("%s (#%s)   %s was closed at %s" % (y[3], y[2], y[0], y[1]))
+            earlyTable.addRow(["%s  (#%s) " % (y[3], y[2]), "  %s was closed at %s" % (y[0], y[1])])
+            #r.addTextBox("%s (#%s)   %s was closed at %s" % (y[3], y[2], y[0], y[1]))
     else:
-        r.addTextBox("This county experienced no anomalous terminals closing early.")
+        earlyTable.addRow(["This county experienced no anomalous terminals closing early."])
+        #r.addTextBox("This county experienced no anomalous terminals closing early.")
+    earlyTable.generateHTML()
+    r.addTable(earlyTable)
     return r        
+   
+def getUnknownEvents(data, ballot, r):
+    r.addTitle('Detection of Anomalous Unknown Events')
+    unknownEvents = ['0001703', '0001704', '0001404']
+    totalUnknownEventsMap = {}
+    totalsMap = {}
+    for x in data.getEntryList():
+        if x.eventNumber in unknownEvents:
+            if totalUnknownEventsMap.has_key(x.serialNumber):
+                if totalUnknownEventsMap[x.serialNumber][1].has_key(x.eventNumber):
+                    temp = totalUnknownEventsMap[x.serialNumber][1][x.eventNumber]
+                    temp = temp + 1
+                    totalUnknownEventsMap[x.serialNumber][1][x.eventNumber] = temp
+                else:
+                    totalUnknownEventsMap[x.serialNumber][1][x.eventNumber] = 1
+            else:
+                tempMap = {}
+                tempMap[x.eventNumber] = 1
+                totalUnknownEventsMap[x.serialNumber] = ((ballot.machinePrecinctNumMap[x.serialNumber], ballot.machinePrecinctNameMap[x.serialNumber]),tempMap)
+    for y in totalUnknownEventsMap:
+        if totalsMap.has_key(y):
+            for y2 in totalUnknownEventsMap[y][1]:
+                totalsMap[y] += totalUnknownEventsMap[y][1][y2]
+        else:
+            totalsMap[y] = 0
+            for y2 in totalUnknownEventsMap[y][1]:
+                totalsMap[y] += totalUnknownEventsMap[y][1][y2]
+    unknownTable = report.Table()
+    if len(totalUnknownEventsMap) < 1:
+        unknownTable.addRow(["This county did not experience any anomalous unknown events."])
+        #r.addTextBox("This county did not experience any anomalous unknown events.")
+    else:
+        r.addTextBox("The following machines each had at least one unknown warning event.  The meanings of these events is not documented.  You may wish to inspect these machines for potential problems.")
+        r.addTextBox(" ")
+        for z in totalUnknownEventsMap:
+            unknownTable.addRow(["%s (#%s) " % (totalUnknownEventsMap[z][0][1], totalUnknownEventsMap[z][0][0]), "%s has %d total unknown warnings." % (z, totalsMap[z])])
+            #r.addTextBox("%s (#%s)  %s has %d total unknown warnings." % (totalUnknownEventsMap[z][0][1], totalUnknownEventsMap[z][0][0], z, totalsMap[z])) 
+    unknownTable.generateHTML()
+    r.addTable(unknownTable)
+    return r
    
 def getWarningEvents(data,ballot,r):
     plt.ioff()
@@ -240,6 +339,7 @@ def getWarningEvents(data,ballot,r):
         for y2 in wMap[y]:
             temp = temp + wMap[y][y2]
         wNumMap[y] = temp
+    
     if len(wMap) < 1:
         r.addTextBox("This county experienced no Warning events.")
         print "This county experienced no 'Warning' events."
@@ -329,9 +429,10 @@ def getVoteCancelledEvents(data,ballot,r):
         for y2 in vcMap[y]:
             temp = temp + vcMap[y][y2]
         vcNumMap[y] = temp
+    print vcNumMap
+    vcTable = report.Table()
     if len(vcMap) < 1:
-        r.addTextBox("This county experienced no Vote Cancelled events.")
-        print "This county experienced no 'vote cancelled' events."
+        vcTable.addRow(["This county experienced no Vote Cancelled events."])
     else:
         for z in vcMap:
             for z2 in vcMap[z]:
@@ -370,49 +471,116 @@ def getVoteCancelledEvents(data,ballot,r):
             ssum = ssum + ((w2[3]-avg)**2)
         ssum2 = ssum/len(totalList)
         stdev = math.sqrt(ssum2)
-        voteCancelledTable = report.Table()
-        
-
-        isOutlier = True
-        #r.addTextBox("%10s %10s %20s %7s %7s %s" % ('Machine #', 'Precinct #', 'Precinct Name', 'Outlier', 'Event #', 'Event Description'))
+        totalList2 = []
         for w3 in totalList:
             if w3[3] > (avg + (4*stdev)):
-                if isOutlier == True:
-                    voteCancelledTable.addHeader('Precinct Name')
-                    voteCancelledTable.addHeader('Precinct Number')
-                    voteCancelledTable.addHeader('Machine Serial Number')
-                    voteCancelledTable.addHeader('Event #')
-                    voteCancelledTable.addHeader('Event Description')
-                    voteCancelledTable.addHeader('# of Occurences (Outlier)')
-                    voteCancelledTable.addHeader('Possible Reasons/ Suggestions')
-                    isOutlier = False
-                #t = "%10s %5s %20s %5d %7s %s" % (w3[0], w3[1], w3[2], w3[3], w3[4], w3[5])
-                voteCancelledTable.addRow([w3[2], w3[1], w3[0], w3[4], w3[5], repr(w3[3]), 'TODO'])
-                #voteCancelledTable.addRow("%10s %5s %20s %5d %7s %s" % (w3[0], w3[1], w3[2], w3[3], w3[4], w3[5])) 
-        
-        voteCancelledTable.generateHTML()
-        r.addTable(voteCancelledTable)        
-        fig = plt.figure(figsize=(22,14))
-        ax2 = fig.add_axes([0.15, 0.1, .7, .8])
-        n, bins, patches = plt.hist([list1513, list1514, list1515, list1516, list1517, list1518, list1519], bins=maxNumOccurrences+1, range=(0,maxNumOccurrences+1), align='left', label=['0001513: '+data.getEventDescription('0001513'),'0001514: '+data.getEventDescription('0001514'), '0001515: '+data.getEventDescription('0001515'), '0001516: '+data.getEventDescription('0001516'), '0001517: '+data.getEventDescription('0001517'), '0001518: '+data.getEventDescription('0001518'), '0001519: '+data.getEventDescription('0001519')])
-        for b in bins:
-            minorTicks += ((b-.5),)
-        ax2.set_xticks(minorTicks, minor=True)
-        ax2.grid(b=True, which='minor')
-        ax2.set_xlabel('Per Machine Occurrences')
-        ax2.set_ylabel('# of Machines')
-        ax2.set_title('Frequency of Vote Cancelled Events')
-        ax2.legend()
-        stio = StringIO.StringIO()
-        plt.savefig(stio)
-        im = report.Image(stio, 'Vote Cancelled Events')
-        r.addImage(im)
-
-        ax2.clear()
-        plt.delaxes(ax2)
-        plt.cla()
-        plt.delaxes()
-        fig.clf()
-        plt.clf()
-        plt.close('all')
+                totalList2.append(w3)
+        b = True
+        b2 = True
+        vcTable2 = report.Table()
+        b3 = True
+        vcTable3 = report.Table()
+        b4 = True
+        vcTable4 = report.Table()
+        b5 = True
+        vcTable5 = report.Table()
+        b6 = True
+        vcTable6 = report.Table()
+        b7 = True
+        vcTable7 = report.Table()
+        for w4 in totalList2:
+            if w4[4] == '0001513':
+                if b == True:
+                    r.addTextBox("The following machines had an unusually large number of votes cancelled due to having the wrong ballot.")
+                    b = False
+                #r.addTextBox("Machine %s had %d occurrences (in %s)" % (w4[0], w4[3], w4[2]))
+                vcTable.addRow(["Machine %s had %d vote cancellation events  " % (w4[0], w4[3]), " (in %s)." % (w4[2],)])
+        vcTable.generateHTML()
+        r.addTable(vcTable)
+        for w4 in totalList2:
+            if w4[4] == '0001514':
+                if b2 == True:
+                    r.addTextBox(" ")
+                    r.addTextBox("The following machines had an unusually large number of votes cancelled because the voter left after the ballot was issued.")
+                    b2 = False
+                #r.addTextBox("Machine %s had %d vote cancellation events (in %s)" % (w4[0], w4[3], w4[2]))
+                vcTable2.addRow(["Machine %s had %d vote cancellation events  " % (w4[0], w4[3]), " (in %s)." % (w4[2],)])
+        vcTable2.generateHTML()
+        r.addTable(vcTable2)
+        for w4 in totalList2:
+            if w4[4] == '0001515':
+                if b3 == True:
+                    r.addTextBox(" ")
+                    r.addTextBox("The following machines had an unusually large number of votes cancelled because the voter left before the ballot was issued.")
+                    b3 = False
+                #r.addTextBox("Machine %s had %d vote cancellation events (in %s)" % (w4[0], w4[3], w4[2]))
+                vcTable3.addRow(["Machine %s had %d vote cancellation events  " % (w4[0], w4[3]), " (in %s)." % (w4[2],)])
+        vcTable3.generateHTML()
+        r.addTable(vcTable3)
+        for w4 in totalList2:
+            if w4[4] == '0001516':
+                if b4 == True:
+                    r.addTextBox(" ")
+                    r.addTextBox("The following machines had an unusually large number of votes cancelled by a voter.")
+                    b4 = False
+                #r.addTextBox("Machine %s had %d vote cancellation events (in %s)" % (w4[0], w4[3], w4[2]))
+                vcTable4.addRow(["Machine %s had %d vote cancellation events  " % (w4[0], w4[3]), " (in %s)." % (w4[2],)])
+        vcTable4.generateHTML()
+        r.addTable(vcTable4)
+        for w4 in totalList2:
+            if w4[4] == '0001517':
+                if b5 == True:
+                    r.addTextBox(" ")
+                    r.addTextBox("The following machines had an unusually large number of votes cancelled due to a printer problem.")
+                    b5 = False
+                #r.addTextBox("Machine %s had %d vote cancellation events (in %s)" % (w4[0], w4[3], w4[2]))
+                vcTable5.addRow(["Machine %s had %d vote cancellation events  " % (w4[0], w4[3]), " (in %s)." % (w4[2],)])
+        vcTable5.generateHTML()
+        r.addTable(vcTable5)
+        for w4 in totalList2:
+            if w4[4] == '0001518':
+                if b6 == True:
+                    r.addTextBox(" ")
+                    r.addTextBox("The following machines had an unusually large number of votes cancelled due to a terminal problem.")
+                    b6 = False
+                #r.addTextBox("Machine %s had %d vote cancellation events (in %s)" % (w4[0], w4[3], w4[2]))
+                vcTable6.addRow(["Machine %s had %d vote cancellation events  " % (w4[0], w4[3]), " (in %s)." % (w4[2],)])
+        vcTable6.generateHTML()
+        r.addTable(vcTable6)
+        for w4 in totalList2:
+            if w4[4] == '0001519':
+                if b7 == True:
+                    r.addTextBox(" ")
+                    r.addTextBox("The following machines had an unusually large number of votes cancelled for an unknown reason.")
+                    b7 = False
+                #r.addTextBox("Machine %s had %d vote cancellation events (in %s)" % (w4[0], w4[3], w4[2]))
+                vcTable7.addRow(["Machine %s had %d vote cancellation events  " % (w4[0], w4[3]), " (in %s)." % (w4[2],)])
+        vcTable7.generateHTML()
+        r.addTable(vcTable7)
+        avg2 = 0
+        ssum3 = 0.00000000
+        ssum4 = 0.00000000
+        stdev2 = 0.00000000
+        for w in vcNumMap.values():
+            avg2 = avg2 + w
+        avg2 = avg2/len(vcNumMap.values())
+        for w2 in vcNumMap.values():
+            ssum3 = ssum3 + ((w2-avg2)**2)
+        ssum4 = ssum3/len(vcNumMap.values())
+        stdev2 = math.sqrt(ssum4)   
+        outliers = []
+        for u in vcNumMap:
+            if vcNumMap[u] > (3*stdev2):
+                outliers.append((u, ballot.machinePrecinctNameMap[u], vcNumMap[u]))     
+        b8 = True
+        vcTable8 = report.Table()
+        for w5 in outliers:
+            if b8 == True:
+                r.addTextBox(" ")
+                r.addTextBox("The following machines had an unusually large number of vote cancellations in total.")  
+                b8 = False  
+            #r.addTextBox("Machine %s had %d vote cancellation events (in %s)." % (w5[0], w5[2], w5[1]))
+            vcTable8.addRow(["Machine %s had %d vote cancellation events " % (w5[0], w5[2]), " (in %s)." % (w5[1],)])
+        vcTable8.generateHTML()
+        r.addTable(vcTable8)
     return r
