@@ -7,8 +7,6 @@ import zipfile
 import os
 import controllerHelpers
 
-# these three boolean functions could be implemented in the
-# data structure classes instead...
 def is_68(fh):
     fh.seek(0)
     pattern = r"SYSTEM LOG LISTING"
@@ -30,7 +28,7 @@ def is_152(fh):
     pattern = r"^(\d*?)\s+(\d*?)\s+(\w+?)\s+(\d+?/\d+?/\d+?\s+\d+?:\d+?:\d+?)\s+(\d+?)\s+(.*?)\s+$"
     lineRe = re.compile(pattern)
     i = 0
-    # there is a problem with the file handle...
+
     for l in fh:
         r = lineRe.match(l)
         if r:
@@ -57,6 +55,7 @@ def is_155(fh):
 
     return False
 
+# intelligently choose a path name
 def choosePath(applicationDirectory):
     uploadPath = os.path.join(applicationDirectory, 'uploads')
     while True:
@@ -72,11 +71,8 @@ def extractLogs(files, applicationDirectory):
             z = zipfile.ZipFile(f, 'r')
             for member in z.infolist():
                 m = z.open(member, 'r')
-                # re-write, choose better filename
                 path = choosePath(applicationDirectory)
-                fNew = open(path, 'w')
-                fNew.close()
-                fNew = open(path, 'r+')
+                fNew = open(path, 'w+')
                 for l in m:
                     fNew.write(l)
                 fNew.flush()
@@ -110,7 +106,7 @@ def extractLogs(files, applicationDirectory):
             else:
                 first155 = f
         else:
-            # the file is not recognized, ignore it and delete file path
+            # the file is not recognized, ignore it and delete file from disk
             os.unlink(os.path.join(applicationDirectory, 'uploads', f.name))
 
     # reset all seeks
