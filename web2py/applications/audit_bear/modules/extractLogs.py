@@ -5,6 +5,8 @@
 import re
 import zipfile
 import os
+import controllerHelpers
+
 # these three boolean functions could be implemented in the
 # data structure classes instead...
 def is_68(fh):
@@ -57,22 +59,11 @@ def is_155(fh):
 
 def choosePath(applicationDirectory):
     uploadPath = os.path.join(applicationDirectory, 'uploads')
-    #TODO this might not be thread safe
+    while True:
+        fullPath = os.path.join(uploadPath, controllerHelpers.generateRandomID())
+        if not os.path.isfile(fullPath):
+            return fullPath
 
-    # check for file[num] and pick a number that is not being used
-    i = 0
-    done = False
-    fullPath = None
-    while not done:
-        i += 1
-        fullPath = os.path.join(uploadPath, 'file' + str(i).zfill(4))
-        if os.path.isfile(fullPath):
-            done = False
-        else:
-            done = True
-
-    return fullPath
-    
 def extractLogs(files, applicationDirectory):
     totalReceivedFiles = []
     for f in files:
