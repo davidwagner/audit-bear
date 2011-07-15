@@ -14,6 +14,8 @@ def consecutiveVotes(parsedLog, ballotImage, validMachines, pollingLate):
     
     mapMachinesAllTimes = {} #key->machine serial number, value-> a list of each time two consecutive votes are found in that machine ex: [(2nd vote - 1st vote),1st vote, 2nd vote] (after 7:00 PM)
     mapMachinesAllTimesB={} #key->machine serial number, value-> a list of each time two consecutive votes are found in that machine ex: [(2nd vote - 1st vote),1st vote, 2nd vote] (before 7:00 PM)
+    
+    listTimeVotes = [] #store all the times between consecutive votes after 7 PM
     precinctNumMap = parsedBallotImage.getPrecinctNumMap()
 
     earlyVoting = parsedBallotImage.getEarlyVotingList()
@@ -57,6 +59,7 @@ def consecutiveVotes(parsedLog, ballotImage, validMachines, pollingLate):
                 t2 = datetime.timedelta(hours=t2.hour, minutes=t2.minute, seconds=t2.second)
                 delta1 = t2 - t1
                 
+                listTimeVotes.append(round(delta1.seconds/60,1))
                 mapMachinesAllTimes.setdefault(parsedLog[i][0],[]).append([round(delta1.seconds/60,1), str(t1), str(t2)])
                 mapMachines[parsedLog[i][0]] = mapMachines.get(parsedLog[i][0], 0) + round(delta1.seconds/60,1)
                 mapCountCV[parsedLog[i][0]] = mapCountCV.get(parsedLog[i][0], 0) + 1
@@ -74,9 +77,6 @@ def consecutiveVotes(parsedLog, ballotImage, validMachines, pollingLate):
     
     for key in mapMachines:
         pMap.setdefault(precinctNumMap[key],[]).append(mapMachines[key])
-    
-    for key in pMap:
-        print key, np.average(pMap[key]), np.std(pMap[key])
     
     pTimeVotesA = {}#key-> precinct number, value-> average time between consecutive votes after 7:00 PM
     
@@ -99,55 +99,98 @@ def consecutiveVotes(parsedLog, ballotImage, validMachines, pollingLate):
     for location in pMapB:
         pTimeVotesB[location] = round(np.average(pMapB[location]),1)
      
-    return (pTimeVotesA, pTimeVotesB)
+    return (mapMachinesAllTimes, mapMachinesAllTimesB, listTimeVotes, pTimeVotesA, pTimeVotesB)
 
-def graphTimePoll(pollTime):
+def longLine(parsedBallotImage, mapAllTimesA, mapAllTimes):
+    precinctNumMap = parsedBallotImage.getPrecinctNumMap()
+    pollingLocations7 = {}
+    pollingLocations8 = {}
+    pollingLocations9 = {}
+    pollingLocations10 = {}
+    pollingLocations11 = {}
+    pollingLocations12 = {}
+    pollingLocations13 = {}
+    pollingLocations14 = {}
+    pollingLocations15 = {}
+    pollingLocations16 = {}
+    pollingLocations17 = {}
+    pollingLocations18 = {}
+    pollingLocations19 = {}
+    for machine in mapAllTimes:
+        for value in mapAllTimes[machine]:
+            #t1 = value[1].split(':')
+            #t2 = value[2].split(':')
+            if value[1][:1] == '7' and value[2][:1] == '7':
+                pollingLocations7.setdefault(precinctNumMap[machine],[]).append(value[0])
+            if value[1][:1] == '8' and value[2][:1] == '8':
+                pollingLocations8.setdefault(precinctNumMap[machine],[]).append(value[0])
+            if value[1][:1] == '9' and value[2][:1] == '9':
+                pollingLocations9.setdefault(precinctNumMap[machine],[]).append(value[0])
+            if value[1][:2] == '10' and value[2][:2] == '10':
+                pollingLocations10.setdefault(precinctNumMap[machine],[]).append(value[0])
+            if value[1][:2] == '11' and value[2][:2] == '11':
+                pollingLocations11.setdefault(precinctNumMap[machine],[]).append(value[0])
+            if value[1][:2] == '12' and value[2][:2] == '12':
+                pollingLocations12.setdefault(precinctNumMap[machine],[]).append(value[0])
+            if value[1][:2] == '13' and value[2][:2] == '13':
+                pollingLocations13.setdefault(precinctNumMap[machine],[]).append(value[0])
+            if value[1][:2] == '14' and value[2][:2] == '14':
+                pollingLocations14.setdefault(precinctNumMap[machine],[]).append(value[0])
+            if value[1][:2] == '15' and value[2][:2] == '15':
+                pollingLocations15.setdefault(precinctNumMap[machine],[]).append(value[0])
+            if value[1][:2] == '16' and value[2][:2] == '16':
+                pollingLocations16.setdefault(precinctNumMap[machine],[]).append(value[0])
+            if value[1][:2] == '17' and value[2][:2] == '17':
+                pollingLocations17.setdefault(precinctNumMap[machine],[]).append(value[0])
+            if value[1][:2] == '18' and value[2][:2] == '18':
+                pollingLocations18.setdefault(precinctNumMap[machine],[]).append(value[0])
+    for machine in mapAllTimesA:
+        for value in mapAllTimesA[machine]:
+            #print value[1], value[2]
+            pollingLocations19.setdefault(precinctNumMap[machine],[]).append(value[0])
+
+    #for key in pollingLocations18:
+        #print key, pollingLocations18[key]
+    return (pollingLocations7,pollingLocations8,pollingLocations9,pollingLocations10,pollingLocations11,pollingLocations12,pollingLocations13,pollingLocations14,pollingLocations15,pollingLocations16,pollingLocations17,pollingLocations18,pollingLocations19)
+def createMapRangePoll(pollTime, timewindow):
     print pollTime[0]
     print pollTime[1]
-    import matplotlib.pyplot as plt
-    import numpy as np
+    
     mapRange = {}
     
-    tMax = 10
-    tMin = 0
+    for time in pollTime[1]:
+        mapRange[time] = 0
     
-    while tMin <= tMax:
-        mapRange[tMin] = 0
-        tMin += 1
+    for time in mapRange:
+        for t2 in pollTime[1]:
+            if t2 == time:
+                mapRange[time] += 1
     
-    for average in pollTime[1]:
-        for key in mapRange:
-            if key <= average < key+1:
-                mapRange[key] += 1
-    print round(np.average(pollTime[1]), 1)
-    plt.bar(mapRange.keys(), mapRange.values(), .98)
-    plt.axis([0, max(mapRange.keys())+1, 0, max(mapRange.values())+1])
-    plt.yticks(np.arange(0,max(mapRange.values())+1, 1))
-    plt.xticks(np.arange(0,max(mapRange.keys())+1,1))
-    plt.grid(True)
-    plt.ylabel('Number of ocurrences')
-    plt.xlabel('Range time (minutes)')
-    plt.title('Time vs. Number of ocurrences between consecutive votes in precinct '+ pollTime[0])
-    plt.show()
+    graph(mapRange, 'Time between consecutive vote cast events (minutes)', 'Number of vote cast event pairs', 'Time vs Number of vote cast in precinct #'+pollTime[0]+' at '+timewindow)
     return
-def graphTimeVotes(mapVotes, time):
-    import matplotlib.pyplot as plt
+def createMapRange(mapVotes, time):
     
     mapRange = {}
     for key in mapVotes:
         mapRange[mapVotes[key]] = 0
     
     for average in mapRange:
-        for location in mapVotes:
-            if mapVotes[location] == average:
+        for key in mapVotes:
+            if mapVotes[key] == average:
                 mapRange[average] += 1
-   
+    graph(mapRange, 'Average time between votes events (minutes)', 'Number of precincts', 'Time between consecutive votes ' + time +' 7 PM')
+    return
+def graph(mapRange, x, y, title):
+    import matplotlib.pyplot as plt
+    import numpy as np
     plt.bar(mapRange.keys(), mapRange.values(), .1)
     plt.axis([0, max(mapRange.keys())+1, 0, max(mapRange.values())+1])
+    plt.xticks(np.arange(0,max(mapRange.keys())+1,1))
+    plt.yticks(np.arange(0,max(mapRange.values())+1, 1))
     plt.grid(True)
-    plt.ylabel('Number of precincts')
-    plt.xlabel('Average time between votes events (minutes)')
-    plt.title('Time between consecutive votes '+ time +' 7 PM')
+    plt.ylabel(y)
+    plt.xlabel(x)
+    plt.title(title)
     plt.show()
     return
 #test functions
@@ -161,7 +204,7 @@ if cmd_folder not in sys.path:
 from auditLog import AuditLog   #imports audit log class
 from ballotImage import BallotImage  #imports ballot image class
 import dateMod
-
+#import random as rnd
 path = sys.argv[1]
 path2 = sys.argv[2]
 path3 = sys.argv[3]
@@ -175,11 +218,31 @@ dateModObject = dateMod.DateMod(parsedLog, open(path3, 'r'))
 mmap = dateMod.timecheck(dateMod.timeopen(dateModObject.edata))
 validMachines = mmap.keys()
 pollOpenLate = analysis_places_open_late2.open_late(parsedLog, parsedBallotImage, validMachines)
-pA, pB = consecutiveVotes(parsedLog, parsedBallotImage, validMachines, pollOpenLate)
+mapMachA, mapMachB, lTV, pA, pB = consecutiveVotes(parsedLog, parsedBallotImage, validMachines, pollOpenLate)
 #for key, value in sorted(pA.iteritems(), key=lambda (k,v): (v,k), reverse = False):
     #print "%3s                 %s" % (key, value)
 
+mapTimeVotes = {}
+for time in lTV:
+    if not time in mapTimeVotes:
+        mapTimeVotes[time] = 1
+    else:
+        mapTimeVotes[time] += 1
+#rnd.seed()
+pollLoc7, pollLoc8, pollLoc9, pollLoc10, pollLoc11, pollLoc12, pollLoc13, pollLoc14, pollLoc15, pollLoc16, pollLoc17, pollLoc18, pollLoc19 = longLine(parsedBallotImage, mapMachA, mapMachB)
+#generate a random position to choose a random polling location
+#pos = rnd.randint(0, len(pollLoc7)-1)
+i = 0
+for key in pollLoc19:
+    i += 1
+    if key == '26':
+        #print key
+        pos = i - 1
+        break
+createMapRangePoll(pollLoc19.items()[pos], '7:00 PM to close time')
+
 #print map['24']
-graphTimeVotes(pA, 'after')
-graphTimeVotes(pB, 'before')
+#createMapRange(pA, 'after')
+#graph(mapTimeVotes, 'Time between consecutive vote cast events (minutes)', 'Number of vote cast event pairs', 'Time between votes vs Number of votes')
+#graphTimeVotes(pB, 'before')
 #graphTimePoll(pCount.items()[6])
