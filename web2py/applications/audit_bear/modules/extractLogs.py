@@ -63,17 +63,13 @@ def extractLogs(files):
             z = zipfile.ZipFile(f, 'r')
             for member in z.infolist():
                 m = z.open(member, 'r')
-                # m is NOT SEEKABLE
-                # make a new file and pass everything to a seekable one...
-
-                #import StringIO
-                #fNew = StringIO.StringIO()
-
+                # re-write, choose better filename
                 fNew = open("file" + str(i), 'w')
                 fNew.close()
                 fNew = open("file" + str(i), 'r+')
                 for l in m:
-                    fNew.writelines(l)
+                    fNew.write(l)
+                fNew.flush()
                 totalReceivedFiles.append(fNew)
                 i += 1
 

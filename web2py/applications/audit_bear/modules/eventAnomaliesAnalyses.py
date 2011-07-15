@@ -15,6 +15,7 @@ import matplotlib.pyplot as plt
 from dateutil.parser import parse
 
 def eventAnomalies(data, r):
+    plt.ioff()
     emMap = {}
     emMap2 = {}
     emList = []
@@ -35,6 +36,7 @@ def eventAnomalies(data, r):
     return r
     
 def lowBatteryMachines(data, ballot, r):
+    plt.ioff()
     r.addTitle('Machines With Possible Low Batteries')
     lowBatteryList = []
     lowBatteryMap = {}
@@ -90,6 +92,7 @@ def lowBatteryMachines(data, ballot, r):
     return r
     
 def getCalibrationEvents(data, ballot, r):
+    plt.ioff()
     r.addTitle('Detection of Anomalous Recalibration Events')
     numOccurrencesWarningMap = {}
     numOccurrencesRecalibrationMap = {}
@@ -170,6 +173,7 @@ def getCalibrationEvents(data, ballot, r):
     return r
                    
 def getTerminalClosedEarlyEvents(data, ballot, r):
+    plt.ioff()
     r.addTitle('Detection of Terminals Closed Early')
     totalEarlyList = []
     for x in data.getEntryList():
@@ -194,6 +198,7 @@ def getTerminalClosedEarlyEvents(data, ballot, r):
     return r        
    
 def getWarningEvents(data,ballot,r):
+    plt.ioff()
     r.addTitle('Detection of Anomalous Warning Events')
     wMap = {}
     wNumMap = {}
@@ -279,6 +284,7 @@ def getWarningEvents(data,ballot,r):
     return r
     
 def getVoteCancelledEvents(data,ballot,r):
+    plt.ioff()
     r.addTitle('Detection of Anomalous Vote Cancelled Events')
     vcMap = {}
     vcNumMap = {}

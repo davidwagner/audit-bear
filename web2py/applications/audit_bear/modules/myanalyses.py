@@ -13,6 +13,7 @@ from math import ceil
 
 
 def dateanomalies(data, dateclass): 
+    plot.ioff()
     r = report.Report()
     r.addTitle('Date Anomaly Report')
     
@@ -46,6 +47,7 @@ def dateanomalies(data, dateclass):
     return r
 
 def precinctStats(dateclass, ballotclass):
+    plot.ioff()
     r = report.Report()
     t = report.Table()
     r.addTitle('Precint Date Stats')
@@ -75,6 +77,7 @@ def precinctStats(dateclass, ballotclass):
     return r
 
 def openmachines(dateclass, bins=10):
+    plot.ioff()
     r = report.Report()
     r.addTitle('Machines whose time was corrected during Election Day (and random Hist)')
 
