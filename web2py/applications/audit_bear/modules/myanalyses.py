@@ -43,38 +43,59 @@ def dateanomalies(data, dateclass):
     else: 
         r.addTextBox('<b>These machines had events with invalid dates<br></b>')
         for k,v in l[2].iteritems():
-            r.addTextBox('&nbsp Machine '+str(k[0])+' had '+str(v).zfill(2)+' events on '+str(k[1]))
+            r.addTextBox('&nbsp Machine '+str(k[0])+': had '+str(v).zfill(2)+' events on '+str(k[1]))
     return r
 
-def precinctStats(dateclass, ballotclass):
+def edayCorrections(dateclass, ballotclass):
     plot.ioff()
     r = report.Report()
     t = report.Table()
-    r.addTitle('Precint Date Stats')
+    r.addTitle('Machines with Election day corrections')
 
     #report Machines that had dates corrected ON election day
+    r.addTextBox('<p><i>This report identifies machines that recorded manual date changes to iVotronic machines that occured during election AND while the machine was opened for voting.  Machines are grouped by precinct.</p><p> This may identify precincts with systematic date problems or errors by pollworkers.  If an date change event is seen with a timedelta of less then 1 minutes, it is ignored.  Additionally, the average reported is an average of the absolute values of the time changes. </i></p>')
 
     times, adjustedL = dateMod.timeopen(dateclass.edata)
-    precinctMap = ballotclass.getPrecinctNameMap()
-    d = {}
-    for tup in adjustedL:
-        print abs(tup[1])
-        if abs(tup[1]) > datetime.timedelta(0,0,0,0,1): #Adjusted by 1 minute or more?
-            key = precinctMap[tup[0]]
-            if key in d:
-                d[key] = (d[key][0]+1, d[key][1] + abs(tup[1]))
-            else:
-                d.update({key:(1,abs(tup[1]))})
-    t.addHeader('Precinct')
-    t.addHeader('# of Machines')
-    t.addHeader('Absolute Average Timedelta') 
-    for k,v in d.iteritems():
-        t.addRow([k,str(v[0]), str(v[1]/v[0])[:8]])
-    r.addTable(t)
+    if len(adjustedL) == 0:
+        print 'Report on election day time adjustments not included'
+        return []
+    else:
+        precinctMap = ballotclass.getPrecinctNameMap()
+        d = {}
+        for tup in adjustedL:
+            print abs(tup[1])
+            if abs(tup[1]) > datetime.timedelta(0,0,0,0,1): #Adjusted by 1 minute or more?
+                if tup[0] in precinctMap:
+                    key = precinctMap[tup[0]]
+                elif tup[0] in ballotclass.getEarlyVotingList():
+                    key = 'Absentee'
+                elif tup[0] in ballotclass.getFailsafeList():
+                    key = 'Failsafe'
+                else:
+                    print 'Red Flag! Machine',tup[0],'not listed in any precinct'
+                if key in d:
+                    d[key] = (d[key][0]+1, d[key][1] + abs(tup[1]))
+                else:
+                    d.update({key:(1,abs(tup[1]))})
+        t.addHeader('Precinct')
+        t.addHeader('# of Machines')
+        t.addHeader('Average Timedelta') 
+        for k,v in d.iteritems():
+            t.addRow([k,str(v[0]), str(v[1]/v[0])[:7]])
+        r.addTable(t)
+    return [r]
 
-    #report early voting by precinct AND check for correct dates
-     
-    return r
+def earlyVotes():
+    r = report.Report()
+    r.addTitle('EXTREME Early Voting! \m/')
+    #report extra early voting by precinct AND check for correct dates
+    r.addTextBox('<i>This report determines the dates</i>')
+    return
+def machines():
+    pass
+    #report machines that are recording events on bad dates(2009, 2053) after being opene
+
+
 
 def openmachines(dateclass, bins=10):
     plot.ioff()

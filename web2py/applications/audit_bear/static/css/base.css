@@ -50,41 +50,14 @@ a {
 table#data_collected, table#data_collected tbody tr {
     border: 1px solid #a1a1a1;
     border-collapse: collapse;
+    width: 650px;
 }
 
-table#data_collected tbody tr td:nth-child(2),
-table#data_collected tbody tr td:nth-child(3){
-    text-align: center;
+table#data_collected thead tr {
 }
 
-table#data_collected tbody tr:nth-child(2n) {
+table#data_collected tbody tr:nth-child(even) {
     background-color: #e1e1e1;
 }
 
-table.ledger {
-    border-collapse: collapse;
-}
 
-table.ledger tr {
-    border: 1px solid #a1a1a1;
-}
-
-table.ledger tr th,
-table.ledger tr td {
-    border: 1px solid #c1c1c1;
-}
-
-table.ledger tr:nth-child(2n) {
-    background-color: #e1e1e1;
-}
-
-table.ledger tr th,
-table.ledger tr td {
-    padding: 4px 11px;
-}
-
-
-table.ledger tr td:nth-child(8),
-table.ledger tr td:nth-child(9) {
-    text-align: right;
-}
