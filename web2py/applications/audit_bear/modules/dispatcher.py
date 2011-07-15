@@ -5,6 +5,7 @@ from eventAnomaliesAnalyses import *
 import dateMod
 import myanalyses
 from fileAnomalies import *
+from pollWorkerEval import *
 
 def dispatcher(el152=None, el155=None, el68a=None):
     #list of report objects
@@ -22,6 +23,8 @@ def dispatcher(el152=None, el155=None, el68a=None):
         results.append(getTerminalClosedEarlyEvents(el152, el155, report.Report()))
         results.append(getUnknownEvents(el152, el155, report.Report()))
         results.append(getVoteCancelledEvents(el152,el155, report.Report()))
+        results.append(checkZeroTapes(el152,el155,report.Report()))
+        results.append(checkResultsTapes(el152, el155, report.Report()))
         results.append(checkFiles(el152, el155, el68a, report.Report()))
         del dateclass
         return dict(message='files recieved', results=results)
@@ -37,6 +40,8 @@ def dispatcher(el152=None, el155=None, el68a=None):
         results.append(getTerminalClosedEarlyEvents(el152, el155, report.Report()))
         results.append(getUnknownEvents(el152, el155, report.Report()))
         results.append(getVoteCancelledEvents(el152,el155,report.Report()))
+        results.append(checkZeroTapes(el152, el155, report.Report()))
+        results.append(checkResultsTapes(el152, el155, report.Report()))
         
         return dict(message='files recieved', results=results)
     else:
