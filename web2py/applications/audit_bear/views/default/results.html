@@ -2,6 +2,7 @@
 
 {{if message != 'LOLCAT':}}
 <div id="title"><h1><span id="appname">Audit</span>Results</h1></div>
+<div id="results">
     {{i=0}}
     {{for result in results:}}
         {{i+=1}}
@@ -19,9 +20,9 @@
         pass
         }}
     {{pass}}
+</div>
 {{else:}}
 <center>
 <img src='/audit_bear/static/images/lolcat-edit.jpg' />
 </center>
 {{pass}}
-

@@ -1,2 +1,96 @@
 {{extend 'layout.html'}}
-<h1>About Audit-Bear</h1>
+ <h1>About Audit-Bear</h1>
+
+<h2>Overview</h2>
+
+<p>AuditBear automates the
+analysis of log files produced by ES&amp;S iVotronic voting machines.
+It is intended for election officials who use iVotronic machines
+and who would like to gain visibility into the elections they administer,
+as well as for election observers, candidates, and interested citizens
+who would like to analyze elections conducted on iVotronic voting machines.</p>
+
+<p>The AuditBear web application analyzes the log files you upload
+and produces reports about various aspects of the election.
+For instance, it can detect some kinds of procedural errors that might cause
+votes to be lost.
+Also, it attempts to identify polling locations that were forced to stay
+open late or may have experienced long lines during election day.
+And, it can detect machines that experienced certain anomalous conditions
+or whose date or time was set incorrectly.</p>
+
+<h2>Collecting the needed files</h2>
+
+<p>To use the AuditBear web application, you will need to collect and
+upload log files produced by the ES&amp;S software.
+In particular, you will need:
+<dl>
+<dt>1. The EL 152 (Votronic Event Log) file.</dt>
+<dd>The EL 152 file contains event log entries from all of the iVotronic voting
+machines used in the election.</dd>
+<dt>2. The EL 155 (iVotronic Vote Images) file.</dt>
+<dd>The EL 155 file contains vote images (also known as cast vote records) cast
+on the iVotronic voting machines.
+Each vote image records all of the votes placed by a single voter.</dd>
+<dt>3. Optionally, the EL 68A (System Log) file.</dt>
+<dd>The EL 68A file contains log messages from the ES&amp;S central software,
+which list actions performed on the central election system.
+The EL 68A file is not required to use our software, but if you have it,
+we will be able to provide more useful and detailed reports.
+(Caution: The EL 68 is a different report and
+is not a suitable replacement for the EL 68A.
+Our software is designed to analyze the EL 68A, not the EL 68.)</dd>
+</dl>
+Election officials with access to the ES&amp;S Unity
+Election Reporting Manager (ERM) software can export these files from
+the ERM software after the election.
+Others will need to request these files from their local election
+official.</p>
+
+<p>For more information on how to export these files from the ERM software,
+see the ERM User's Manual.
+It describes how to generate log reports, particularly
+the system log, event log, and vote image log.</p>
+
+<p>When you have collected the files listed above, create a
+<tt>zip</tt> file containing all of the above files.
+Then, upload the <tt>zip</tt> file into the file upload form on the
+AuditBear main page.</p>
+
+<h2>Want to try it out?</h2>
+
+<p>Want to try out the AuditBear web application, but you don't
+have the necessary log files?  No problem!</p>
+
+<p>To see the AuditBear application in action,
+simply grab log files from
+<a href="http://www.scvotinginfo.com/wp/data/">the South Carolina
+Voting Information web site</a>.
+They have helpfully collected log files from several South Carolina
+counties in the November 2010 and June 2010 elections.
+Download one of their zip files, upload it into the file upload
+form on the AuditBear main page, and you can see an example of a
+report produced by the AuditBear software.</p>
+
+<h2>Software</h2>
+
+<p>AuditBear is <i>completely free to use</i>.</p>
+
+<p>In addition, the source code for our software is
+<a href="https://code.google.com/p/audit-bear/">freely available on
+Google Code</a>, under an open source license.</p>
+
+<h2>Authors</h2>
+
+<p>This web application was developed by Patrick Baxter, Annie Edmundson,
+Keishla Ortiz, Ana Maria Quevedo, and Samuel Rodriguez, with assistance
+from Cynthia Sturton and David Wagner.
+Contact information may be found on <a href="/contact">our Contact page</a>.</p>
+
+<p>The web application is based upon research that was
+supported by the National Science Foundation,
+through <a href="http://www.truststc.org/">the TRUST center</a> and
+<a href="http://accurate-voting.org/">the ACCURATE center</a>.
+Any opinions, findings, conclusions or recommendations expressed on this
+web site are those of the author(s) and do not necessarily reflect
+the views of the National Science Foundation.</p>

@@ -1,17 +1,34 @@
 {{extend 'layout.html'}}
 <table width = 650px>
 <tr>
-    <td><div id="title"><h1><span id="appname">Audit</span>Bear</h1></div>
+    <td ><div id="title"><h1><span id="appname">Audit</span>Bear</h1></div>
     <td align=right><img src='/audit_bear/static/images/calbear.gif' />
 </table>
-<p>
-Welcome to AuditBear! If this is your first time here please visit our <b>About</b> page.  To generate a report please upload a .zip file in the box below.  This zip file requires an el152, el155, and an optional el68a log file obtained from an iVotronic DRE.
-</p>
-<p>
-This software is intended to assist those working with election auditing.  Any information discovered through this software is not guarenteed to be accurate or correct.  All of our source code is availble on our Google Code repository, 'audit-bear'.  If you find an errors or have any questions about our work we would love to hear from.  You can contact any of the authors through our <b>Contact</b> page.
-</p>
+ <p>
+Welcome to AuditBear!
+This website is intended for election officials and observers
+in counties using ES&amp;S iVotronic voting machines.
+If this is your first time here, please visit
+<a href="/about">our About page</a>.
+ </p>
 
-After submitting your zipped file, please be patient.<br/>
-<b>Processing may take several minutes.</b><br/>
-<p/>
-{{=form}}
+ <p>
+To analyze your election, please upload a .zip file in the box below.
+The .zip file must include an EL 152 (event log) file
+and an EL 155 (vote images) file.
+You may also optionally include an EL 68A (system log) file.
+These files can be exported by election officials from the
+ES&amp;S Unity ERM software, after the election is over.
+ </p>
+ 
+<p>After submitting your zipped file, please be patient.<br/>
+ <b>Processing may take several minutes.</b><br/>
+
+ {{=form}}
+
+<p>This software is intended to assist those working with election auditing.
+We make no guarantees of correctness for this software.
+If you have any questions or feedback about this software, or if you
+find any errors, we would love to hear from you.
+You can contact any of the authors through
+<a href="/contact">our Contact page</a>.</p>

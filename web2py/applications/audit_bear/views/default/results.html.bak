@@ -1,12 +1,28 @@
 {{extend 'layout.html'}}
+
 {{if message != 'LOLCAT':}}
-<br>{{=results[0].getTextBoxList()}}</br>
-<br>{{=results[1].getTextBoxList()}}
-</br>
-<br>{{=results[2].getTextBoxList()}}
-</br>
-<br>{{=results[3].getTextBoxList()}}
-</br>
-<br>{{=img}}
-</br>
+<div id="title"><h1><span id="appname">Audit</span>Results</h1></div>
+<div id="results">
+    {{i=0}}
+    {{for result in results:}}
+        {{i+=1}}
+        <h2>Report#{{=i}}:{{=result.title}}</h2>
+        <hr>
+        {{
+        for element in result:
+            if element.__class__.__name__ == 'str':
+                response.write(element + '<br/>', escape=False)
+            elif element.__class__.__name__ == 'Table':
+                response.write(element.getHTML(), escape=False)
+            else:
+                response.write(element.getImage())
+            pass
+        pass
+        }}
+    {{pass}}
+</div>
+{{else:}}
+<center>
+<img src='/audit_bear/static/images/lolcat-edit.jpg' />
+</center>
 {{pass}}
