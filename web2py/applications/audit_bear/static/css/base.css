@@ -1,25 +1,12 @@
 @charset "UTF-8";
 
-@@ -2,7 +2,7 @@
- 
  body {
      background-color:#040404;
      font-family: tahoma, sans-serif;
      overflow-y: scroll;
      text-align:center;
      margin: 80px auto;
-@@ -47,6 +47,11 @@
- a {
-     color: green;
  }
-
-#results {
-    font-family: Courier New, Courier;
-}
-
- table#data_collected, table#data_collected tbody tr {
-     border: 1px solid #a1a1a1;
-     border-collapse: collapse;
 
 div#container {
     text-align:left;
@@ -60,6 +47,11 @@ nav {
 a {
     color: green;
 }
+
+#results {
+    font-family: Courier New, Courier;
+}
+
 table#data_collected, table#data_collected tbody tr {
     border: 1px solid #a1a1a1;
     border-collapse: collapse;
