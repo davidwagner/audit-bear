@@ -37,7 +37,6 @@ def edayCorrections(data,eday, ballotclass):
         precinctMap = ballotclass.getPrecinctNameMap()
         d = {}
         for tup in adjustedL:
-            print abs(tup[1])
             if abs(tup[1]) > datetime.timedelta(0,0,0,0,1): #Adjusted by 1 minute or more?
                 if tup[0] in precinctMap:
                     key = precinctMap[tup[0]]
@@ -47,6 +46,7 @@ def edayCorrections(data,eday, ballotclass):
                     key = 'Failsafe'
                 else:
                     print 'Red Flag! Machine',tup[0],'not listed in any precinct'
+                    key = tup[0]
                 if key in d:
                     d[key] = (d[key][0]+1, d[key][1] + abs(tup[1]))
                 else:
@@ -85,6 +85,7 @@ def earlyVotes(data, dateclass, ballotclass):
             key = 'Failsafe'
         else:
             print 'Important! Machine',k,'not listed in any precinct'
+            key = k
         if key in d:
             if d[key][2] < v[1]: v[1] = d[key][2]
             if d[key][3] > v[2]: v[2] = d[key][3]
