@@ -51,7 +51,6 @@ class EL68AEntry:
         return s
     
 class EL68A:
-
     def __del__(self):
         del self.electionDate
         del self.electionID
@@ -71,7 +70,12 @@ class EL68A:
         # parse election date, run date and election id
         self.electionDate = self.parseElectionDate(fh)
         self.electionID = self.parseElectionID(fh)
-        self.runDate = self.parseRunDate(fh)
+        #self.runDate = self.parseRunDate(fh)
+        #print "self.runDate is", self.runDate
+        #TODO fix runDate parser
+
+        # it is very important to seek to beginning
+        print fh.seek(0)
 
         # fill up entry lists
         entryPattern = r"(\d{2}-\d{2}\s+?\d{2}:\d{2}\s+?\w{2})(.*)"
@@ -147,6 +151,7 @@ class EL68A:
 
     def parseRunDate(self, fh):
         fh.seek(0)
+        #TODO some files do not follow this run date format
         runDatePattern = r"RUN\s+DATE:(.*)\s+ELECTION"
         runDateRe = re.compile(runDatePattern, re.IGNORECASE)
 
@@ -158,6 +163,6 @@ class EL68A:
     def getUploadedPEBs(self):
         PEBList = []
         for entry in self.entryList:
-            if entry.pebRetrieved not in PEBList:
+            if entry.pebRetrieved not in PEBList and entry.pebRetrieved:
                 PEBList.append(entry.pebRetrieved)
         return PEBList

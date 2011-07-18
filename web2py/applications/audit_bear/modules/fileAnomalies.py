@@ -313,9 +313,6 @@ def getTotalVotes(a, b, e):
         return count
         
 def isUploadedAll(a, b, e):
-        print "BLABLABLAHEHELOLOL"
-        print e
-        print e.entryList
         uploadedPEBs = e.getUploadedPEBs()
         print "UPLOADEDPEBS"
         print uploadedPEBs
