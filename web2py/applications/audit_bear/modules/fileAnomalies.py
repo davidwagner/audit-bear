@@ -17,6 +17,7 @@ from dateutil.parser import parse
 def checkFiles(aLog, bLog, eLog, r):
         r.addTitle("File Discrepancies")
         if getTotalVotes(aLog, bLog, eLog) == getPrecinctVotes(aLog, bLog, eLog):
+            print isUploadedAll(aLog, bLog, eLog)[1]
             if len(checkMachines(aLog, bLog, eLog)) != 0 or len(checkMachines2(aLog, bLog, eLog)) != 0:
                 r.addTextBox("The votes match, but the machines don't match.")
                 r.addTextBox(" ")
@@ -69,6 +70,7 @@ def checkFiles(aLog, bLog, eLog, r):
                     #cross check with non-master PEB list
                 #check for uploading
                 b3 = True
+                print isUploadedAll(aLog, bLog, eLog)[1]
                 for x in isUploadedAll(aLog, bLog, eLog)[1]:
                     if b3 == True:
                         r.addTextBox(" ")
@@ -124,6 +126,7 @@ def checkFiles(aLog, bLog, eLog, r):
                     #cross check with non-master PEB list
                 #check for uploading
                 b3 = True
+                print isUploadedAll(aLog, bLog, eLog)[1]
                 for x in isUploadedAll(aLog, bLog, eLog)[1]:
                     if b3 == True:
                         r.addTextBox(" ")
@@ -186,6 +189,7 @@ def checkFiles(aLog, bLog, eLog, r):
                     #cross check with non-master PEB list
                 #check for uploading
                 b3 = True
+                print isUploadedAll(aLog, bLog, eLog)[1]
                 for x in isUploadedAll(aLog, bLog, eLog)[1]:
                     if b3 == True:
                         r.addTextBox(" ")
@@ -197,6 +201,22 @@ def checkFiles(aLog, bLog, eLog, r):
                     r.addTextBox(" ")
                     r.addTextBox("The votes and ballots would not match up even if the uncounted machines were included.")
         return r
+
+def notUploadedPEBs(aLog, bLog, eLog, r):
+    if len(isUploadedAll(aLog, bLog, eLog)) < 1:
+        r.addTextBox('All appropriate PEBs were uploaded.')
+    else:
+        PEBmachineMap = getPEBmachines(aLog, bLog, eLog)
+        b3 = True
+        print "NOTUPLOADEDPEBS"
+        print isUploadedAll(aLog, bLog, eLog)[1]
+        for x in isUploadedAll(aLog, bLog, eLog)[1]:
+            if b3 == True:
+                r.addTextBox(" ")
+                r.addTextBox("\nThe following PEBs were not uploaded:")
+                b3 = False
+            r.addTextBox("-----------------------------") 
+    return r 
 
 def checkIDs(a, b, e):
         print b.electionID
@@ -293,8 +313,15 @@ def getTotalVotes(a, b, e):
         return count
         
 def isUploadedAll(a, b, e):
+        print "BLABLABLAHEHELOLOL"
+        print e
+        print e.entryList
         uploadedPEBs = e.getUploadedPEBs()
+        print "UPLOADEDPEBS"
+        print uploadedPEBs
         eventPEBs = getPEBs(a, b, e)
+        print "EVENTPEBS"
+        print eventPEBs
         notUploaded = []
         notUploadedPEBs = []
         for x in eventPEBs:
