@@ -209,7 +209,9 @@ def timeopen(data,eday):
 
         #If time was adjusted while machine was open, account for that
         elif line.eventNumber == '0000117' and ostate == 1:
-            diff = dateutil.parser.parse(line.dateTime)
+            try:diff = dateutil.parser.parse(line.dateTime)
+            except ValueError: pass
+            else:
             startset = True
         elif line.eventNumber == '0001656' and startset:
             if diff.date() == eday or dateutil.parser.parse(line.dateTime).date() == eday:
