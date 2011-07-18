@@ -69,14 +69,13 @@ def checkFiles(aLog, bLog, eLog, r):
                         r.addTextBox("Machine %s was opened with PEB %s and closed with PEB %s" % (x, PEBmap[x][0], PEBmap[x][1]))
                     #cross check with non-master PEB list
                 #check for uploading
-                b3 = True
-                print isUploadedAll(aLog, bLog, eLog)[1]
-                for x in isUploadedAll(aLog, bLog, eLog)[1]:
-                    if b3 == True:
-                        r.addTextBox(" ")
-                        r.addTextBox("\nThe following PEBs were not uploaded:")
-                        b3 = False
-                    r.addTextBox("PEB %s closed machine(s) %s and was not uploaded" % (x, PEBmachineMap[x]))
+#                b3 = True
+#                for x in isUploadedAll(aLog, bLog, eLog)[1]:
+#                    if b3 == True:
+#                        r.addTextBox(" ")
+#                        r.addTextBox("\nThe following PEBs were not uploaded:")
+#                        b3 = False
+#                    r.addTextBox("PEB %s closed machine(s) %s and was not uploaded" % (x, PEBmachineMap[x]))
                 #check if votes match up (w/ uncounted machines included)
                 if checkVotes(aLog, bLog, eLog) == False:
                     r.addTextBox(" ")
@@ -90,7 +89,7 @@ def checkFiles(aLog, bLog, eLog, r):
                         r.addTextBox(" ")
                         r.addTextBox("The following machines were in the event log, but not in the ballot images:")
                         b = False
-                    print x
+                    r.addTextBox(x)
                 PEBmap = getPEBs(aLog, bLog, eLog)
                 #check electionID
                 if checkIDs(aLog, bLog, eLog) == True:
@@ -125,14 +124,13 @@ def checkFiles(aLog, bLog, eLog, r):
                         r.addTextBox("Machine %s was opened with PEB %s and closed with PEB %s" % (x, PEBmap[x][0], PEBmap[x][1]))
                     #cross check with non-master PEB list
                 #check for uploading
-                b3 = True
-                print isUploadedAll(aLog, bLog, eLog)[1]
-                for x in isUploadedAll(aLog, bLog, eLog)[1]:
-                    if b3 == True:
-                        r.addTextBox(" ")
-                        r.addTextBox("\nThe following PEBs were not uploaded:")
-                        b3 = False
-                    r.addTextBox("PEB %s closed machine(s) %s and was not uploaded" % (x, PEBmachineMap[x]))
+#                b3 = True
+#                for x in isUploadedAll(aLog, bLog, eLog)[1]:
+#                    if b3 == True:
+#                        r.addTextBox(" ")
+#                        r.addTextBox("\nThe following PEBs were not uploaded:")
+#                        b3 = False
+#                    r.addTextBox("PEB %s closed machine(s) %s and was not uploaded" % (x, PEBmachineMap[x]))
                 #check if votes match up (w/ uncounted machines included)
                 if checkVotes(aLog, bLog, eLog) == False:
                     r.addTextBox(" ")
@@ -188,34 +186,67 @@ def checkFiles(aLog, bLog, eLog, r):
                         r.addTextBox("Machine %s was opened with PEB %s and closed with PEB %s" % (x, PEBmap[x][0], PEBmap[x][1]))
                     #cross check with non-master PEB list
                 #check for uploading
-                b3 = True
-                print isUploadedAll(aLog, bLog, eLog)[1]
-                for x in isUploadedAll(aLog, bLog, eLog)[1]:
-                    if b3 == True:
-                        r.addTextBox(" ")
-                        r.addTextBox("\nThe following PEBs were not uploaded:")
-                        b3 = False
-                    r.addTextBox("PEB %s closed machine(s) %s and was not uploaded" % (x, PEBmachineMap[x]))
+#                b3 = True
+#                for x in isUploadedAll(aLog, bLog, eLog)[1]:
+#                    if b3 == True:
+#                        r.addTextBox(" ")
+#                        r.addTextBox("\nThe following PEBs were not uploaded:")
+#                        b3 = False
+#                    r.addTextBox("PEB %s closed machine(s) %s and was not uploaded" % (x, PEBmachineMap[x]))
                 #check if votes match up (w/ uncounted machines included)
                 if checkVotes(aLog, bLog, eLog) == False:
                     r.addTextBox(" ")
                     r.addTextBox("The votes and ballots would not match up even if the uncounted machines were included.")
         return r
 
+def notClosedMachines(aLog, bLog, eLog, r):
+    r.addTitle("Machines that weren't Closed")
+    PEBs = getPEBs(aLog, bLog, eLog)
+    for x in PEBs:
+        if len(PEBs[x]) < 2:
+            r.addTextBox(" ")
+            r.addTextBox("In %s (#%s), machine %s was not closed." % (bLog.machinePrecinctNameMap[x], bLog.machinePrecinctNumMap[x], x))
+    return r
+    
+
 def notUploadedPEBs(aLog, bLog, eLog, r):
-    if len(isUploadedAll(aLog, bLog, eLog)) < 1:
+    r.addTitle("Data that was NOT Uploaded")
+    if len(isUploadedAll(aLog, bLog, eLog)[1]) < 1:
         r.addTextBox('All appropriate PEBs were uploaded.')
     else:
         PEBmachineMap = getPEBmachines(aLog, bLog, eLog)
         b3 = True
-        print "NOTUPLOADEDPEBS"
-        print isUploadedAll(aLog, bLog, eLog)[1]
         for x in isUploadedAll(aLog, bLog, eLog)[1]:
             if b3 == True:
                 r.addTextBox(" ")
                 r.addTextBox("\nThe following PEBs were not uploaded:")
                 b3 = False
-            r.addTextBox("-----------------------------") 
+            precinctName = ''
+            precinctNum = ''
+            PEBvotes = 0
+            mString = ''
+            b32 = True
+            for machine in PEBmachineMap[x]:
+                if b32 == True:
+                    mString = machine
+                    b32 = False
+                else:
+                    mString += ', '+machine
+                if getVotesPerMachine(aLog, bLog, eLog).has_key(machine):
+                    PEBvotes = PEBvotes + getVotesPerMachine(aLog, bLog, eLog)[machine]
+                else:
+                    continue
+                if bLog.machinePrecinctNameMap.has_key(machine):
+                    precinctName = bLog.machinePrecinctNameMap[machine]
+                    precinctNum = bLog.machinePrecinctNumMap[machine]
+                elif machine in bLog.earlyVotingList:
+                    precinctName = 'Absentee'
+                    precinctNum = '750'
+                elif machine in bLog.failsafeList:
+                    precinctName = 'Failsafe'
+                    precinctNum = '850'
+            if PEBvotes != 0:
+                r.addTextBox("--In %s (#%s), PEB %s closed machine(s) %s and was not uploaded.  The %d vote(s) on this PEB may not have been included in the count.  " % (precinctName, precinctNum, x, mString, PEBvotes)) 
     return r 
 
 def checkIDs(a, b, e):
@@ -229,8 +260,6 @@ def checkVotes(a, b, e):
             votesOnBadMachines = votesOnBadMachines + getVotesPerMachine(a, b, e)[machine]
         votesOnBadMachines2 = 0
         votesOnBadMachines2 = getTotalVotes(a, b, e) - getPrecinctVotes(a, b, e)
-        print votesOnBadMachines
-        print votesOnBadMachines2
         return votesOnBadMachines == votesOnBadMachines2
         
 """

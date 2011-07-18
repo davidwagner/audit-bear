@@ -94,7 +94,7 @@ def lowBatteryMachines(data, ballot, r):
     return r
     
 def getCalibrationEvents2(data, ballot, r):
-    r.addTitle("Detecting Votes Cast when the Terminal Screen is Not Calibrated")
+    r.addTitle("Votes Cast when the Terminal Screen is Not Calibrated")
     calMap = {}
     for x in data.getEntryList():
         s = x.dateTime.split(" ")
@@ -137,7 +137,7 @@ def getCalibrationEvents2(data, ballot, r):
     
 def getCalibrationEvents(data, ballot, r):
     plt.ioff()
-    r.addTitle('Detection of Anomalous Recalibration Events')
+    r.addTitle('Terminals with Callibration Problems')
     numOccurrencesWarningMap = {}
     numOccurrencesRecalibrationMap = {}
     timeOccurrencesMap = {}
@@ -228,7 +228,7 @@ def getCalibrationEvents(data, ballot, r):
                    
 def getTerminalClosedEarlyEvents(data, ballot, r):
     plt.ioff()
-    r.addTitle('Detection of Terminals Closed Early')
+    r.addTitle('Terminals Closed Early')
     totalEarlyList = []
     for x in data.getEntryList():
         s = x.dateTime.split(" ")
@@ -257,7 +257,7 @@ def getTerminalClosedEarlyEvents(data, ballot, r):
     return r        
    
 def getUnknownEvents(data, ballot, r):
-    r.addTitle('Detection of Anomalous Unknown Events')
+    r.addTitle('Terminals with Unknown Events')
     unknownEvents = ['0001703', '0001704', '0001404']
     totalUnknownEventsMap = {}
     totalsMap = {}
@@ -385,7 +385,7 @@ def getWarningEvents(data,ballot,r):
     
 def getVoteCancelledEvents(data,ballot,r):
     plt.ioff()
-    r.addTitle('Detection of Anomalous Vote Cancelled Events')
+    r.addTitle('Anomalous Vote Cancelled Events')
     vcMap = {}
     vcNumMap = {}
     list1513 = []
