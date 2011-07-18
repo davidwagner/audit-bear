@@ -5,17 +5,8 @@
 
 -Usage: The "main" function serves as a usage example  You can import this module in any file you might want access to the functions.
 
-    -Class DateMod:  Init this class with an AuditLog object and a path to the 68a file.
-
-    -Variable Names: These can all be accessed once an DateMod object is created.
-        pdata: main data structure split into pre-election voting
-        edata: events only from election day
-        odata: events neither in the pre-voting or election voting
-
-    -Functions: Commented out for the time being
-
--Note:
-    -Currently Creating a DateMod instance will duplicate the data set and this might have to change in the future
+-Class DateMod:  Init this class with an AuditLog object and a path to the 68a file.
+Update:  This file didn't prove as univerally useful as intended.  Updated to take out aspects that were not being used.
 
 ------------------------
 """
@@ -35,11 +26,8 @@ import ballotImage
     
 class DateMod:
         
-    def __init__(self, data, date):
+    def __init__(self,data, date):
         #These Variables are dependant on a valid path and date parse from the 68a text file
-        self.pdata = [] #AuditLog Object for all Pre-Voting
-        self.edata = [] #AuditLog Object for all Election-Day Voting
-        self.odata = [] #AuditLog Object for all days after election days and > 15 days before
         self.eday = ''  #Parsed Election Date from 68.lst file 
         self.pday = ''  #Election Day Minus 15
 
@@ -51,18 +39,13 @@ class DateMod:
         else: print 'No 68a Supplied or unable to parse. Inferring Election Day...'
 
         self.pday = self.eday - datetime.timedelta(15)
-        self.splitDays(data, self.eday, self.pday)
 
     def __del__(self):
-        del self.pdata
-        del self.edata
-        del self.odata
         del self.pday
         del self.eday
  
     """
-    Gets date from l68a file or returns blank string. Its a little ugly, but it works for now
-    TO-DO: Would be more robust with regex but still avoid reading entire file (Sammy!?)
+    Gets date from l68a file or infer eday
     """
     def daygrab(self, data, date):
         print date
@@ -72,26 +55,7 @@ class DateMod:
         else:
             self.eday = date.date()
             return True
-    """
-    Creates 3 AuditLog objects based on pdate and edate.
-    """
-    def splitDays(self, data, eday, pday):
-        daystring = str(eday.month).zfill(2) + '/' + str(eday.day).zfill(2) + '/' + str(eday.year)
     
-        for line in data:
-            if line.dateTime[0:10] == daystring:
-                self.edata.append(line)
-            else:
-                try: 
-                    temp = dateutil.parser.parse(line.dateTime).date()
-                except ValueError:
-                    self.odata.append(line)
-                else:
-                    if temp < eday and temp >= pday: self.pdata.append(line)
-                    else: self.odata.append(line)
-                    
-        return True
-
     def inferEday(self, data):
         d = {}
         for line in data:
@@ -104,8 +68,27 @@ class DateMod:
         self.eday = dateutil.parser.parse(max(d.iterkeys(), key=d.get)).date()
         print self.eday
         return
-        
+    """
+    Returns information about particulary early voting
+    """
+    def voteEarly(self,data):
+        #Holds machines:# of votes, first vote, last vote
+        machines = {}
 
+        for line in data:
+            try: cday = dateutil.parser.parse(line.dateTime).date()
+            except ValueError: cday = self.eday
+        
+            if (cday < self.pday) and (line.eventNumber == '0001511' or line.eventNumber == '0001510'):
+                if line.serialNumber in machines:
+                    v = machines[line.serialNumber]
+                    if v[1] > cday: v[1] = cday
+                    if v[2] < cday: v[2] = cday
+                    machines[line.serialNumber] = [v[0]+1, v[1], v[2]]
+                else:
+                    machines.update({line.serialNumber:[1,cday,cday]})
+        return machines
+ 
 """
 -Checks for the following day anomolies:
     -Votes before designated pre-voting day
@@ -175,15 +158,15 @@ Codes:
 
 Limitations:  Will not handle unparsible dates.  This will work with edata, pdata, or both sets combined.  Will not deal with a machine with multible openings or closings.
 """
-def timeopen(edata):
-    temp = edata[0].serialNumber
+def timeopen(data,eday):
+    temp = data[0].serialNumber
     times = {}
     a = []
     ostate = False 
     eventseen = False 
     timeset = False
     startset = False
-    for line in edata:
+    for line in data:
         if line.serialNumber != temp:
             #Machine Neither Closed Nor Opened
             if not eventseen:
@@ -209,14 +192,17 @@ def timeopen(edata):
             eventseen = False
             timeset = False
         if line.eventNumber == '0001672': 
-            ostate = 1
-            start = dateutil.parser.parse(line.dateTime)
-            eventseen = True
+            try: start = dateutil.parser.parse(line.dateTime)
+            except ValueError: print 'Value Error line 196'
+            else:
+                ostate = 1
+                eventseen = True
         elif line.eventNumber == '0001673':
             eventseen = True
             if ostate == 1:
-                ostate  = 0
-                end = dateutil.parser.parse(line.dateTime)
+                try: end = dateutil.parser.parse(line.dateTime)
+                except ValueError: print 'Value Error Line 204'
+                else: ostate  = 0
             #Machine Closed without an Open
             elif ostate == 0:
                 times.update({temp:(1, None, end, None)})
@@ -226,11 +212,15 @@ def timeopen(edata):
             diff = dateutil.parser.parse(line.dateTime)
             startset = True
         elif line.eventNumber == '0001656' and startset:
-            diff =  diff - dateutil.parser.parse(line.dateTime)
-            timeset = True
+            if diff.date() == eday or dateutil.parser.parse(line.dateTime).date() == eday:
+
+                diff =  diff - dateutil.parser.parse(line.dateTime)
+                timeset = True
             startset = False
             
     return times, a
+
+
 """
 This function takes the dictionary from timesopen and decides if the datestamp is beleavable.  Also tries to determine which machines really don't have the correct date.
 Alot of machines are not sorted into valid or invalid.  As this function becomes more robust it will know what to do with more machines.
@@ -271,44 +261,4 @@ if __name__== "__main__":
     ballotclass = ballotImage.BallotImage(f, data, f6)
     f.close()
     f6.close()
-
-    #Machines adjusted on Election Day
-    d, adjustedMachines = timeopen(dateclass.edata) 
-    MtoP = ballotclass.getPrecinctNameMap() 
-    
-
-
-
-    
-"""""
-
-#Checks data for any events not in increaseing order by time stamp
-def eventsinorder(data):
-    events = []
-    lastmachine = '0'
-    for line in data:
-        currenttime = ' '.join(line[3:5])
-        if line[0] != lastmachine:
-            lastmachine = line[0]
-            lasttime = datetime.datetime.min
-        try:
-            eventtime = dateutil.parser.parse(currenttime)
-        except ValueError:
-            flag = False
-            events.append(line)
-        else:
-            if (eventtime - lasttime) < datetime.timedelta(0):
-                events.append(line)
-            lasttime = dateutil.parser.parse(currenttime)
-
-    return events
-
-#Returns list of times of day in minutes for each opening
-def datesopened(data): #histogram2
-    minutes = [] 
-    for line in data:
-        if line[5] == '0001672':
-            minutes.append(int(line[4][0:2])*60 + int(line[4][3:5]))
-    return minutes
-"""
 

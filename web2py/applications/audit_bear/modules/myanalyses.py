@@ -17,36 +17,10 @@ def dateanomalies(data, dateclass):
     r = report.Report()
     r.addTitle('Date Anomaly Report')
     
-    l = dateMod.check(dateclass.odata, dateclass.eday, dateclass.pday) 
-    if len(l[0]) == 0:
-        r.addTextBox('<b>No Machines had events after Election Day<br></b>')
-    else: 
-        r.addTextBox('<b>These machines had events after Election Day:<br></b>')
-        for k,v in l[0].iteritems(): 
-            r.addTextBox('&nbsp Machine '+str(k[0])+' had '+str(v).zfill(2)+' events on '+str(k[1]))
- 
-    if len(l[1]) == 0: 
-        r.addTextBox('<b>No machines voted more then 15 days prior to election day<br></b>')
-    else: 
-        r.addTextBox('<b>These machines had votes 16 days or more before Election Day:<br></b>')
-        for k,v in l[1].iteritems(): 
-            r.addTextBox('&nbsp Machine '+str(k[0])+' had '+str(v).zfill(2)+' votes on '+str(k[1]))
- 
-    if len(l[2]) == 0: 
-        r.addTextBox('<b>No events with invalid dates<br></b>')
-    elif len(l[2]) == 1:
-        r.addTextBox('<b>These machines had events with invalid dates<br></b>')
-        v = l[2].values()[0]
-        k = l[2].keys()[0]
-        r.addTextBox('&nbsp Machine '+str(k[0])+' had '+str(v)+' events on '+str(k[1]))
-       
-    else: 
-        r.addTextBox('<b>These machines had events with invalid dates<br></b>')
-        for k,v in l[2].iteritems():
-            r.addTextBox('&nbsp Machine '+str(k[0])+': had '+str(v).zfill(2)+' events on '+str(k[1]))
+    l = dateMod.check(data, dateclass.eday, dateclass.pday) 
     return r
 
-def edayCorrections(dateclass, ballotclass):
+def edayCorrections(data,eday, ballotclass):
     plot.ioff()
     r = report.Report()
     t = report.Table()
@@ -55,7 +29,7 @@ def edayCorrections(dateclass, ballotclass):
     #report Machines that had dates corrected ON election day
     r.addTextBox('<p><i>This report identifies machines that recorded manual date changes to iVotronic machines that occured during election AND while the machine was opened for voting.  Machines are grouped by precinct.</p><p> This may identify precincts with systematic date problems or errors by pollworkers.  If an date change event is seen with a timedelta of less then 1 minutes, it is ignored.  Additionally, the average reported is an average of the absolute values of the time changes. </i></p>')
 
-    times, adjustedL = dateMod.timeopen(dateclass.edata)
+    times, adjustedL = dateMod.timeopen(data, eday)
     if len(adjustedL) == 0:
         print 'Report on election day time adjustments not included'
         return []
@@ -85,16 +59,59 @@ def edayCorrections(dateclass, ballotclass):
         r.addTable(t)
     return [r]
 
-def earlyVotes():
+def earlyVotes(data, dateclass, ballotclass):
     r = report.Report()
-    r.addTitle('EXTREME Early Voting! \m/')
+    t = report.Table()
+
+    r.addTitle('Early Voting')
     #report extra early voting by precinct AND check for correct dates
-    r.addTextBox('<i>This report determines the dates</i>')
-    return
+    r.addTextBox('<i>This report determines the precincts that have votes cast more then 15 days prior to election day.</i>')
+
+    machines = dateclass.voteEarly(data)
+    precinctMap = ballotclass.getPrecinctNameMap()
+    if len(machines) == 0:
+        print 'earlyVotes analysis empty: Skipped'
+        return []
+
+    #Group by precinct: {Precinct:(#Machines, #Votes, #Start, #Last)}
+    d = {}
+    
+    for k,v in machines.iteritems():
+        if k in precinctMap:
+            key = precinctMap[k]
+        elif k in ballotclass.getEarlyVotingList():
+            key = 'Absentee'
+        elif k in ballotclass.getFailsafeList():
+            key = 'Failsafe'
+        else:
+            print 'Important! Machine',tup[0],'not listed in any precinct'
+        if key in d:
+            if d[key][2] < v[1]: v[1] = d[key][2]
+            if d[key][3] > v[2]: v[2] = d[key][3]
+
+            d[key] = [d[key][0]+1, d[key][1]+v[0], v[1], v[2]]
+        else:
+            d.update({key:[1, v[0], v[1], v[2]]})
+
+    t.addHeader('Precinct')
+    t.addHeader('# of Machines')
+    t.addHeader('Total Votes')
+    t.addHeader('Range Min')
+    t.addHeader('Range Max')
+
+    for k,v in d.iteritems():
+        t.addRow([k] + [str(x) for x in v])
+
+    r.addTable(t)
+    return [r]
+
 def machines():
     pass
-    #report machines that are recording events on bad dates(2009, 2053) after being opene
+    #report machines that are recording events on bad dates(2009, 2053) after being opened.  This includes 00 dates and future dates. 
 
+def voteRange():
+    #Only display precincts that exhibit early votes OR that display votes late. Could add in closed status and whether voted on election day.
+    pass
 
 
 def openmachines(dateclass, bins=10):
