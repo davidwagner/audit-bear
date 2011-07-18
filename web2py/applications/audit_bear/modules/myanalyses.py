@@ -84,7 +84,7 @@ def earlyVotes(data, dateclass, ballotclass):
         elif k in ballotclass.getFailsafeList():
             key = 'Failsafe'
         else:
-            print 'Important! Machine',tup[0],'not listed in any precinct'
+            print 'Important! Machine',k,'not listed in any precinct'
         if key in d:
             if d[key][2] < v[1]: v[1] = d[key][2]
             if d[key][3] > v[2]: v[2] = d[key][3]
