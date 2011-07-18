@@ -218,7 +218,7 @@ def timeopen(data,eday):
 
                 diff =  diff - dateutil.parser.parse(line.dateTime)
                 timeset = True
-            startset = False
+                startset = False
             
     return times, a
 
