@@ -212,7 +212,7 @@ def timeopen(data,eday):
             try:diff = dateutil.parser.parse(line.dateTime)
             except ValueError: pass
             else:
-            startset = True
+                startset = True
         elif line.eventNumber == '0001656' and startset:
             if diff.date() == eday or dateutil.parser.parse(line.dateTime).date() == eday:
 
