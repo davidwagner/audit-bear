@@ -14,6 +14,7 @@ def dispatcher(el152=None, el155=None, el68a=None):
     if el155 != None and el152 != None and el68a != None:
         dateclass = dateMod.DateMod(el152, el68a.electionDate)
 
+        results.append(checkFiles(el152, el155, el68a, report.Report()))
         results.append(myanalyses.dateanomalies(el152,dateclass))
         results.extend(myanalyses.edayCorrections(dateclass,el155))
         results.append(lowBatteryMachines(el152,el155, report.Report()))
@@ -24,7 +25,6 @@ def dispatcher(el152=None, el155=None, el68a=None):
         results.append(getVoteCancelledEvents(el152,el155, report.Report()))
         #results.append(checkZeroTapes(el152,el155,report.Report()))
         #results.append(checkResultsTapes(el152, el155, report.Report()))
-        results.append(checkFiles(el152, el155, el68a, report.Report()))
         del dateclass
         return dict(message='files recieved', results=results)
         
