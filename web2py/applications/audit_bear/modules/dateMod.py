@@ -214,7 +214,7 @@ def timeopen(data,eday):
             else:
                 startset = True
         elif line.eventNumber == '0001656' and startset:
-            if diff.date() == eday or dateutil.parser.parse(line.dateTime).date() == eday:
+            #if diff.date() == eday or dateutil.parser.parse(line.dateTime).date() == eday:
 
                 diff =  diff - dateutil.parser.parse(line.dateTime)
                 timeset = True
