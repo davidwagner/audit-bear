@@ -146,25 +146,64 @@ def longLine(parsedBallotImage, mapAllTimesA, mapAllTimes):
                 pollingLocations18.setdefault(precinctNumMap[machine],[]).append(value[0])
     for machine in mapAllTimesA:
         for value in mapAllTimesA[machine]:
-            #print value[1], value[2]
             pollingLocations19.setdefault(precinctNumMap[machine],[]).append(value[0])
 
-    #for key in pollingLocations18:
-        #print key, pollingLocations18[key]
-    return (pollingLocations7,pollingLocations8,pollingLocations9,pollingLocations10,pollingLocations11,pollingLocations12,pollingLocations13,pollingLocations14,pollingLocations15,pollingLocations16,pollingLocations17,pollingLocations18,pollingLocations19)
+    
+    pollLoc19 = {}
+    for key in pollingLocations19:
+        t = pollingLocations19[key]
+        if hasNormalDistribution(t):
+            pollLoc19[key] = t
+    if hasSameDistribution(pollLoc19):
+        print "The f_oneway test can be performed"
+    else:
+        print "The f_oneway test can't be performed"
+    
+    return (pollingLocations7,pollingLocations8,pollingLocations9,pollingLocations10,pollingLocations11,pollingLocations12,pollingLocations13,pollingLocations14,pollingLocations15,pollingLocations16,pollingLocations17,pollingLocations18,pollLoc19)
+
+def hasNormalDistribution(times):
+    from scipy import stats
+    try:
+        x = round(stats.normaltest(times)[1]*100,0)
+    except:
+        return False
+    else:
+        if len(times) >= 20:
+            if x >= 5.0:
+                #print x
+                return True
+    return False
+
+def hasSameDistribution(pollLoc):
+    from scipy import stats
+    import numpy as np
+    x = len(pollLoc) - 1
+   
+    data = []
+    for key in pollLoc:
+        data.append(np.array(pollLoc[key]))
+    
+    #I need to find another way to pass all the arrays at once
+    h, p = stats.f_oneway(data[0], data[1], data[2], data[3], data[4], data[5], data[6], data[7], data[8], data[9], data[10], data[11], data[12], data[13])
+    p = round(p*100,0)
+    print h, p
+    if p >= 5.0:
+        return True
+    return False
+
 def createMapRangePoll(pollTime, timewindow):
-    print pollTime[0]
-    print pollTime[1]
-    
     mapRange = {}
+    tMin = 0
+    tMax = int(max(pollTime[1]))+1
     
-    for time in pollTime[1]:
-        mapRange[time] = 0
-    
-    for time in mapRange:
-        for t2 in pollTime[1]:
-            if t2 == time:
-                mapRange[time] += 1
+    while tMin <= tMax:
+        mapRange[tMin] = 0
+        tMin += 1
+
+    for m in pollTime[1]:
+        for key in mapRange:
+            if key <= m < key+1:
+                mapRange[key]+=1
     
     graph(mapRange, 'Time between consecutive vote cast events (minutes)', 'Number of vote cast event pairs', 'Time vs Number of vote cast in precinct #'+pollTime[0]+' at '+timewindow)
     return
@@ -183,7 +222,7 @@ def createMapRange(mapVotes, time):
 def graph(mapRange, x, y, title):
     import matplotlib.pyplot as plt
     import numpy as np
-    plt.bar(mapRange.keys(), mapRange.values(), .1)
+    plt.bar(mapRange.keys(), mapRange.values(), .98)
     plt.axis([0, max(mapRange.keys())+1, 0, max(mapRange.values())+1])
     plt.xticks(np.arange(0,max(mapRange.keys())+1,1))
     plt.yticks(np.arange(0,max(mapRange.values())+1, 1))
@@ -204,6 +243,10 @@ if cmd_folder not in sys.path:
 from auditLog import AuditLog   #imports audit log class
 from ballotImage import BallotImage  #imports ballot image class
 import dateMod
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy import stats
+
 #import random as rnd
 path = sys.argv[1]
 path2 = sys.argv[2]
@@ -229,17 +272,59 @@ for time in lTV:
     else:
         mapTimeVotes[time] += 1
 #rnd.seed()
+
 pollLoc7, pollLoc8, pollLoc9, pollLoc10, pollLoc11, pollLoc12, pollLoc13, pollLoc14, pollLoc15, pollLoc16, pollLoc17, pollLoc18, pollLoc19 = longLine(parsedBallotImage, mapMachA, mapMachB)
+
 #generate a random position to choose a random polling location
 #pos = rnd.randint(0, len(pollLoc7)-1)
 i = 0
 for key in pollLoc19:
     i += 1
-    if key == '26':
+    if key == '38':
         #print key
         pos = i - 1
         break
+#print stats.ttest_ind(pollLoc19.items()[0][1], pollLoc19.items()[1][1])
+import math
+
+#print '%6.3f and %6.4f' % stats.normaltest(lTV)
+#print len(lTV)
+#print np.mean(lTV)
+#print np.std(lTV)
+#print stats.stderr(lTV)
+
+#x = (math.sqrt(len(lTV)) * np.std(lTV)) / len(lTV)
+#print x
+for key in pollLoc19:
+    x = np.mean(pollLoc19[key]) + np.std(pollLoc19[key])
+    y = np.mean(pollLoc19[key]) - np.std(pollLoc19[key])
+    
+    x2 = np.mean(pollLoc19[key]) + 2*np.std(pollLoc19[key])
+    y2 = np.mean(pollLoc19[key]) - 2*np.std(pollLoc19[key])
+
+    x3 = np.mean(pollLoc19[key]) + 3*np.std(pollLoc19[key])
+    y3 = np.mean(pollLoc19[key]) - 3*np.std(pollLoc19[key])
+
+    count = 0
+    count2 = 0
+    count3 = 0
+    for t in pollLoc19[key]:
+        if y <= t <= x:
+            count+= 1
+        if y2 <= t <= x2:
+            count2+=1
+        if y3 <= t <= x3:
+            count3 += 1
+
+    print key, (count / len(pollLoc19[key])) * 100, (count2 / len(pollLoc19[key])) * 100, (count3 / len(pollLoc19[key])) * 100
 createMapRangePoll(pollLoc19.items()[pos], '7:00 PM to close time')
+
+#l1 = lTV
+
+#pollVotePairs = {}
+#for key in pollLoc19:
+#    pollVotePairs[key] = len(pollLoc19[key])
+#    print key, pollVotePairs[key]
 
 #print map['24']
 #createMapRange(pA, 'after')
