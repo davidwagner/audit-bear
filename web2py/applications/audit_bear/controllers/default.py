@@ -50,7 +50,6 @@ def index():
 # all the results
 def results():
     if not session.results:
-        print 'Redirect'
         redirect(URL('index'))
 
     return session.results
