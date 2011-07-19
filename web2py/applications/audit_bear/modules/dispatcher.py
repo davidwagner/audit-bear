@@ -4,6 +4,7 @@
 from eventAnomaliesAnalyses import *
 import dateMod
 import myanalyses
+import closedLate
 from fileAnomalies import *
 #from pollWorkerEval import *
 
@@ -17,6 +18,7 @@ def dispatcher(el152=None, el155=None, el68a=None):
         results.append(notUploadedPEBs(el152, el155, el68a, report.Report()))
         results.append(notClosedMachines(el152, el155, el68a, report.Report()))
         #results.append(checkFiles(el152, el155, el68a, report.Report()))
+        results.append(closedLate.closedLate(el152, el155, el68a, dateclass))
         results.extend(myanalyses.edayCorrections(el152,dateclass.eday,el155))
         results.extend(myanalyses.earlyVotes(el152,dateclass,el155))
         results.append(lowBatteryMachines(el152,el155, report.Report()))

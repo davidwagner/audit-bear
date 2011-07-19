@@ -89,7 +89,6 @@ def lowBatteryMachines(data, ballot, r):
         r.addTextBox(" ")
         for t in totalList:
             lowBatteryTable.addRow(['%s (#%s)  ' % (t[2], t[1]), '   ', '%s had %d occurrences of this event.' % (t[0], t[3])])
-        lowBatteryTable.generateHTML()
         r.addTable(lowBatteryTable)
     return r
     
@@ -129,7 +128,6 @@ def getCalibrationEvents2(data, ballot, r):
                 r.addTextBox(" ")
                 b = False
             calTable.addRow(["%s (#%s)  " % (ballot.machinePrecinctNameMap[y], ballot.machinePrecinctNumMap[y]), "%s" % (y,)])
-    calTable.generateHTML()
     r.addTable(calTable)
     return r
                 
@@ -220,8 +218,6 @@ def getCalibrationEvents(data, ballot, r):
                             b2 = False
                         warningTable2.addRow(["%s (#%s)  " % (z4[2], z4[1]), "  %s experienced %d events warning about calibration, but it was never recalibrated." % (z4[0], numOccurrencesWarningMap[z])])
                         #r.addTextBox("%s (#%s)   %s experienced %d events warning about calibration, but it was never recalibrated." % (z4[2], z4[1], z4[0], numOccurrencesWarningMap[z]))
-        warningTable.generateHTML()
-        warningTable2.generateHTML()
         r.addTable(warningTable)
         r.addTable(warningTable2)
     return r
@@ -252,7 +248,6 @@ def getTerminalClosedEarlyEvents(data, ballot, r):
     else:
         earlyTable.addRow(["This county experienced no anomalous terminals closing early."])
         #r.addTextBox("This county experienced no anomalous terminals closing early.")
-    earlyTable.generateHTML()
     r.addTable(earlyTable)
     return r        
    
@@ -292,7 +287,6 @@ def getUnknownEvents(data, ballot, r):
         for z in totalUnknownEventsMap:
             unknownTable.addRow(["%s (#%s) " % (totalUnknownEventsMap[z][0][1], totalUnknownEventsMap[z][0][0]), "%s has %d total unknown warnings." % (z, totalsMap[z])])
             #r.addTextBox("%s (#%s)  %s has %d total unknown warnings." % (totalUnknownEventsMap[z][0][1], totalUnknownEventsMap[z][0][0], z, totalsMap[z])) 
-    unknownTable.generateHTML()
     r.addTable(unknownTable)
     return r
    
@@ -495,7 +489,6 @@ def getVoteCancelledEvents(data,ballot,r):
                     b = False
                 #r.addTextBox("Machine %s had %d occurrences (in %s)" % (w4[0], w4[3], w4[2]))
                 vcTable.addRow(["Machine %s had %d vote cancellation events  " % (w4[0], w4[3]), " (in %s)." % (w4[2],)])
-        vcTable.generateHTML()
         r.addTable(vcTable)
         for w4 in totalList2:
             if w4[4] == '0001514':
@@ -505,7 +498,6 @@ def getVoteCancelledEvents(data,ballot,r):
                     b2 = False
                 #r.addTextBox("Machine %s had %d vote cancellation events (in %s)" % (w4[0], w4[3], w4[2]))
                 vcTable2.addRow(["Machine %s had %d vote cancellation events  " % (w4[0], w4[3]), " (in %s)." % (w4[2],)])
-        vcTable2.generateHTML()
         r.addTable(vcTable2)
         for w4 in totalList2:
             if w4[4] == '0001515':
@@ -515,7 +507,6 @@ def getVoteCancelledEvents(data,ballot,r):
                     b3 = False
                 #r.addTextBox("Machine %s had %d vote cancellation events (in %s)" % (w4[0], w4[3], w4[2]))
                 vcTable3.addRow(["Machine %s had %d vote cancellation events  " % (w4[0], w4[3]), " (in %s)." % (w4[2],)])
-        vcTable3.generateHTML()
         r.addTable(vcTable3)
         for w4 in totalList2:
             if w4[4] == '0001516':
@@ -525,7 +516,6 @@ def getVoteCancelledEvents(data,ballot,r):
                     b4 = False
                 #r.addTextBox("Machine %s had %d vote cancellation events (in %s)" % (w4[0], w4[3], w4[2]))
                 vcTable4.addRow(["Machine %s had %d vote cancellation events  " % (w4[0], w4[3]), " (in %s)." % (w4[2],)])
-        vcTable4.generateHTML()
         r.addTable(vcTable4)
         for w4 in totalList2:
             if w4[4] == '0001517':
@@ -535,7 +525,6 @@ def getVoteCancelledEvents(data,ballot,r):
                     b5 = False
                 #r.addTextBox("Machine %s had %d vote cancellation events (in %s)" % (w4[0], w4[3], w4[2]))
                 vcTable5.addRow(["Machine %s had %d vote cancellation events  " % (w4[0], w4[3]), " (in %s)." % (w4[2],)])
-        vcTable5.generateHTML()
         r.addTable(vcTable5)
         for w4 in totalList2:
             if w4[4] == '0001518':
@@ -545,7 +534,6 @@ def getVoteCancelledEvents(data,ballot,r):
                     b6 = False
                 #r.addTextBox("Machine %s had %d vote cancellation events (in %s)" % (w4[0], w4[3], w4[2]))
                 vcTable6.addRow(["Machine %s had %d vote cancellation events  " % (w4[0], w4[3]), " (in %s)." % (w4[2],)])
-        vcTable6.generateHTML()
         r.addTable(vcTable6)
         for w4 in totalList2:
             if w4[4] == '0001519':
@@ -555,7 +543,6 @@ def getVoteCancelledEvents(data,ballot,r):
                     b7 = False
                 #r.addTextBox("Machine %s had %d vote cancellation events (in %s)" % (w4[0], w4[3], w4[2]))
                 vcTable7.addRow(["Machine %s had %d vote cancellation events  " % (w4[0], w4[3]), " (in %s)." % (w4[2],)])
-        vcTable7.generateHTML()
         r.addTable(vcTable7)
         avg2 = 0
         ssum3 = 0.00000000
@@ -581,6 +568,5 @@ def getVoteCancelledEvents(data,ballot,r):
                 b8 = False  
             #r.addTextBox("Machine %s had %d vote cancellation events (in %s)." % (w5[0], w5[2], w5[1]))
             vcTable8.addRow(["Machine %s had %d vote cancellation events " % (w5[0], w5[2]), " (in %s)." % (w5[1],)])
-        vcTable8.generateHTML()
         r.addTable(vcTable8)
     return r
