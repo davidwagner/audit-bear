@@ -24,10 +24,10 @@ def edayCorrections(data,eday, ballotclass):
     plot.ioff()
     r = report.Report()
     t = report.Table()
-    r.addTitle('Machines with Election day corrections')
+    r.addTitle('Date and Time Adjustments during Election Day')
 
     #report Machines that had dates corrected ON election day
-    r.addTextBox('<p><i>This report identifies machines that recorded manual date changes to iVotronic machines that occured during election AND while the machine was opened for voting.  Machines are grouped by precinct.</p><p> This may identify precincts with systematic date problems or errors by pollworkers.  If an date change event is seen with a timedelta of less then 1 minutes, it is ignored.  Additionally, the average reported is an average of the absolute values of the time changes. </i></p>')
+    r.addTextBox('<p>This report identifies machines that recorded manual date changes to machines that occured during election day AND while the machine was opened for voting. This may identify precincts with systematic date problems or errors by pollworkers. </p> If there are a large number of listed machines it may be useful to to examine whether it would be beneficial to adjust the pre-election testing process to ensure that the date and time is set correctly on all machines before they are shipped to a polling location.</p>')
 
     times, adjustedL = dateMod.timeopen(data, eday)
     if len(adjustedL) == 0:
@@ -53,7 +53,7 @@ def edayCorrections(data,eday, ballotclass):
                     d.update({key:(1,abs(tup[1]))})
         t.addHeader('Precinct')
         t.addHeader('# of Machines')
-        t.addHeader('Average Timedelta') 
+        t.addHeader('Average Time Change')
         for k,v in d.iteritems():
             t.addRow([k,str(v[0]), str(v[1]/v[0])[:7]])
         r.addTable(t)

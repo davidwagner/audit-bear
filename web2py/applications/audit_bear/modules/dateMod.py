@@ -167,6 +167,7 @@ def timeopen(data,eday):
     timeset = False
     startset = False
     for line in data:
+        
         if line.serialNumber != temp:
             #Machine Neither Closed Nor Opened
             if not eventseen:
@@ -175,7 +176,7 @@ def timeopen(data,eday):
                 
             #Machine Closed Sucessfully
             elif not ostate:
-                if timeset:
+                if timeset: 
                     times.update({temp:(0,start-diff, end, end-start+diff)})
                     a.append((temp, diff))
                 else:
@@ -192,33 +193,43 @@ def timeopen(data,eday):
             eventseen = False
             timeset = False
         if line.eventNumber == '0001672': 
-            try: start = dateutil.parser.parse(line.dateTime)
-            except ValueError: print 'Value Error line 196'
+            try: cdateTime = dateutil.parser.parse(line.dateTime)
+            except ValueError: cdateTime = None
             else:
+                start = cdateTime
                 ostate = 1
                 eventseen = True
         elif line.eventNumber == '0001673':
-            eventseen = True
             if ostate == 1:
-                try: end = dateutil.parser.parse(line.dateTime)
-                except ValueError: print 'Value Error Line 204'
-                else: ostate  = 0
+                try: cdateTime = dateutil.parser.parse(line.dateTime)
+                except ValueError: cdateTime = None
+                else:
+                    eventseen = True
+                    end = cdateTime
+                    ostate  = 0
             #Machine Closed without an Open
             elif ostate == 0:
                 times.update({temp:(1, None, end, None)})
+                eventseen = True
 
         #If time was adjusted while machine was open, account for that
         elif line.eventNumber == '0000117' and ostate == 1:
-            try:diff = dateutil.parser.parse(line.dateTime)
-            except ValueError: pass
-            else:
-                startset = True
+            try: cdate = dateutil.parser.parse(line.dateTime).date()
+            except ValueError: cdate = None 
+            
+            diff = cdate
+            startset = True
         elif line.eventNumber == '0001656' and startset:
-            #if diff.date() == eday or dateutil.parser.parse(line.dateTime).date() == eday:
+            try: cdate = dateutil.parser.parse(line.dateTime).date()
+            except ValueError: cdate = None
 
-                diff =  diff - dateutil.parser.parse(line.dateTime)
+            if diff == eday or cdate == eday:
+                if diff == None or cdate == None:
+                    diff = datetime.timedelta(0)
+                else:
+                    diff =  diff - cdate
                 timeset = True
-                startset = False
+            startset = False
             
     return times, a
 
