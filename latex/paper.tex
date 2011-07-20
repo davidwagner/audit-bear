@@ -1,6 +1,17 @@
 \documentclass[letterpaper,twocolumn,10pt]{article}
 
 \usepackage{url}
+\usepackage[toc,page]{appendix}
+
+\makeatletter
+\newcommand\appendix@section[1]{%
+  \refstepcounter{section}%
+  \orig@section*{Appendix \@Alph\c@section: #1}%
+  \addcontentsline{toc}{section}{Appendix \@Alph\c@section: #1}%
+}
+\let\orig@section\section
+\g@addto@macro\appendix{\let\section\appendix@section}
+\makeatother
 
 % Hi Everyone, we can start with this template Cynthia gave us and go from here
 % The comment feature is great for annotating text, use it!
@@ -20,7 +31,7 @@
 % \and Author n
 \maketitle
 \begin{abstract}
-Voting audit logs, produced by the widely used iVotronic Direct Recording Electronic (DRE) machines, are currently unwieldy and unintelligible to election officials in post-election auditing. These logs detail all events recorded on the DREs and include data on ballots cast and uploading procedures. The authors of the paper "Auditing a DRE-Based Election in South Carolina" ~\cite{Buell2011} demonstrated that these logs can be analyzed to uncover both procedural errors and  election anomalies.  In this study, we replicate the results from the aforementioned paper and infer additional statistics and anomalies. This includes identification of procedural errors by election officials, systematic anomalies, and precinct statistics. These reports have been integrated into a public website that produces a detailed report from the iVotronic log files.  We intend this work to stand as proof-of-concept software for future auditing tools and as an immediately accessible tool to assist those working with election auditing and integrity.
+Voting audit logs, produced by the widely used iVotronic Direct Recording Electronic (DRE) machines, are currently unwieldy and unintelligible to election officials in post-election auditing. These logs detail all events recorded on the DREs and include data on ballots cast and uploading procedures. The authors of the paper \textquotedblleft Auditing a DRE-Based Election in South Carolina \textquotedblright ~\cite{Buell2011} demonstrated that these logs can be analyzed to uncover both procedural errors and  election anomalies.  In this study, we replicate the results from the aforementioned paper and infer additional statistics and anomalies. This includes identification of procedural errors by election officials, systematic anomalies, and precinct statistics. These reports have been integrated into a public website that produces a detailed report from the iVotronic log files.  We intend this work to stand as proof-of-concept software for future auditing tools and as an immediately accessible tool to assist those working with election auditing and integrity.
 \end{abstract}
 
 \section{Introduction}
@@ -79,4 +90,17 @@ Audit-bear is awesome!
 {\footnotesize
 \bibliography{paper}}
 
-end{document}
+\newpage
+\begin{center}
+\appendix
+\section{Event Log File}\label{el} 
+Hello World!~\ref{el}
+
+\section{Ballot Image File}\label{bi}
+This is app~\ref{bi}
+
+\section{System Log File}\label{sl}
+This is app~\ref{sl}
+\end{center}
+
+\end{document}
