@@ -6,12 +6,14 @@
     {{i=0}}
     {{for result in results:}}
         {{i+=1}}
+        {{if result.hasWarningIcon():}}
+        <div id="warn"><table><tr >
+            <td><img src=/static/images/warning.png height=35px/></td>
+            <td><h2>Report #{{=i}}: {{=result.title}}</h2></td>
+        </tr></table></div>
+        {{else:}}
         <h2>Report #{{=i}}: {{=result.title}}</h2>
-        {{
-        if result.hasWarningIcon():
-            response.write("<img src=/static/images/warning.png height=40px/>", escape=False)
-        pass
-        }}
+        {{pass}}
         <hr>
         {{
         for element in result:
