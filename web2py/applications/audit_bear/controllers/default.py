@@ -41,11 +41,7 @@ def index():
             del el155
          
         # parsed logs are passed to dispatcher
-        try:
-            dictionary = dispatcher(el152=p_el152, el155=p_el155, el68a=p_el68a)
-        except Exception as e:
-            session.file_error = str(e)
-            redirect(URL('error'))
+        dictionary = dispatcher(el152=p_el152, el155=p_el155, el68a=p_el68a)
 
         if dictionary['message'] != 'LOLCAT':
             generateImageIDs(dictionary['results'])
