@@ -14,7 +14,7 @@ import matplotlib.pyplot as plt
 
 from dateutil.parser import parse
 
-def checkZeroTapes(data, ballot, r):
+def checkZeroTapes(data, ballot, dc, r):
     r.addTitle("Polling locations that did not print zero tapes")
     #check for one instance of event # 0002010 : Print cumulative zeros tape in each polling location
     precinctMap = ballot.machinesPerPrecinct
@@ -27,7 +27,7 @@ def checkZeroTapes(data, ballot, r):
         t = s[1].split(":")
         if t[0] == '':
             continue
-        elif x.eventNumber == '0002010' and (s[0] == '11/02/2010' or s[0] == '06/08/2010'):
+        elif x.eventNumber == '0002010' and (s[0] == dc.eday):
             machineList.append(x.serialNumber)
     for y in machineList:
         for y2 in precinctMap:
@@ -44,7 +44,7 @@ def checkZeroTapes(data, ballot, r):
     print "NONZEROLIST"      
     print nonZeroList
     if len(nonZeroList2) < 1:
-        r.addTextBox("No problem found.")
+        r.addTextBox("No problems found.")
     for m2 in nonZeroList2:
         r.addTextBox("%s (#%s)   %s" % (ballot.machinePrecinctNameMap[m2], ballot.machinePrecinctNumMap[m2], m2))
     return r
