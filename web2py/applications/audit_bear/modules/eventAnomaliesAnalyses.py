@@ -128,7 +128,8 @@ def getCalibrationEvents2(data, ballot, r):
                 r.addTextBox("The following machines may have recorded votes being cast while the terminal screen seemed to have calibration problems.  You may wish to find these machines and check whether their screen is properly calibrated and verify the votes.")
                 r.addTextBox(" ")
                 b = False
-            calTable.addRow(["In %s (#%s), " % (ballot.machinePrecinctNameMap[y], ballot.machinePrecinctNumMap[y]), "machine %s had votes cast when it was possibly not calibrated." % (y,)])
+            if ballot.machinePrecinctNameMap.has_key(y):
+                calTable.addRow(["In %s (#%s), " % (ballot.machinePrecinctNameMap[y], ballot.machinePrecinctNumMap[y]), "machine %s had votes cast when it was possibly not calibrated." % (y,)])
     if b == True:
         r.addTextBox("No problems found.")
     r.addTable(calTable)
@@ -271,7 +272,8 @@ def getUnknownEvents(data, ballot, r):
             else:
                 tempMap = {}
                 tempMap[x.eventNumber] = 1
-                totalUnknownEventsMap[x.serialNumber] = ((ballot.machinePrecinctNumMap[x.serialNumber], ballot.machinePrecinctNameMap[x.serialNumber]),tempMap)
+                if ballot.machinePrecinctNumMap.has_key(x.serialNumber):
+                    totalUnknownEventsMap[x.serialNumber] = ((ballot.machinePrecinctNumMap[x.serialNumber], ballot.machinePrecinctNameMap[x.serialNumber]),tempMap)
     for y in totalUnknownEventsMap:
         if totalsMap.has_key(y):
             for y2 in totalUnknownEventsMap[y][1]:
@@ -574,7 +576,8 @@ def getVoteCancelledEvents(data,ballot,r):
         outliers = []
         for u in vcNumMap:
             if vcNumMap[u] > (3*stdev2):
-                outliers.append((u, ballot.machinePrecinctNameMap[u], vcNumMap[u]))     
+                if ballot.machinePrecinctNameMap.has_key(u):
+                    outliers.append((u, ballot.machinePrecinctNameMap[u], vcNumMap[u]))     
         b8 = True
         vcTable8 = report.Table()
         for w5 in outliers:
