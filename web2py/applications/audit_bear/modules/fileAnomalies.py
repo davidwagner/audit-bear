@@ -204,6 +204,9 @@ def checkFiles(aLog, bLog, eLog, r):
         return r
 
 def pebActivateBallot(data, ballot, el, dc, r):
+    d = str(dc.eday)
+    d = d.split("-")
+    d2 = d[1]+'/'+d[2]+'/'+d[0]
     r.addTitle('Polling locations where ballots were activated with a master PEB')
     #ballotTable = report.Table()
     mPEBmap = getPEBs(data, ballot, el, dc)
@@ -213,7 +216,7 @@ def pebActivateBallot(data, ballot, el, dc, r):
         s = x.dateTime.split(" ")
         date = s[0]
         if len(mPEBmap[x.serialNumber]) > 1:
-            if (x.eventNumber == '0001510' or x.eventNumber == '0001511') and (x.PEBNumber == mPEBmap[x.serialNumber][0] or x.PEBNumber == mPEBmap[x.serialNumber][1]) and (date == dc.eday):
+            if (x.eventNumber == '0001510' or x.eventNumber == '0001511') and (x.PEBNumber == mPEBmap[x.serialNumber][0] or x.PEBNumber == mPEBmap[x.serialNumber][1]) and (date == d2):
                 if ballot.machinePrecinctNameMap.has_key(x.serialNumber):
                     if b == True:
                         r.addTextBox("Ballots have been activated by a master PEB on the following machines.")
@@ -410,11 +413,14 @@ def checkVotes(a, b, e, dc):
 Creates a map of <machine, (opening PEB#, closing PEB#)>
 """
 def getPEBs(a, b, e, dc):
+        d = str(dc.eday)
+        d = d.split("-")
+        d2 = d[1]+'/'+d[2]+'/'+d[0]
         machinePEBMap = {}
         for x in a.getEntryList():
             if machinePEBMap.has_key(x.serialNumber):
                 date = x.dateTime.split(" ")[0]
-                if x.eventNumber == '0001672' and (date == dc.eday):
+                if x.eventNumber == '0001672' and (date == d2):
                     if len(machinePEBMap[x.serialNumber]) == 1:
                         machinePEBMap[x.serialNumber] = [x.PEBNumber]
                     if len(machinePEBMap[x.serialNumber]) == 2:
@@ -525,11 +531,14 @@ def checkMachines2(a, b, e):
 This function checks if there are any machines listed in the event log that are not found in the ballot images.
 """
 def checkMachines(a, b, e, dc):
+        d = str(dc.eday)
+        d = d.split("-")
+        d2 = d[1]+'/'+d[2]+'/'+d[0]
         notCountedList = []
         for x in a.getEntryList():
             s = x.dateTime.split(" ")
             date = s[0]
-            if x.serialNumber not in b.machinePrecinctNumMap and (x.eventNumber == '0001510' or x.eventNumber == '0001511') and (date == dc.eday):
+            if x.serialNumber not in b.machinePrecinctNumMap and (x.eventNumber == '0001510' or x.eventNumber == '0001511') and (date == d2):
                 if x.serialNumber not in b.failsafeList and (x.eventNumber == '0001510' or x.eventNumber == '00015110'):
                     if x.serialNumber not in b.earlyVotingList and (x.eventNumber == '0001510' or x.eventNumber == '0001511'):
                         if x.serialNumber not in notCountedList:

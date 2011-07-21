@@ -36,6 +36,9 @@ def eventAnomalies(data, r):
     
 def lowBatteryMachines(data, ballot, date, r):
     plt.ioff()
+    d = str(date.eday)
+    d = d.split("-")
+    d2 = d[1]+'/'+d[2]+'/'+d[0]
     r.addTitle('Machines with possible low batteries')
     lowBatteryList = []
     lowBatteryMap = {}
@@ -49,7 +52,7 @@ def lowBatteryMachines(data, ballot, date, r):
         t = s[1].split(":")
         if t[0] == '':
             continue
-        elif x.eventNumber == '0001635' and (s[0] == date.eday) and stri.atoi(t[0]) > 7 and stri.atoi(t[0]) < 19:
+        elif x.eventNumber == '0001635' and (s[0] == d2) and stri.atoi(t[0]) > 7 and stri.atoi(t[0]) < 19:
             if x.serialNumber not in lowBatteryList and not lowBatteryMap.has_key(x.serialNumber):
                 lowBatteryList.append(x.serialNumber)
                 lowBatteryMap[x.serialNumber] = 1
@@ -95,6 +98,9 @@ def lowBatteryMachines(data, ballot, date, r):
     return r
     
 def getCalibrationEvents3(data, ballot, date, r):
+    d = str(date.eday)
+    d = d.split("-")
+    d2 = d[1]+'/'+d[2]+'/'+d[0]
     r.addTitle("Machines with possible calibration issues")
     totalCalMap = {}
     for x in data.getEntryList():
@@ -102,7 +108,7 @@ def getCalibrationEvents3(data, ballot, date, r):
         t = s[1].split(":")
         if t[0] == '':
             continue
-        elif stri.atoi(t[0]) > 7 and stri.atoi(t[0]) < 19 and (s[0] == date.eday):
+        elif stri.atoi(t[0]) > 7 and stri.atoi(t[0]) < 19 and (s[0] == d2):
             if x.eventNumber == '0001628':
                 if x.serialNumber not in ballot.earlyVotingList and x.serialNumber not in ballot.failsafeList and ballot.machinePrecinctNumMap.has_key(x.serialNumber):
                     if totalCalMap.has_key(x.serialNumber):
@@ -132,6 +138,9 @@ def getCalibrationEvents3(data, ballot, date, r):
     return r        
     
 def getCalibrationEvents2(data, ballot, date, r):
+    d = str(date.eday)
+    d = d.split("-")
+    d2 = d[1]+'/'+d[2]+'/'+d[0]
     r.addTitle("Votes cast when the terminal screen may not have been calibrated")
     calMap = {}
     calList = []
@@ -140,7 +149,7 @@ def getCalibrationEvents2(data, ballot, date, r):
         t = s[1].split(":")
         if t[0] == '':
             continue
-        elif stri.atoi(t[0]) > 6 and stri.atoi(t[0]) < 19 and (s[0] == date.eday):
+        elif stri.atoi(t[0]) > 6 and stri.atoi(t[0]) < 19 and (s[0] == d2):
             if x.eventNumber == '0001651':
                 if calMap.has_key(x.serialNumber):
                     if calMap[x.serialNumber] == 0:
@@ -270,6 +279,9 @@ def getCalibrationEvents(data, ballot, r):
                    
 def getTerminalClosedEarlyEvents(data, ballot, date, r):
     plt.ioff()
+    d = str(date.eday)
+    d = d.split("-")
+    d2 = d[1]+'/'+d[2]+'/'+d[0]
     r.addTitle('Terminals closed early')
     totalEarlyList = []
     for x in data.getEntryList():
@@ -277,7 +289,7 @@ def getTerminalClosedEarlyEvents(data, ballot, date, r):
         t = s[1].split(":")
         if t[0] == '':
             continue
-        elif stri.atoi(t[0]) > 7 and stri.atoi(t[0]) < 19 and (s[0] == date.eday):
+        elif stri.atoi(t[0]) > 7 and stri.atoi(t[0]) < 19 and (s[0] == d2):
             if x.eventNumber == '0001628':
                 if x.serialNumber not in ballot.earlyVotingList and x.serialNumber not in ballot.failsafeList and ballot.machinePrecinctNumMap.has_key(x.serialNumber):
                     totalEarlyList.append((ballot.machinePrecinctNumMap[x.serialNumber], s[1], x.serialNumber, ballot.machinePrecinctNameMap[x.serialNumber]))
@@ -300,6 +312,9 @@ def getTerminalClosedEarlyEvents(data, ballot, date, r):
     return r        
    
 def getUnknownEvents(data, ballot, date, r):
+    d = str(date.eday)
+    d = d.split("-")
+    d2 = d[1]+'/'+d[2]+'/'+d[0]
     r.addTitle('Terminals with unknown events')
     unknownEvents = ['0001703', '0001704', '0001404']
     totalUnknownEventsMap = {}
@@ -307,7 +322,7 @@ def getUnknownEvents(data, ballot, date, r):
     totalsMap = {}
     for x in data.getEntryList():
         s = x.dateTime.split(" ")
-        if x.eventNumber in unknownEvents and s[0] == date.eday:
+        if x.eventNumber in unknownEvents and s[0] == d2:
             if totalUnknownEventsMap.has_key(x.serialNumber):
                 if totalUnknownEventsMap[x.serialNumber][1].has_key(x.eventNumber):
                     temp = totalUnknownEventsMap[x.serialNumber][1][x.eventNumber]
@@ -321,7 +336,10 @@ def getUnknownEvents(data, ballot, date, r):
                 if ballot.machinePrecinctNumMap.has_key(x.serialNumber):
                     totalUnknownEventsMap[x.serialNumber] = ((ballot.machinePrecinctNumMap[x.serialNumber], ballot.machinePrecinctNameMap[x.serialNumber]),tempMap)
     for x2 in totalUnknownEventsMap:
-        totalUnknownList.append((ballot.machinePrecinctNumMap[x2], ballot.machinePrecinctNameMap[x2], x2))
+        if x2 in ballot.earlyVotingList or x2 in ballot.failsafeList:
+            continue
+        else:
+            totalUnknownList.append((ballot.machinePrecinctNumMap[x2], ballot.machinePrecinctNameMap[x2], x2))
     totalUnknownList.sort()
     for y in totalUnknownEventsMap:
         if totalsMap.has_key(y):
@@ -441,7 +459,12 @@ def getWarningEvents(data,ballot,r):
     
 def getVoteCancelledEvents(data,ballot, date, r):
     plt.ioff()
+    d = str(date.eday)
+    d = d.split("-")
+    d2 = d[1]+'/'+d[2]+'/'+d[0]
     r.addTitle('Anomalous Vote Cancelled Events')
+    print "***************************************************"
+    print date.eday
     vcMap = {}
     vcNumMap = {}
     list1513 = []
@@ -465,7 +488,7 @@ def getVoteCancelledEvents(data,ballot, date, r):
         t = s[1].split(":")
         if t[0] == '':
             continue
-        if stri.atoi(t[0]) > 7 and stri.atoi(t[0]) < 19 and s[0] == date.eday:
+        if stri.atoi(t[0]) > 7 and stri.atoi(t[0]) < 19 and s[0] == d2:
             if x.eventNumber in vcEvents:
                 if vcMap.has_key(x.serialNumber):
                     if vcMap[x.serialNumber].has_key(x.eventNumber):
