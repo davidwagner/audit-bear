@@ -210,7 +210,7 @@ def pebActivateBallot(data, ballot, el, dc, r):
     r.addTitle('Polling locations where ballots were activated with a master PEB')
     #ballotTable = report.Table()
     mPEBmap = getPEBs(data, ballot, el, dc)
-    #printedList = []
+    printedList = []
     b = True
     for x in data.getEntryList():
         s = x.dateTime.split(" ")
