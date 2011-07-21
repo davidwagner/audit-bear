@@ -46,7 +46,6 @@ class BallotImage:
         electionID = ''
         """
         Parses the Ballot Images and fills the maps appropriately.
-        Gets the correct run date and election ID.
         """
         for l in file:
             s = l.split("  ")

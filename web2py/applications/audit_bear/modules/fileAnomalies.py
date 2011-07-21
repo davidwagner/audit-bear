@@ -199,32 +199,68 @@ def checkFiles(aLog, bLog, eLog, r):
                     r.addTextBox("The votes and ballots would not match up even if the uncounted machines were included.")
         return r
 
+def pebActivateBallot(data, ballot, el, r):
+    r.addTitle('Polling locations where ballots were activated with a master PEB')
+    #ballotTable = report.Table()
+    mPEBmap = getPEBs(data, ballot, el)
+    printedList = []
+    b = True
+    for x in data.getEntryList():
+        s = x.dateTime.split(" ")
+        date = s[0]
+        if (x.eventNumber == '0001510' or x.eventNumber == '0001511') and (x.PEBNumber == mPEBmap[x.serialNumber][0] or x.PEBNumber == mPEBmap[x.serialNumber][1]) and (date == '11/02/2010' or date == '06/08/2010'):
+            if ballot.machinePrecinctNameMap.has_key(x.serialNumber):
+                if b == True:
+                    r.addTextBox("Ballots have been activated by a master PEB on the following machines.")
+                    r.addTextBox(" ")
+                    b = False
+                if ballot.machinePrecinctNumMap[x.serialNumber] not in printedList:
+                    r.addTextBox("Ballots were activated with a master PEB in %s (#%s)." % (ballot.machinePrecinctNameMap[x.serialNumber], ballot.machinePrecinctNumMap[x.serialNumber]))
+                    #ballotTable.addRow(["In %s (#%s), " % (ballot.machinePrecinctNameMap[x.serialNumber], ballot.machinePrecinctNumMap[x.serialNumber]), "ballots were activated with a master PEB."])
+                    printedList.append(ballot.machinePrecinctNumMap[x.serialNumber])
+    if b == True:
+        r.addTextBox("No problems found.")
+    #else:
+    #    r.addTable(ballotTable)
+    return r
+
 def notClosedMachines(aLog, bLog, eLog, r):
-    r.addTitle("Machines that weren't Closed")
+    r.addTitle("Machines that weren't closed")
     PEBs = getPEBs(aLog, bLog, eLog)
+    b = True
     for x in PEBs:
         if len(PEBs[x]) < 2:
-            r.addTextBox(" ")
+            if b == True:
+                r.addTextBox("The following machines were not closed.  This means that their vote data was not uploaded and may not have been included in the count.")
+                r.addTextBox(" ")
+                b = False
             r.addTextBox("In %s (#%s), machine %s was not closed." % (bLog.machinePrecinctNameMap[x], bLog.machinePrecinctNumMap[x], x))
+    if b == True:
+        r.addTextBox("All machines were closed.")
+    elif b == False:
+        r.addTextBox(" ")
+        r.addTextBox("We recommend that you consider finding these voting machines, collect their compact flash drives and vote totals, upload the data, and update the final vote tallies.  We recommend that you gather the summary tapes for all machines in this polling location, including the ones identified above, and make sure that all votes listed there have been included in the final vote tallies.")
     return r
     
 
 def notUploadedPEBs(aLog, bLog, eLog, r):
-    r.addTitle("Data that was NOT Uploaded")
+    r.addTitle("Votes that were not uploaded")
+    b3 = True
     if len(isUploadedAll(aLog, bLog, eLog)[1]) < 1:
-        r.addTextBox('All appropriate PEBs were uploaded.')
+        r.addTextBox('No problems found.')
     else:
         PEBmachineMap = getPEBmachines(aLog, bLog, eLog)
-        b3 = True
         for x in isUploadedAll(aLog, bLog, eLog)[1]:
             if b3 == True:
                 r.addTextBox(" ")
                 r.addTextBox("\nThe following PEBs were not uploaded:")
+                r.addTextBox(" ")
                 b3 = False
             precinctName = ''
             precinctNum = ''
             PEBvotes = 0
             mString = ''
+            mString2 = ''
             b32 = True
             for machine in PEBmachineMap[x]:
                 if b32 == True:
@@ -245,9 +281,91 @@ def notUploadedPEBs(aLog, bLog, eLog, r):
                 elif machine in bLog.failsafeList:
                     precinctName = 'Failsafe'
                     precinctNum = '850'
+            if len(PEBmachineMap[x]) > 1:
+                mString2 = 'machines'
+            else: 
+                mString2 = 'machine'
             if PEBvotes != 0:
-                r.addTextBox("--In %s (#%s), PEB %s closed machine(s) %s and was not uploaded.  The %d vote(s) on this PEB may not have been included in the count.  " % (precinctName, precinctNum, x, mString, PEBvotes)) 
+                r.addTextBox("--In %s (#%s), PEB %s closed %s %s and were not uploaded.  The %d vote(s) on this PEB may not have been included in the certified count.  " % (precinctName, precinctNum, x, mString2, mString, PEBvotes))
+    if b3 == False:
+        r.addTextBox(" ")
+        r.addTextBox("We recommend that you consider finding these PEB(s), upload them, and update the final vote tallies.  We recommend that you gather the summary tapes for all machines in this polling location, including the ones identified above, and make sure that all votes listed there have been included in the final vote tallies.")
     return r 
+
+def mismatchVotesMachines(data, ballot, el, r):
+    r.addTitle("Machines whose vote count differed between files")
+    mismatchTable = report.Table()
+    #r.addTextBox("The following machines were only in the event log: ")
+    #for a in checkMachines(data, ballot, el):
+    #    if not getVotesPerMachine(data, ballot, el).has_key(a):
+    #        r.addTextBox("Machine %s had no votes on it according to the event log." % (a,))
+    #    else:
+    #        r.addTextBox("Machine %s had %d votes according to the event log." % (a, getVotesPerMachine(data, ballot, el)[a]))
+    #r.addTextBox(" ")
+    #r.addTextBox("The following machines were only in the ballot images: ")
+    #for b in checkMachines2(data, ballot, el):
+    #    if not ballot.machineVotesMap.has_key(b):
+    #        r.addTextBox("Machine %s had no votes on it according to the ballot images." % (b,))
+    #    else:
+    #        r.addTextBox("Machine %s has %d votes according to the ballot images." % (b, ballot.machineVotesMap[b]))
+    
+    
+    #for x in checkMachines(data, ballot, el):
+    #    eVotes = 0
+    #    bVotes = 0
+    #    if getVotesPerMachine(data, ballot, el).has_key(x):
+    #        eVotes = getVotesPerMachine(data, ballot, el)[x]
+    #    if ballot.machineVotesMap.has_key(x):
+    #        bVotes = ballot.machineVotesMap[x]
+    #    mismatchTable.addRow(["%s" % (x,), "%s" % (eVotes,), "%s" % (bVotes,)])
+    #for y in checkMachines2(data, ballot, el):
+    #    if y in ballot.earlyVotingList or y in ballot.failsafeList:
+    #        continue
+    #    else:
+    #        eVotes = 0
+    #        bVotes = 0
+    #        if getVotesPerMachine(data, ballot, el).has_key(y):
+    #            eVotes = getVotesPerMachine(data, ballot, el)[y]
+    #        if ballot.machineVotesMap.has_key(y):
+    #            bVotes = ballot.machineVotesMap[y]
+    #        mismatchTable.addRow(["%s" % (y,), "%s" % (eVotes,), "%s" % (bVotes,)])
+    machineVotes = checkMachineVotes(data, ballot, el)
+    b = True
+    for z in machineVotes:
+        if machineVotes[z][0] != machineVotes[z][1]:
+            if b == True:
+                r.addTextBox("The following machines appear to have inconsistencies across the audit data.  We recommend that you gather vote data from the following machines, upload it, and update the audit data.")
+                r.addTextBox(" ")
+                mismatchTable.addHeader("Machine Serial #")
+                mismatchTable.addHeader("Votes according to event log")
+                mismatchTable.addHeader("Votes according to ballot images")
+                b = False
+            mismatchTable.addRow(["%s" % (z,), "%s" % (machineVotes[z][0],), "%s" % (machineVotes[z][1],)])
+    if b == True:
+        r.addTextBox("No problem found.")
+    else:
+        r.addTable(mismatchTable)
+    return r
+    
+def machineOpenCloseDiff(data, ballot, el, r):
+    r.addTitle("Machines opened and closed with different PEBs")
+    diffTable = report.Table()
+    PEBmap = getPEBs(data, ballot, el)
+    b = True
+    for p in PEBmap:
+        if len(PEBmap[p]) == 2:
+            if (PEBmap[p][0] != PEBmap[p][1]) and ballot.machinePrecinctNameMap.has_key(p):
+                if b == True:
+                    r.addTextBox("The following machines were opened and closed with different PEBs.  You may wish to verify that the closing PEB data was uploaded.  ")
+                    r.addTextBox(" ")
+                    b = False
+                #r.addTextBox("In %s (#%s), machine %s was opened with PEB %s and closed with PEB %s. " % (ballot.machinePrecinctNameMap[p], ballot.machinePrecinctNumMap[p], p, PEBmap[p][0], PEBmap[p][1]))
+                diffTable.addRow(["In %s (#%s), " % (ballot.machinePrecinctNameMap[p], ballot.machinePrecinctNumMap[p]), " machine %s was opened with PEB %s and closed with PEB %s." % (p, PEBmap[p][0], PEBmap[p][1])])
+    if b == True:
+        r.addTextBox("No problem found.")  
+    else:
+        r.addTable(diffTable)       
+    return r
 
 def checkIDs(a, b, e):
         print b.electionID
@@ -377,13 +495,44 @@ This function checks if there are any machines listed in the event log that are 
 def checkMachines(a, b, e):
         notCountedList = []
         for x in a.getEntryList():
-            if x.serialNumber not in b.machinePrecinctNumMap and (x.eventNumber == '0001510' or x.eventNumber == '0001511'):
+            s = x.dateTime.split(" ")
+            date = s[0]
+            if x.serialNumber not in b.machinePrecinctNumMap and (x.eventNumber == '0001510' or x.eventNumber == '0001511') and (date == '11/02/2010' or date == '06/08/2010'):
                 if x.serialNumber not in b.failsafeList and (x.eventNumber == '0001510' or x.eventNumber == '00015110'):
                     if x.serialNumber not in b.earlyVotingList and (x.eventNumber == '0001510' or x.eventNumber == '0001511'):
                         if x.serialNumber not in notCountedList:
                             notCountedList.append(x.serialNumber)
         return notCountedList
-        
+
+"""
+This function creates a map of the format <machine, (# of votes according to event log, # of votes according to ballot images)>.
+"""
+def checkMachineVotes(a, b, e):
+    voteMap = {}
+    for machine1 in getVotesPerMachine(a, b, e):
+        if machine1 in b.earlyVotingList or machine1 in b.failsafeList:
+            continue
+        else:
+            if voteMap.has_key(machine1):
+                continue
+            else:
+                if b.machineVotesMap.has_key(machine1):
+                    voteMap[machine1] = (getVotesPerMachine(a, b, e)[machine1], b.machineVotesMap[machine1])
+                else:
+                    voteMap[machine1] = (getVotesPerMachine(a, b, e)[machine1], 0)
+    for machine2 in b.machineVotesMap:
+        if machine2 in b.earlyVotingList or machine2 in b.failsafeList:
+            continue
+        else:
+            if voteMap.has_key(machine2):
+                continue
+            else:
+                if getVotesPerMachine(a, b, e).has_key(machine2):
+                    votemap[machine2] = (getVotesPerMachine(a, b, e)[machine2], b.machineVotesMap[machine2])
+                else:
+                    voteMap[machine2] = (0, b.machineVotesMap[machine2])
+    return voteMap 
+      
 """
 This function returns a map of the number of votes per machine in a county.  Keys: machines    Values: # of votes
 """
