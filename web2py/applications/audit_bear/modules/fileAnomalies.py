@@ -17,7 +17,7 @@ from dateutil.parser import parse
 def checkFiles(aLog, bLog, eLog, r):
         r.addTitle("File Discrepancies")
         if getTotalVotes(aLog, bLog, eLog) == getPrecinctVotes(aLog, bLog, eLog):
-            print isUploadedAll(aLog, bLog, eLog)[1]
+            #print isUploadedAll(aLog, bLog, eLog)[1]
             if len(checkMachines(aLog, bLog, eLog)) != 0 or len(checkMachines2(aLog, bLog, eLog)) != 0:
                 #r.addTextBox("The votes match, but the machines don't match.")
                 r.addTextBox(" ")
@@ -30,7 +30,7 @@ def checkFiles(aLog, bLog, eLog, r):
             PEBs = getPEBs(aLog, bLog, eLog)
             #this must mean that provisional vote(s) were rejected
             if len(checkMachines(aLog, bLog, eLog)) == 0 and len(checkMachines2(aLog, bLog, eLog)) == 0:
-                print "----------------------------Rejected Provisional Vote(s)-------------------------------"
+                #print "----------------------------Rejected Provisional Vote(s)-------------------------------"
                 r.addTextBox("\nThere may be %d rejected provisional votes." % (getTotalVotes(aLog, bLog, eLog) - getPrecinctVotes(aLog, bLog, eLog),))
 
             #machines in ballot images and not in event log
@@ -45,7 +45,8 @@ def checkFiles(aLog, bLog, eLog, r):
                 PEBmap = getPEBs(aLog, bLog, eLog)
                 #check electionID
                 if checkIDs(aLog, bLog, eLog) == True:
-                    print 'good'
+                    #print 'good'
+                    pass
                 else:
                     r.addTextBox(" ")
                     r.addTextBox("\nThese files are from different elections")
@@ -94,7 +95,8 @@ def checkFiles(aLog, bLog, eLog, r):
                 PEBmap = getPEBs(aLog, bLog, eLog)
                 #check electionID
                 if checkIDs(aLog, bLog, eLog) == True:
-                    print "The electionIDs match."
+                    #print "The electionIDs match."
+                    pass
                 else:
                     r.addTextBox(" ")
                     r.addTextBox("These files are from different elections")
@@ -156,7 +158,8 @@ def checkFiles(aLog, bLog, eLog, r):
                 PEBmap = getPEBs(aLog, bLog, eLog)
                 #check electionID
                 if checkIDs(aLog, bLog, eLog) == True:
-                    print "good"
+                    #print "good"
+                    pass
                 else:
                     r.addTextBox(" ")
                     r.addTextBox("These files are from different elections")
@@ -204,7 +207,7 @@ def pebActivateBallot(data, ballot, el, dc, r):
     r.addTitle('Polling locations where ballots were activated with a master PEB')
     #ballotTable = report.Table()
     mPEBmap = getPEBs(data, ballot, el, dc)
-    printedList = []
+    #printedList = []
     b = True
     for x in data.getEntryList():
         s = x.dateTime.split(" ")
@@ -391,8 +394,8 @@ def machineOpenCloseDiff(data, ballot, el, dc, r):
     return r
 
 def checkIDs(a, b, e):
-        print b.electionID
-        print a.electionID
+        #print b.electionID
+        #print a.electionID
         return b.electionID == a.electionID
         
 def checkVotes(a, b, e, dc):
@@ -415,7 +418,8 @@ def getPEBs(a, b, e, dc):
                     if len(machinePEBMap[x.serialNumber]) == 1:
                         machinePEBMap[x.serialNumber] = [x.PEBNumber]
                     if len(machinePEBMap[x.serialNumber]) == 2:
-                        print "This shouldn't be happening"
+                        #print "This shouldn't be happening"
+                        pass
                 elif x.eventNumber == '0001673':
                     if len(machinePEBMap[x.serialNumber]) == 1:
                         machinePEBMap[x.serialNumber] += [x.PEBNumber]
@@ -428,7 +432,8 @@ def getPEBs(a, b, e, dc):
                 if x.eventNumber == '0001672':
                     machinePEBMap[x.serialNumber] = [x.PEBNumber]
                 elif x.eventNumber == '0001673':
-                   print "Does this machine have an opening state?"
+                   #print "Does this machine have an opening state?"
+                   pass
         return machinePEBMap
         
 def getPEBmachines(a, b, e, dc):
@@ -436,7 +441,8 @@ def getPEBmachines(a, b, e, dc):
         PEBmachineMap = {}
         for m in machinePEBmap:
             if len(machinePEBmap[m]) < 2:
-                print "ONLY 1 PEB USED"
+                #print "ONLY 1 PEB USED"
+                pass
             else:
                 if PEBmachineMap.has_key(machinePEBmap[m][1]):
                     if PEBmachineMap[machinePEBmap[m][1]] == [m]:
@@ -459,11 +465,13 @@ def getPrecinctPEBs(a, b, e, dc):
             if b.machinePrecinctNumMap.has_key(x):
                 if PEBprecinctMap.has_key(machinePEBMap[x][0]):
                     if PEBprecinctMap[machinePEBMap[x][0]] != b.machinePrecinctNumMap[x]:
-                        print "PROBLEM" 
+                        #print "PROBLEM" 
+                        pass
                 else:
                     PEBprecinctMap[machinePEBMap[x][0]] = b.machinePrecinctNumMap[x]
             else:
-                print "Machine %s is not in the ballot images file." % (x,)
+                #print "Machine %s is not in the ballot images file." % (x,)
+                pass
         return PEBprecinctMap  
         
 def getPrecinctVotes(a, b, e):
@@ -484,16 +492,17 @@ def getTotalVotes(a, b, e):
         
 def isUploadedAll(a, b, e, dc):
         uploadedPEBs = e.getUploadedPEBs()
-        print "UPLOADEDPEBS"
-        print uploadedPEBs
+        #print "UPLOADEDPEBS"
+        #print uploadedPEBs
         eventPEBs = getPEBs(a, b, e, dc)
-        print "EVENTPEBS"
-        print eventPEBs
+        #print "EVENTPEBS"
+        #print eventPEBs
         notUploaded = []
         notUploadedPEBs = []
         for x in eventPEBs:
             if len(eventPEBs[x]) < 2:
-                print "1 PEB"
+                #print "1 PEB"
+                pass
             elif eventPEBs[x][1] not in uploadedPEBs:
                 if eventPEBs[x][1] not in notUploaded:
                     notUploaded.append((x, eventPEBs[x][1]))

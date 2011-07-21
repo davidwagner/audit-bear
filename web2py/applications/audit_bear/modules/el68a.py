@@ -83,7 +83,7 @@ class EL68A:
         #TODO fix runDate parser
 
         # it is very important to seek to beginning
-        print fh.seek(0)
+        #print fh.seek(0)
 
         # fill up entry lists
         entryPattern = r"(\d{2}-\d{2}\s+?\d{2}:\d{2}\s+?\w{2})(.*)"

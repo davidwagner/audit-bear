@@ -70,8 +70,8 @@ def lowBatteryMachines(data, ballot, date, r):
                 ssum = ssum + ((n2-avg)**2)
         ssum2 = ssum/len(lowBatteryMap.values())
         stdev = math.sqrt(ssum2)
-        print avg
-        print stdev
+        #print avg
+        #print stdev
         for l in lowBatteryMap:
             precinctNum = None
             precinctName = None
@@ -397,7 +397,7 @@ def getWarningEvents(data,ballot,r):
     
     if len(wMap) < 1:
         r.addTextBox("This county experienced no Warning events.")
-        print "This county experienced no 'Warning' events."
+        #print "This county experienced no 'Warning' events."
     else:
         for z in wMap:
             for z2 in wMap[z]:
@@ -435,7 +435,8 @@ def getWarningEvents(data,ballot,r):
         stdev = math.sqrt(ssum2)
         for w3 in totalList:
             if w3[3] >= math.floor(avg + (2.5*stdev)):
-                print w3[3]
+                #print w3[3]
+                pass
     return r
     
 def getVoteCancelledEvents(data,ballot, date, r):
@@ -484,7 +485,7 @@ def getVoteCancelledEvents(data,ballot, date, r):
         for y2 in vcMap[y]:
             temp = temp + vcMap[y][y2]
         vcNumMap[y] = temp
-    print vcNumMap
+    #print vcNumMap
     vcTable = report.Table()
     if len(vcMap) < 1:
         #vcTable.addRow(["This county experienced no Vote Cancelled events."])

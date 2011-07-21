@@ -170,11 +170,13 @@ class BallotImage:
                     if len(machinePEBMap[x.serialNumber]) == 1:
                         machinePEBMap[x.serialNumber] = [x.PEBNumber]
                     if len(machinePEBMap[x.serialNumber]) == 2:
-                        print "This shouldn't be happening"
+                        #print "This shouldn't be happening"
+                        pass
                 elif x.eventNumber == '0001673':
                     if len(machinePEBMap[x.serialNumber]) == 1:
                         if stri.atoi(machinePEBMap[x.serialNumber][0]) != stri.atoi(x.PEBNumber):
-                            print "on machine %s it was %s but now it is %s" % (x.serialNumber, machinePEBMap[x.serialNumber][0], x.PEBNumber)
+                            #print "on machine %s it was %s but now it is %s" % (x.serialNumber, machinePEBMap[x.serialNumber][0], x.PEBNumber)
+                            pass
                         machinePEBMap[x.serialNumber] += [x.PEBNumber]
                     if len(machinePEBMap[x.serialNumber]) == 2:
                         temp = machinePEBMap[x.serialNumber]
@@ -186,17 +188,20 @@ class BallotImage:
                     machinePEBMap[x.serialNumber] = [x.PEBNumber]
                 elif x.eventNumber == '0001673':
                    print "Does this machine have an opening state?"
+                   pass
 
         PEBprecinctMap = {}
         for x in machinePEBMap:
             if self.machinePrecinctNumMap.has_key(x):
                 if PEBprecinctMap.has_key(machinePEBMap[x][0]):
                     if PEBprecinctMap[machinePEBMap[x][0]] != self.machinePrecinctNumMap[x]:
-                        print "PROBLEM WITH PEB: %s because it was found in precinct %s and %s on machine %s" % (machinePEBMap[x][0], PEBprecinctMap[machinePEBMap[x][0]], self.machinePrecinctNumMap[x], x) 
+                        #print "PROBLEM WITH PEB: %s because it was found in precinct %s and %s on machine %s" % (machinePEBMap[x][0], PEBprecinctMap[machinePEBMap[x][0]], self.machinePrecinctNumMap[x], x) 
+                        pass
                 else:
                     PEBprecinctMap[machinePEBMap[x][0]] = self.machinePrecinctNumMap[x]
             else:
-                print "Machine %s is not in the ballot images file." % (x,)
+                #print "Machine %s is not in the ballot images file." % (x,)
+                pass
 
         list1 = []
         list2 = []
@@ -256,7 +261,7 @@ class BallotImage:
                     else:
                         #no-don't include
                         if machine not in doNotIncludeList:
-                            print "Machine %s was not uploaded" % (machine, )
+                            #print "Machine %s was not uploaded" % (machine, )
                             doNotIncludeList.append(machine)
             else:
                 for z2 in aLog.getEntryList():
@@ -306,8 +311,8 @@ class BallotImage:
             self.machinePrecinctNameMap[sub[0]] = x
             self.precinctMap[y] = x  
 
-        print "THE DONOTINCLUDELIST: "
-        print doNotIncludeList
+        #print "THE DONOTINCLUDELIST: "
+        #print doNotIncludeList
 
         """
         Counts the number of votes per precinct and votes per machine.

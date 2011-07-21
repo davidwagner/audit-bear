@@ -41,8 +41,8 @@ def checkZeroTapes(data, ballot, dc, r):
     for m in nonZeroList:
         if ballot.machinePrecinctNameMap.has_key(m):
             nonZeroList2.append(m)
-    print "NONZEROLIST"      
-    print nonZeroList
+    #print "NONZEROLIST"      
+    #print nonZeroList
     if len(nonZeroList2) < 1:
         r.addTextBox("No problems found.")
     for m2 in nonZeroList2:

@@ -35,8 +35,12 @@ class DateMod:
         if not isinstance(data, auditLog.AuditLog):
             raise Exception('Must pass valid AuditLog object')
 
-        if self.daygrab(data, date): print 'Election Date Retrieved from 68a'
-        else: print 'No 68a Supplied or unable to parse. Inferring Election Day...'
+        if self.daygrab(data, date):
+            #print 'Election Date Retrieved from 68a'
+            pass
+        else:
+            #print 'No 68a Supplied or unable to parse. Inferring Election Day...'
+            pass
 
         self.pday = self.eday - datetime.timedelta(15)
 
@@ -48,7 +52,7 @@ class DateMod:
     Gets date from l68a file or infer eday
     """
     def daygrab(self, data, date):
-        print date
+        #print date
         if not date:
             self.inferEday(data)
             return False
@@ -66,7 +70,7 @@ class DateMod:
                 d.update({key: 1}) 
 
         self.eday = dateutil.parser.parse(max(d.iterkeys(), key=d.get)).date()
-        print self.eday
+        #print self.eday
         return
     """
     Returns information about particulary early voting

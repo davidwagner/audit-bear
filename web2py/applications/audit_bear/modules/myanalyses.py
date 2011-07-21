@@ -31,7 +31,7 @@ def edayCorrections(data,eday, ballotclass):
 
     times, adjustedL = dateMod.timeopen(data, eday)
     if len(adjustedL) == 0:
-        print 'Report on election day time adjustments not included'
+        #print 'Report on election day time adjustments not included'
         return []
     else:
         precinctMap = ballotclass.getPrecinctNameMap()
@@ -45,7 +45,7 @@ def edayCorrections(data,eday, ballotclass):
                 elif tup[0] in ballotclass.getFailsafeList():
                     key = 'Failsafe'
                 else:
-                    print 'Red Flag! Machine',tup[0],'not listed in any precinct'
+                    #print 'Red Flag! Machine',tup[0],'not listed in any precinct'
                     key = tup[0]
                 if key in d:
                     d[key] = (d[key][0]+1, d[key][1] + abs(tup[1]))
@@ -70,7 +70,7 @@ def earlyVotes(data, dateclass, ballotclass):
     machines = dateclass.voteEarly(data)
     precinctMap = ballotclass.getPrecinctNameMap()
     if len(machines) == 0:
-        print 'earlyVotes analysis empty: Skipped'
+        #print 'earlyVotes analysis empty: Skipped'
         return []
 
     #Group by precinct: {Precinct:(#Machines, #Votes, #Start, #Last)}
@@ -84,7 +84,7 @@ def earlyVotes(data, dateclass, ballotclass):
         elif k in ballotclass.getFailsafeList():
             key = 'Failsafe'
         else:
-            print 'Important! Machine',k,'not listed in any precinct'
+            #print 'Important! Machine',k,'not listed in any precinct'
             key = k
         if key in d:
             if d[key][2] < v[1]: v[1] = d[key][2]
