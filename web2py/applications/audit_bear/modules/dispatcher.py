@@ -20,7 +20,7 @@ def dispatcher(el152=None, el155=None, el68a=None):
         results.append(notClosedMachines(el152, el155, el68a, dateclass, report.Report()))
         results.append(mismatchVotesMachines(el152, el155, el68a, report.Report()))
         #polling locations open late
-        results.append(closedLate.closedLate(el152, el155, el68a, dateclass))
+        results.extend(closedLate.closedLate(el152, el155, el68a, dateclass))
         #long lines
         #results.extend(myanalyses.earlyVotes(el152,dateclass,el155))
         results.append(getCalibrationEvents2(el152, el155, dateclass, report.Report()))

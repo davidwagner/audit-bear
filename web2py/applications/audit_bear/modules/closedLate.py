@@ -15,7 +15,7 @@ def closedLate(parsedLog, parsedBallotImage, parsedEL68A, dateModObject):
     mmap = dateMod.timecheck(times)
     validMachines = mmap.keys()
     mapOpenLateTime = open_late(parsedLog, parsedBallotImage, validMachines)
-    
+
     #FORMAT OUTPUT
     now = datetime.datetime.now()
     r.addTextBox("<i>NOTE: This report doesn't include early voting terminals nor the precincts that were closed before 7:30 PM</i>")
@@ -27,13 +27,17 @@ def closedLate(parsedLog, parsedBallotImage, parsedEL68A, dateModObject):
     #sort in descending order the dictionary by value.
     thresholdValue = datetime.timedelta(hours=7, minutes=30)
     precinctMap = parsedBallotImage.getPrecinctMap()
+    i = 0
     for key, value in sorted(mapOpenLateTime.iteritems(), key=lambda (k,v): (v,k), reverse = True):
         if value > thresholdValue:
-            #s = "%-3s %s" % (key, precinctMap[key])
+            i += 1
             table.addRow([key, precinctMap[key], str(value)])
 
+    if i == 0:
+        return []
+
     r.addTable(table)
-    return r
+    return [r]
 
 
 #read the audit log file and store each line in the data list.
