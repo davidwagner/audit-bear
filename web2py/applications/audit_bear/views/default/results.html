@@ -1,12 +1,17 @@
 {{extend 'layout.html'}}
 
 {{if message != 'LOLCAT':}}
-<div id="title"><h1><span id="appname">Audit</span>Results</h1></div>
+<div id="title"><span id="appname">Audit</span>Results</div>
 <div id="results">
     {{i=0}}
     {{for result in results:}}
         {{i+=1}}
         <h2>Report #{{=i}}: {{=result.title}}</h2>
+        {{
+        if result.hasWarningIcon():
+            response.write("<img src=/static/images/warning.png height=40px/>", escape=False)
+        pass
+        }}
         <hr>
         {{
         for element in result:

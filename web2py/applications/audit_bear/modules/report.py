@@ -118,6 +118,7 @@ class Report:
         del self.tables
         del self.title
         del self.elements
+        del self.warningIcon
 
     def __init__(self):
         self.textBoxes = []
@@ -125,6 +126,7 @@ class Report:
         self.tables = []
         self.elements = []
         self.title = None
+        self.warningIcon = False
 
     def addTextBox(self, textBox):
         self.textBoxes.append(textBox)
@@ -161,6 +163,13 @@ class Report:
             return True
         else:
             return False
+
+    def setWarningIcon(self, b):
+        self.warningIcon = b
+        return b
+
+    def hasWarningIcon(self):
+        return self.warningIcon
 
     def __iter__(self):
         return self.elements.__iter__()
