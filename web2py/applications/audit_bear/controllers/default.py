@@ -13,8 +13,13 @@ def index():
 
     if form.accepts(request.vars, session) and form.vars.zipped_files != '':
         form.vars.zipped_files.file.seek(0)
-        el152, el155, el68a = extractLogs([form.vars.zipped_files.file], request.folder)
-        del form.vars.zipped_files
+        try:
+            el152, el155, el68a = extractLogs([form.vars.zipped_files.file], request.folder)
+        except Exception as e:
+            session.file_error = str(e)
+            redirect(URL('error'))
+        finally:
+            del form.vars.zipped_files
 
         # file name is in el152.name etc.
         # create parsed logs and delete files...
@@ -62,6 +67,9 @@ def privacy():
 
 def contact():
     return dict(message='')
+
+def error():
+    return dict(message=session.file_error)
 
 # stream requested image to browser
 def histogram():
