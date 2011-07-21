@@ -19,8 +19,14 @@ class EL68AEntry:
         self.date = self.actionString = self.countedInfoString = self.precinct = \
         self.bals = self.tot = self.auditedMachine = self.pebRetrieved = None
 
-        dateString += str(electionDate.year)
-        self.date = dateutil.parser.parse(dateString)
+        if electionDate:
+            dateString += str(electionDate.year)
+            self.date = dateutil.parser.parse(dateString)
+
+        # withouth sysString, we can't do anything else
+        if not sysString:
+            return
+
         sysString = sysString.strip()
         r = re.search(r"PRC\s+(\d+)", sysString)
 
@@ -42,7 +48,9 @@ class EL68AEntry:
                     self.pebRetrieved = r.group(1)
 
     def __str__(self):
-        s = str(self.date)
+        s = ''
+        if self.date:
+            s = str(self.date)
         if self.actionString:
             s += (' ' + self.actionString)
         if self.countedInfoString:
@@ -94,6 +102,9 @@ class EL68A:
         accumulationStartDate = self.parseAccumulationStartDate()
 
         for entry in self.entryList:
+            if not entry.date:
+                continue # we have no date in this event
+
             if entry.date < accumulationStartDate:
                 # disregard everything before the start of actual accumulation
                 continue
