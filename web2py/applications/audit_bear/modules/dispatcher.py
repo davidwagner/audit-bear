@@ -11,6 +11,9 @@ from pollWorkerEval import *
 
 def dispatcher(el152=None, el155=None, el68a=None):
     #list of report objects
+    if not (el152 and el155):
+        raise Exception("Both el152 and el155 must be given.")
+
     results = []
 
     if el155 != None and el152 != None and el68a != None:

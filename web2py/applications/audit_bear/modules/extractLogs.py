@@ -109,6 +109,9 @@ def extractLogs(files, applicationDirectory):
             # the file is not recognized, ignore it and delete file from disk
             os.unlink(os.path.join(applicationDirectory, 'uploads', f.name))
 
+    if not (first152 and first155):
+        raise Exception("Both el152 and el155 must be given.")
+    
     # reset all seeks
     if first68 != None:
         first68.seek(0)
