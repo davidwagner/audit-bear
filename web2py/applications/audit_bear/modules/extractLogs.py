@@ -7,6 +7,13 @@ import zipfile
 import os
 import controllerHelpers
 
+class InvalidFilesException(Exception):
+    def __init__(self, value):
+        self.value = value
+
+    def __str__(self):
+        return repr(self.value)
+
 def is_68(fh):
     fh.seek(0)
     pattern = r"SYSTEM LOG LISTING"
@@ -63,6 +70,11 @@ def choosePath(applicationDirectory):
         if not os.path.isfile(fullPath):
             return fullPath
 
+def clean(applicationDirectory, files):
+    uploadPath = os.path.join(applicationDirectory, 'uploads')
+    for f in files:
+        os.unlink(os.path.join(uploadPath, f.name))
+
 def extractLogs(files, applicationDirectory):
     totalReceivedFiles = []
     for f in files:
@@ -90,19 +102,22 @@ def extractLogs(files, applicationDirectory):
         if is_68(f):
             if first68 != None:
                 # TODO Create different exception for this
-                raise Exception('More than one el68 files were given')
+                clean(applicationDirectory, totalReceivedFiles)
+                raise InvalidFilesException('More than one el68 files was given')
             else:
                 first68 = f
         elif is_152(f):
             if first152 != None:
                 # TODO same as above
-                raise Exception('More than one el152 files were given')
+                clean(applicationDirectory, totalReceivedFiles)
+                raise InvalidFilesException('More than one el152 files was given')
             else:
                 first152 = f
         elif is_155(f):
             if first155 != None:
                 # TODO same as above
-                raise Exception('more than one el155 files were given')
+                clean(applicationDirectory, totalReceivedFiles)
+                raise InvalidFilesException('More than one el155 files was given')
             else:
                 first155 = f
         else:
@@ -110,7 +125,8 @@ def extractLogs(files, applicationDirectory):
             os.unlink(os.path.join(applicationDirectory, 'uploads', f.name))
 
     if not (first152 and first155):
-        raise Exception("Both el152 and el155 must be given.")
+        clean(applicationDirectory, totalReceivedFiles)
+        raise InvalidFilesException("Both el152 and el155 must be given.")
     
     # reset all seeks
     if first68 != None:
@@ -121,3 +137,4 @@ def extractLogs(files, applicationDirectory):
         first155.seek(0)
 
     return (first152, first155, first68)
+

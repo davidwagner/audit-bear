@@ -1,4 +1,5 @@
 from extractLogs import extractLogs
+from extractLogs import InvalidFilesException
 from dispatcher import dispatcher
 from controllerHelpers import *
 from auditLog import AuditLog
@@ -15,7 +16,7 @@ def index():
         form.vars.zipped_files.file.seek(0)
         try:
             el152, el155, el68a = extractLogs([form.vars.zipped_files.file], request.folder)
-        except Exception as e:
+        except InvalidFilesException as e:
             session.file_error = str(e)
             redirect(URL('error'))
         finally:
