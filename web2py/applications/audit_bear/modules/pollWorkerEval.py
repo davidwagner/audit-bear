@@ -48,6 +48,11 @@ def checkZeroTapes(data, ballot, dc, r):
     #print nonZeroList
     if len(nonZeroList2) < 1:
         r.addTextBox("No problems found.")
+    b = True
     for m2 in nonZeroList2:
+        if b == True:
+            r.addTextBox("The following precincts did not print zero tapes on the morning of election day.  We suggest that this be emphasized in future poll worker training.")
+            r.addTextBox(" ")
+            b = False
         r.addTextBox("%s (#%s)   %s" % (ballot.machinePrecinctNameMap[m2], ballot.machinePrecinctNumMap[m2], m2))
     return r

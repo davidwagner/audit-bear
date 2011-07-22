@@ -101,7 +101,7 @@ def getCalibrationEvents3(data, ballot, date, r):
     d = str(date.eday)
     d = d.split("-")
     d2 = d[1]+'/'+d[2]+'/'+d[0]
-    r.addTitle("Machines with possible calibration issues")
+    r.addTitle("Machines with recurring display issues")
     totalCalMap = {}
     for x in data.getEntryList():
         s = x.dateTime.split(" ")
@@ -141,7 +141,7 @@ def getCalibrationEvents2(data, ballot, date, r):
     d = str(date.eday)
     d = d.split("-")
     d2 = d[1]+'/'+d[2]+'/'+d[0]
-    r.addTitle("Votes cast when the terminal screen may not have been calibrated")
+    r.addTitle("Votes cast when the voting machine screen may not have been calibrated")
     calMap = {}
     calList = []
     for x in data.getEntryList():
@@ -172,7 +172,8 @@ def getCalibrationEvents2(data, ballot, date, r):
     calTable = report.Table()
     for y in calMap:
         if calMap[y] == 1:
-            calList.append((ballot.machinePrecinctNumMap[y], ballot.machinePrecinctNameMap[y], y))
+            if ballot.machinePrecinctNumMap.has_key(y):
+                calList.append((ballot.machinePrecinctNumMap[y], ballot.machinePrecinctNameMap[y], y))
     calList.sort()
     for y2 in calList:
         if b == True:
@@ -282,7 +283,7 @@ def getTerminalClosedEarlyEvents(data, ballot, date, r):
     d = str(date.eday)
     d = d.split("-")
     d2 = d[1]+'/'+d[2]+'/'+d[0]
-    r.addTitle('Terminals closed early')
+    r.addTitle('Terminals that were closed early')
     totalEarlyList = []
     for x in data.getEntryList():
         s = x.dateTime.split(" ")
@@ -572,7 +573,7 @@ def getVoteCancelledEvents(data,ballot, date, r):
         for w4 in totalList2:
             if w4[4] == '0001513':
                 if b == True:
-                    r.addTextBox("The following machines had an unusually large number of votes cancelled due to having the wrong ballot.")
+                    r.addTextBox("The following machines had an unusually large number of votes cancelled due to having the wrong ballot.  You may wish to review this section of the poll worker training manual.")
                     b = False
                 #r.addTextBox("Machine %s had %d occurrences (in %s)" % (w4[0], w4[3], w4[2]))
                 vcTable.addRow(["In %s, " % (w4[2],), "machine %s had %d vote cancellations." % (w4[1], w4[3])])
@@ -582,7 +583,7 @@ def getVoteCancelledEvents(data,ballot, date, r):
             if w4[4] == '0001514':
                 if b2 == True:
                     r.addTextBox(" ")
-                    r.addTextBox("The following machines had an unusually large number of votes cancelled because the voter left after the ballot was issued.")
+                    r.addTextBox("The following machines had an unusually large number of votes cancelled because the voter left after the ballot was issued.  You may wish to inspect this machine for issues that would cause a voter not to vote.")
                     b2 = False
                 #r.addTextBox("Machine %s had %d vote cancellation events (in %s)" % (w4[0], w4[3], w4[2]))
                 #vcTable2.addRow(["Machine %s had %d vote cancellation events  " % (w4[0], w4[3]), " (in %s)." % (w4[2],)])
@@ -592,7 +593,7 @@ def getVoteCancelledEvents(data,ballot, date, r):
             if w4[4] == '0001515':
                 if b3 == True:
                     r.addTextBox(" ")
-                    r.addTextBox("The following machines had an unusually large number of votes cancelled because the voter left before the ballot was issued.")
+                    r.addTextBox("The following machines had an unusually large number of votes cancelled because the voter left before the ballot was issued.  You may wish to inspect this machine for issues that would cause a voter not to vote.")
                     b3 = False
                 #r.addTextBox("Machine %s had %d vote cancellation events (in %s)" % (w4[0], w4[3], w4[2]))
                 #vcTable3.addRow(["Machine %s had %d vote cancellation events  " % (w4[0], w4[3]), " (in %s)." % (w4[2],)])
@@ -602,7 +603,7 @@ def getVoteCancelledEvents(data,ballot, date, r):
             if w4[4] == '0001516':
                 if b4 == True:
                     r.addTextBox(" ")
-                    r.addTextBox("The following machines had an unusually large number of votes cancelled by a voter.")
+                    r.addTextBox("The following machines had an unusually large number of votes cancelled by a voter.  You may wish to inspect this machine for issues that would cause a voter not to vote.")
                     b4 = False
                 #r.addTextBox("Machine %s had %d vote cancellation events (in %s)" % (w4[0], w4[3], w4[2]))
                 #vcTable4.addRow(["Machine %s had %d vote cancellation events  " % (w4[0], w4[3]), " (in %s)." % (w4[2],)])
@@ -612,7 +613,7 @@ def getVoteCancelledEvents(data,ballot, date, r):
             if w4[4] == '0001517':
                 if b5 == True:
                     r.addTextBox(" ")
-                    r.addTextBox("The following machines had an unusually large number of votes cancelled due to a printer problem.")
+                    r.addTextBox("The following machines had an unusually large number of votes cancelled due to a printer problem.  You may wish to inspect the machine for potential problems.  ")
                     b5 = False
                 #r.addTextBox("Machine %s had %d vote cancellation events (in %s)" % (w4[0], w4[3], w4[2]))
                 #vcTable5.addRow(["Machine %s had %d vote cancellation events  " % (w4[0], w4[3]), " (in %s)." % (w4[2],)])
@@ -622,7 +623,7 @@ def getVoteCancelledEvents(data,ballot, date, r):
             if w4[4] == '0001518':
                 if b6 == True:
                     r.addTextBox(" ")
-                    r.addTextBox("The following machines had an unusually large number of votes cancelled due to a terminal problem.")
+                    r.addTextBox("The following machines had an unusually large number of votes cancelled due to a terminal problem.  You may wish to inspect the machine for potential problems.  ")
                     b6 = False
                 #r.addTextBox("Machine %s had %d vote cancellation events (in %s)" % (w4[0], w4[3], w4[2]))
                # vcTable6.addRow(["Machine %s had %d vote cancellation events  " % (w4[0], w4[3]), " (in %s)." % (w4[2],)])
@@ -632,7 +633,7 @@ def getVoteCancelledEvents(data,ballot, date, r):
             if w4[4] == '0001519':
                 if b7 == True:
                     r.addTextBox(" ")
-                    r.addTextBox("The following machines had an unusually large number of votes cancelled for an unknown reason.")
+                    r.addTextBox("The following machines had an unusually large number of votes cancelled for an unknown reason.  You may wish to consult with the poll workers and maintenance staff at the following precincts.  ")
                     b7 = False
                 #r.addTextBox("Machine %s had %d vote cancellation events (in %s)" % (w4[0], w4[3], w4[2]))
                 #vcTable7.addRow(["Machine %s had %d vote cancellation events  " % (w4[0], w4[3]), " (in %s)." % (w4[2],)])

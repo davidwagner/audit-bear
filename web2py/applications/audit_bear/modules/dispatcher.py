@@ -24,7 +24,7 @@ def dispatcher(el152=None, el155=None, el68a=None):
         #long lines
         #results.extend(myanalyses.earlyVotes(el152,dateclass,el155))
         results.append(getCalibrationEvents2(el152, el155, dateclass, report.Report()))
-        results.append(getCalibrationEvents3(el152, el155, dateclass, report.Report()))
+        #results.append(getCalibrationEvents3(el152, el155, dateclass, report.Report()))
         results.append(lowBatteryMachines(el152,el155, dateclass, report.Report()))
         results.append(getTerminalClosedEarlyEvents(el152, el155, dateclass, report.Report()))
         results.extend(myanalyses.edayCorrections(el152,dateclass.eday,el155))
@@ -42,7 +42,7 @@ def dispatcher(el152=None, el155=None, el68a=None):
         #polling locations that close late
         #long lines
         results.append(getCalibrationEvents2(el152, el155, dateclass, report.Report()))
-        results.append(getCalibrationEvents3(el152, el155, dateclass, report.Report()))
+        #results.append(getCalibrationEvents3(el152, el155, dateclass, report.Report()))
         results.append(lowBatteryMachines(el152,el155, dateclass, report.Report()))    
         results.append(getTerminalClosedEarlyEvents(el152, el155, dateclass, report.Report()))
         results.append(checkZeroTapes(el152, el155, dateclass, report.Report()))

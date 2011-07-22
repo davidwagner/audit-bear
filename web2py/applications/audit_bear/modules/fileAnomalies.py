@@ -219,11 +219,11 @@ def pebActivateBallot(data, ballot, el, dc, r):
             if (x.eventNumber == '0001510' or x.eventNumber == '0001511') and (x.PEBNumber == mPEBmap[x.serialNumber][0] or x.PEBNumber == mPEBmap[x.serialNumber][1]) and (date == d2):
                 if ballot.machinePrecinctNameMap.has_key(x.serialNumber):
                     if b == True:
-                        r.addTextBox("Ballots have been activated by a master PEB on the following machines.")
+                        r.addTextBox("The following precincts recorded at least one ballot activated by a master PEB.  We recommend you emphasize that ballots should not be activated by master PEBs in future poll worker training.  ")
                         r.addTextBox(" ")
                         b = False
                     if ballot.machinePrecinctNumMap[x.serialNumber] not in printedList:
-                        r.addTextBox("Ballots were activated with a master PEB in %s (#%s)." % (ballot.machinePrecinctNameMap[x.serialNumber], ballot.machinePrecinctNumMap[x.serialNumber]))
+                        r.addTextBox("%s (#%s)." % (ballot.machinePrecinctNameMap[x.serialNumber], ballot.machinePrecinctNumMap[x.serialNumber]))
                         #ballotTable.addRow(["In %s (#%s), " % (ballot.machinePrecinctNameMap[x.serialNumber], ballot.machinePrecinctNumMap[x.serialNumber]), "ballots were activated with a master PEB."])
                         printedList.append(ballot.machinePrecinctNumMap[x.serialNumber])
     if b == True:
@@ -385,7 +385,7 @@ def machineOpenCloseDiff(data, ballot, el, dc, r):
         if len(p[3]) == 2:
             if (p[3][0] != p[3][1]):
                 if b == True:
-                    r.addTextBox("The following machines were opened and closed with different PEBs.  You may wish to verify that the closing PEB data was uploaded.  ")
+                    r.addTextBox("The following machines were opened and closed with different PEBs.  You may wish to review your poll worker training manual.  ")
                     r.addTextBox(" ")
                     b = False
                 #r.addTextBox("In %s (#%s), machine %s was opened with PEB %s and closed with PEB %s. " % (ballot.machinePrecinctNameMap[p], ballot.machinePrecinctNumMap[p], p, PEBmap[p][0], PEBmap[p][1]))

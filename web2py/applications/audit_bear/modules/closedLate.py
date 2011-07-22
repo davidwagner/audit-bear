@@ -9,7 +9,7 @@ import report
 
 def closedLate(parsedLog, parsedBallotImage, parsedEL68A, dateModObject):
     r = report.Report()
-    r.addTitle("Machines closed late")
+    r.addTitle("Machines that closed late")
 
     times, a = dateMod.timeopen(parsedLog, dateModObject.eday)
     mmap = dateMod.timecheck(times)
@@ -150,4 +150,3 @@ def graphOpenLate(dic):
     plt.grid(True)
     plt.show()
     return
-
