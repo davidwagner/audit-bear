@@ -1,0 +1,19 @@
+\section{Analyses}
+
+\subsection{Missing Votes}
+
+One of the most important aspects of any election audit is ensuring that all votes are counted.  There are two main pieces of the election system that need to be analyzed to determine if votes were left out of the count.  The first is the PEB; keeping track of what happens to the PEB can tell us not only if the votes were uploaded, but from which machines those votes came from.  This is done by comparing the audit files produced by the iVotronic.  The system log file can be crosschecked with every PEB used to close a machine in order to determine whether the votes on that PEB were uploaded.  The tool we implemented will display the user with the precinct name and number, PEB number, machine serial number, and the number of votes that were held on that PEB.  The second piece of the election system that must be taken into account is the voting machine itself.  If we could not conclude lost votes from the PEB, we may be able to infer them from the machines' event logs.  If a machine is not closed, then a PEB has not collected this terminal's data.  By checking the event log, we can determine which machines had not been closed; our tool will display the precinct name and number, and the machine serial number that was not closed. 
+
+Ensuring all votes are counted is one of the most important audits that can be done on election data.  The goal of an election is to decide on a candidate with the input of everyone that has voted.  This analysis is important because it helps detect the cases where some votes were not counted, and gives officials enough information to collect those votes.  This type of audit is especially useful when the margin between candidates is extremely small.  
+
+\subsection{Incomplete Audit Data}
+
+In order to conduct an accurate audit of an election, the audit data must include everything that was recorded on all voting machines during the election.  
+
+While the audit data is clearly not always complete, there are other cases where it may be nearly impossible to tell if the data is incomplete or not.  
+
+\subsection{Long Lines/ Locations opened/closed late}
+
+\subsection{Hardware Issues}
+
+\subsection{Procedural Errors}
