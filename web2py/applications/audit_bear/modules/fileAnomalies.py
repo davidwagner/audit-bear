@@ -223,7 +223,7 @@ def pebActivateBallot(data, ballot, el, dc, r):
                         r.addTextBox(" ")
                         b = False
                     if ballot.machinePrecinctNumMap[x.serialNumber] not in printedList:
-                        r.addTextBox("%s (#%s)." % (ballot.machinePrecinctNameMap[x.serialNumber], ballot.machinePrecinctNumMap[x.serialNumber]))
+                        r.addTextBox("%s (#%s)" % (ballot.machinePrecinctNameMap[x.serialNumber], ballot.machinePrecinctNumMap[x.serialNumber]))
                         #ballotTable.addRow(["In %s (#%s), " % (ballot.machinePrecinctNameMap[x.serialNumber], ballot.machinePrecinctNumMap[x.serialNumber]), "ballots were activated with a master PEB."])
                         printedList.append(ballot.machinePrecinctNumMap[x.serialNumber])
     if b == True:
@@ -358,7 +358,7 @@ def mismatchVotesMachines(data, ballot, el, r):
     for z in machineVotes:
         if machineVotes[z][0] != machineVotes[z][1]:
             if b == True:
-                r.addTextBox("The following machines appear to have inconsistencies across the audit data.  We recommend that you gather vote data from the following machines, upload it, and update the audit data.")
+                r.addTextBox("The following machines appear to have inconsistencies across the audit data.  We recommend that you gather vote data from the following machines, upload it, and update the audit data.  From the data provided, we cannot infer the locations of the machines.")
                 r.addTextBox(" ")
                 mismatchTable.addHeader("Machine Serial #")
                 mismatchTable.addHeader("Votes according to event log")

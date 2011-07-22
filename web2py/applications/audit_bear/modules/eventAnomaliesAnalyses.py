@@ -463,9 +463,7 @@ def getVoteCancelledEvents(data,ballot, date, r):
     d = str(date.eday)
     d = d.split("-")
     d2 = d[1]+'/'+d[2]+'/'+d[0]
-    r.addTitle('Anomalous Vote Cancelled Events')
-    print "***************************************************"
-    print date.eday
+    r.addTitle('Anomalous vote cancelled events')
     vcMap = {}
     vcNumMap = {}
     list1513 = []
