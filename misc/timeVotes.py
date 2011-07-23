@@ -25,44 +25,55 @@ def consecutiveVotes(parsedLog, ballotImage, validMachines, pollingLate):
         
         if parsedLog[i][4] in ("0001510", "0001511") and parsedLog[i+1][4] in ("0001510", "0001511"):
             if parsedLog[i+1][3][11:] < "19:00:00":
-                t1 = dp.parse(parsedLog[i][3])
-                t1 = datetime.timedelta(hours=t1.hour, minutes=t1.minute, seconds=t1.second)
+                try:
+                    t1 = dp.parse(parsedLog[i][3])
+                    t1 = datetime.timedelta(hours=t1.hour, minutes=t1.minute, seconds=t1.second)
                 
-                t2 = dp.parse(parsedLog[i+1][3])
-                t2 = datetime.timedelta(hours=t2.hour, minutes=t2.minute, seconds=t2.second)
-                delta1 = t2 - t1
+                    t2 = dp.parse(parsedLog[i+1][3])
+                    t2 = datetime.timedelta(hours=t2.hour, minutes=t2.minute, seconds=t2.second)
+                except:
+                    print ":)"
+                else:
+                    delta1 = t2 - t1
                 
-                mapMachinesAllTimesB.setdefault(parsedLog[i][0],[]).append([round(delta1.seconds/60,1), str(t1), str(t2)])
-                mapMachinesB[parsedLog[i][0]] = mapMachinesB.get(parsedLog[i][0], 0) + round(delta1.seconds/60,1)
-                mapCountCVB[parsedLog[i][0]] = mapCountCVB.get(parsedLog[i][0], 0) + 1
+                    mapMachinesAllTimesB.setdefault(parsedLog[i][0],[]).append([round(delta1.seconds/60,1), str(t1), str(t2)])
+                    mapMachinesB[parsedLog[i][0]] = mapMachinesB.get(parsedLog[i][0], 0) + round(delta1.seconds/60,1)
+                    mapCountCVB[parsedLog[i][0]] = mapCountCVB.get(parsedLog[i][0], 0) + 1
         
         if parsedLog[i][4] in ("0001510", "0001511") and parsedLog[i+1][4] in ("0002810") and parsedLog[i+2][4] in ("0001510", "0001511"):
             if parsedLog[i+1][3][11:] < "19:00:00":
-                t1 = dp.parse(parsedLog[i][3])
-                t1 = datetime.timedelta(hours=t1.hour, minutes=t1.minute, seconds=t1.second)
+                try:
+                    t1 = dp.parse(parsedLog[i][3])
+                    t1 = datetime.timedelta(hours=t1.hour, minutes=t1.minute, seconds=t1.second)
                 
-                t2 = dp.parse(parsedLog[i+2][3])
-                t2 = datetime.timedelta(hours=t2.hour, minutes=t2.minute, seconds=t2.second)
-                delta1 = t2 - t1
+                    t2 = dp.parse(parsedLog[i+2][3])
+                    t2 = datetime.timedelta(hours=t2.hour, minutes=t2.minute, seconds=t2.second)
+                except:
+                    print ":)"
+                else:                
+                    delta1 = t2 - t1
                 
-                mapMachinesAllTimesB.setdefault(parsedLog[i][0],[]).append([round(delta1.seconds/60,1), str(t1), str(t2)])
-                mapMachinesB[parsedLog[i][0]] = mapMachinesB.get(parsedLog[i][0], 0) + round(delta1.seconds/60,1)
-                mapCountCVB[parsedLog[i][0]] = mapCountCVB.get(parsedLog[i][0], 0) + 1
+                    mapMachinesAllTimesB.setdefault(parsedLog[i][0],[]).append([round(delta1.seconds/60,1), str(t1), str(t2)])
+                    mapMachinesB[parsedLog[i][0]] = mapMachinesB.get(parsedLog[i][0], 0) + round(delta1.seconds/60,1)
+                    mapCountCVB[parsedLog[i][0]] = mapCountCVB.get(parsedLog[i][0], 0) + 1
 
         if parsedLog[i][4] in ("0001510", "0001511") and parsedLog[i+1][4] in ("0002810") and parsedLog[i+2][4] in ("0001510", "0001511"):
             if parsedLog[i][3][11:] >= "19:00:00":
-               
-                t1 = dp.parse(parsedLog[i][3])
-                t1 = datetime.timedelta(hours=t1.hour, minutes=t1.minute, seconds=t1.second)
+                try:
+                    t1 = dp.parse(parsedLog[i][3])
+                    t1 = datetime.timedelta(hours=t1.hour, minutes=t1.minute, seconds=t1.second)
                 
-                t2 = dp.parse(parsedLog[i+2][3])
-                t2 = datetime.timedelta(hours=t2.hour, minutes=t2.minute, seconds=t2.second)
-                delta1 = t2 - t1
+                    t2 = dp.parse(parsedLog[i+2][3])
+                    t2 = datetime.timedelta(hours=t2.hour, minutes=t2.minute, seconds=t2.second)
+                except:
+                    print ":)"
+                else:                    
+                    delta1 = t2 - t1
                 
-                listTimeVotes.append(round(delta1.seconds/60,1))
-                mapMachinesAllTimes.setdefault(parsedLog[i][0],[]).append([round(delta1.seconds/60,1), str(t1), str(t2)])
-                mapMachines[parsedLog[i][0]] = mapMachines.get(parsedLog[i][0], 0) + round(delta1.seconds/60,1)
-                mapCountCV[parsedLog[i][0]] = mapCountCV.get(parsedLog[i][0], 0) + 1
+                    listTimeVotes.append(round(delta1.seconds/60,1))
+                    mapMachinesAllTimes.setdefault(parsedLog[i][0],[]).append([round(delta1.seconds/60,1), str(t1), str(t2)])
+                    mapMachines[parsedLog[i][0]] = mapMachines.get(parsedLog[i][0], 0) + round(delta1.seconds/60,1)
+                    mapCountCV[parsedLog[i][0]] = mapCountCV.get(parsedLog[i][0], 0) + 1
                 
     #for machine in sorted(mapMachinesAllTimesB):
         #print machine, mapMachinesAllTimesB[machine]
@@ -149,46 +160,72 @@ def longLine(parsedBallotImage, mapAllTimesA, mapAllTimes):
             pollingLocations19.setdefault(precinctNumMap[machine],[]).append(value[0])
 
     
-    pollLoc19 = {}
-    for key in pollingLocations19:
-        t = pollingLocations19[key]
-        if hasNormalDistribution(t):
-            pollLoc19[key] = t
-    if hasSameDistribution(pollLoc19):
-        print "The f_oneway test can be performed"
-    else:
-        print "The f_oneway test can't be performed"
+    #pollLoc19 = {}
+    #for key in pollingLocations19:
+        #t = pollingLocations19[key]
+        #if hasNormalDistribution(t):
+            #pollLoc19[key] = t
+    #if hasSameDistribution(pollingLocations19):
+        #print "The f_oneway test can be performed"
+    #else:
+        #print "The f_oneway test can't be performed"
     
-    return (pollingLocations7,pollingLocations8,pollingLocations9,pollingLocations10,pollingLocations11,pollingLocations12,pollingLocations13,pollingLocations14,pollingLocations15,pollingLocations16,pollingLocations17,pollingLocations18,pollLoc19)
+    return (pollingLocations7,pollingLocations8,pollingLocations9,pollingLocations10,pollingLocations11,pollingLocations12,pollingLocations13,pollingLocations14,pollingLocations15,pollingLocations16,pollingLocations17,pollingLocations18,pollingLocations19)
 
-def hasNormalDistribution(times):
+def hasNormalDistribution(allTimes):
     from scipy import stats
     try:
-        x = round(stats.normaltest(times)[1]*100,0)
+        x = round(stats.kstest(allTimes, 'norm')[1]*100,1)
+        #print x
+    except:
+        print "jaja"
+        return False
+    else:
+        if x >= 5.0:
+            return True
+    return False
+
+def hasSameDistribution(pollLocT, allTimes):
+    from rpy import r
+    #print pollLocT, allTimes
+    try:
+       x = r.ks_test(r.jitter(pollLocT), r.jitter(allTimes))
     except:
         return False
     else:
-        if len(times) >= 20:
-            if x >= 5.0:
-                #print x
-                return True
-    return False
+        #if x >= 5.0:
+        pValue = round(x['p.value']*100,1)
+        
+        if pValue >= 5.0:
+            print pValue
+            return True
+    #from rpy2.robjects.packages import importr
+    #from rpy2.robjects import FloatVector
+    #import rpy2.robjects as ro
+    #adk = importr('adk')
 
-def hasSameDistribution(pollLoc):
-    from scipy import stats
-    import numpy as np
-    x = len(pollLoc) - 1
+    #from scipy import stats
+    #import numpy as np
+
+    #x = len(pollLoc) - 1
    
-    data = []
-    for key in pollLoc:
-        data.append(np.array(pollLoc[key]))
+    #data = []
+    #for key in pollLoc:
+        #x = ro.FloatVector(pollLoc[key])
+        #data.append(x)
     
-    #I need to find another way to pass all the arrays at once
-    h, p = stats.f_oneway(data[0], data[1], data[2], data[3], data[4], data[5], data[6], data[7], data[8], data[9], data[10], data[11], data[12], data[13])
-    p = round(p*100,0)
-    print h, p
-    if p >= 5.0:
-        return True
+    #h, p = stats.f_oneway(data[0], data[1], data[2], data[3], data[4], data[5], data[6], data[7], data[8], data[9], data[10], data[11], data[12], data[13])
+    #p = round(p*100,0)
+    #print h, p
+    #if p >= 5.0:
+        #return True
+    #result = adk.adk_test(data)
+    #print result[5][2], result[5][3]
+    #pValue1 = round(result[5][2]*100,1)
+    #pValue2 = round(result[5][3]*100,1)
+    #print pValue1, pValue2
+    #if pValue1 >= 5.0 or pValue2 >= 5.0:
+        #return True
     return False
 
 def createMapRangePoll(pollTime, timewindow):
@@ -243,6 +280,7 @@ if cmd_folder not in sys.path:
 from auditLog import AuditLog   #imports audit log class
 from ballotImage import BallotImage  #imports ballot image class
 import dateMod
+import el68a
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy import stats
@@ -253,8 +291,8 @@ path2 = sys.argv[2]
 path3 = sys.argv[3]
 
 parsedLog = AuditLog(open(path, 'r'))
-parsedBallotImage = BallotImage(open(path2, 'r'), AuditLog(open(path, 'r')), open(path3, 'r'))
-
+parsedEL68A = el68a.EL68A(open(path3, 'r'))
+parsedBallotImage = BallotImage(open(path2, 'r'), parsedLog, parsedEL68A)
 
 # first generate list of valid machines
 dateModObject = dateMod.DateMod(parsedLog, open(path3, 'r'))
@@ -275,15 +313,36 @@ for time in lTV:
 
 pollLoc7, pollLoc8, pollLoc9, pollLoc10, pollLoc11, pollLoc12, pollLoc13, pollLoc14, pollLoc15, pollLoc16, pollLoc17, pollLoc18, pollLoc19 = longLine(parsedBallotImage, mapMachA, mapMachB)
 
+#just look the precincts that close after 7 PM to avoid errors
+for key in pollLoc19:
+    print "Polling Location #"+ key
+    if hasSameDistribution(pollLoc7[key], lTV):
+        print "7:00"
+    if hasSameDistribution(pollLoc8[key], lTV):
+        print "8:00"
+    if hasSameDistribution(pollLoc9[key], lTV):
+        print "9:00"
+    if hasSameDistribution(pollLoc10[key], lTV):
+        print "10:00"
+    if hasSameDistribution(pollLoc11[key], lTV):
+        print "11:00"
+    if hasSameDistribution(pollLoc12[key], lTV):
+        print "12:00"
+    if hasSameDistribution(pollLoc13[key], lTV):
+        print "13:00"
+    if hasSameDistribution(pollLoc14[key], lTV):
+        print "14:00"
+    if hasSameDistribution(pollLoc15[key], lTV):
+        print "15:00"
+    if hasSameDistribution(pollLoc16[key], lTV):
+        print "16:00"
+    if hasSameDistribution(pollLoc17[key], lTV):
+        print "17:00"
+    if hasSameDistribution(pollLoc18[key], lTV):
+        print "18:00"
+    print "--------------------------------------------"
 #generate a random position to choose a random polling location
 #pos = rnd.randint(0, len(pollLoc7)-1)
-i = 0
-for key in pollLoc19:
-    i += 1
-    if key == '38':
-        #print key
-        pos = i - 1
-        break
 #print stats.ttest_ind(pollLoc19.items()[0][1], pollLoc19.items()[1][1])
 import math
 
@@ -316,8 +375,8 @@ for key in pollLoc19:
         if y3 <= t <= x3:
             count3 += 1
 
-    print key, (count / len(pollLoc19[key])) * 100, (count2 / len(pollLoc19[key])) * 100, (count3 / len(pollLoc19[key])) * 100
-createMapRangePoll(pollLoc19.items()[pos], '7:00 PM to close time')
+    #print key, (count / len(pollLoc19[key])) * 100, (count2 / len(pollLoc19[key])) * 100, (count3 / len(pollLoc19[key])) * 100
+#createMapRangePoll(pollLoc19.items()[1], '7:00 PM to close time')
 
 #l1 = lTV
 
