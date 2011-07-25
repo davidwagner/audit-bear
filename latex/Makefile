@@ -2,7 +2,7 @@
 
 all: paper.pdf
 
-paper.pdf: paper.tex paper.bib
+paper.pdf: paper.tex paper.bib abstract.tex acknow.tex analyses.tex appendix.tex background.tex conclusion.tex introduction.tex related_work.tex appendix.sty authblk.sty usenix.sty
 	pdflatex paper.tex
 	bibtex paper
 	pdflatex paper.tex

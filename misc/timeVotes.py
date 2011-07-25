@@ -186,17 +186,22 @@ def hasNormalDistribution(allTimes):
     return False
 
 def hasSameDistribution(pollLocT, allTimes):
-    from rpy import r
+    #import rpy2.robjects as rpy
+    #r = rpy.r
+    #from rpy import r
     #print pollLocT, allTimes
+    from scipy import stats
     try:
-       x = r.ks_test(r.jitter(pollLocT), r.jitter(allTimes))
+        pValue = round(stats.ks_2samp(pollLocT, allTimes)[1]*100,1)
+       #x = r.ks_test(r.jitter(pollLocT), r.jitter(allTimes))
     except:
         return False
     else:
         #if x >= 5.0:
-        pValue = round(x['p.value']*100,1)
+        #pValue = round(x*100,1)
+        #pValue = round(x['p.value']*100,1)
         
-        if pValue >= 5.0:
+        if pValue >= 10.0:
             print pValue
             return True
     #from rpy2.robjects.packages import importr
@@ -273,7 +278,7 @@ def graph(mapRange, x, y, title):
 import analysis_places_open_late2
 import os, sys
 
-cmd_folder = os.getenv('HOME') + '/audit-bear/modules'
+cmd_folder = os.getenv('HOME') + '/audit-bear/web2py/applications/audit_bear/modules'
 if cmd_folder not in sys.path:
     sys.path.insert(0, cmd_folder)
 
@@ -295,8 +300,9 @@ parsedEL68A = el68a.EL68A(open(path3, 'r'))
 parsedBallotImage = BallotImage(open(path2, 'r'), parsedLog, parsedEL68A)
 
 # first generate list of valid machines
-dateModObject = dateMod.DateMod(parsedLog, open(path3, 'r'))
-mmap = dateMod.timecheck(dateMod.timeopen(dateModObject.edata))
+dateModObject = dateMod.DateMod(parsedLog, parsedEL68A.electionDate)
+times, a = dateMod.timeopen(parsedLog, dateModObject.eday)
+mmap = dateMod.timecheck(times)
 validMachines = mmap.keys()
 pollOpenLate = analysis_places_open_late2.open_late(parsedLog, parsedBallotImage, validMachines)
 mapMachA, mapMachB, lTV, pA, pB = consecutiveVotes(parsedLog, parsedBallotImage, validMachines, pollOpenLate)
