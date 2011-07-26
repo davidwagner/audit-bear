@@ -36,8 +36,8 @@ def consecutiveVotes(parsedLog, ballotImage, validMachines, pollingLate):
                 else:
                     delta1 = t2 - t1
                 
-                    mapMachinesAllTimesB.setdefault(parsedLog[i][0],[]).append([round(delta1.seconds/60,1), str(t1), str(t2)])
-                    mapMachinesB[parsedLog[i][0]] = mapMachinesB.get(parsedLog[i][0], 0) + round(delta1.seconds/60,1)
+                    mapMachinesAllTimesB.setdefault(parsedLog[i][0],[]).append([delta1.seconds/60, str(t1), str(t2)])
+                    mapMachinesB[parsedLog[i][0]] = mapMachinesB.get(parsedLog[i][0], 0) + delta1.seconds/60
                     mapCountCVB[parsedLog[i][0]] = mapCountCVB.get(parsedLog[i][0], 0) + 1
         
         if parsedLog[i][4] in ("0001510", "0001511") and parsedLog[i+1][4] in ("0002810") and parsedLog[i+2][4] in ("0001510", "0001511"):
@@ -53,8 +53,8 @@ def consecutiveVotes(parsedLog, ballotImage, validMachines, pollingLate):
                 else:                
                     delta1 = t2 - t1
                 
-                    mapMachinesAllTimesB.setdefault(parsedLog[i][0],[]).append([round(delta1.seconds/60,1), str(t1), str(t2)])
-                    mapMachinesB[parsedLog[i][0]] = mapMachinesB.get(parsedLog[i][0], 0) + round(delta1.seconds/60,1)
+                    mapMachinesAllTimesB.setdefault(parsedLog[i][0],[]).append([delta1.seconds/60, str(t1), str(t2)])
+                    mapMachinesB[parsedLog[i][0]] = mapMachinesB.get(parsedLog[i][0], 0) + delta1.seconds/60
                     mapCountCVB[parsedLog[i][0]] = mapCountCVB.get(parsedLog[i][0], 0) + 1
 
         if parsedLog[i][4] in ("0001510", "0001511") and parsedLog[i+1][4] in ("0002810") and parsedLog[i+2][4] in ("0001510", "0001511"):
@@ -70,9 +70,9 @@ def consecutiveVotes(parsedLog, ballotImage, validMachines, pollingLate):
                 else:                    
                     delta1 = t2 - t1
                 
-                    listTimeVotes.append(round(delta1.seconds/60,1))
-                    mapMachinesAllTimes.setdefault(parsedLog[i][0],[]).append([round(delta1.seconds/60,1), str(t1), str(t2)])
-                    mapMachines[parsedLog[i][0]] = mapMachines.get(parsedLog[i][0], 0) + round(delta1.seconds/60,1)
+                    listTimeVotes.append(delta1.seconds/60)
+                    mapMachinesAllTimes.setdefault(parsedLog[i][0],[]).append([delta1.seconds/60, str(t1), str(t2)])
+                    mapMachines[parsedLog[i][0]] = mapMachines.get(parsedLog[i][0], 0) + delta1.seconds/60
                     mapCountCV[parsedLog[i][0]] = mapCountCV.get(parsedLog[i][0], 0) + 1
                 
     #for machine in sorted(mapMachinesAllTimesB):
