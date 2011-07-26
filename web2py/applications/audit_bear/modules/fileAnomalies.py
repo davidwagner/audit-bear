@@ -310,7 +310,7 @@ def notUploadedPEBs(aLog, bLog, eLog, dc, r):
                     r.addTextBox("The following PEBs were not uploaded:")
                     r.addTextBox(" ")
                     b3 = False
-                r.addTextBox("--In %s (#%s), PEB %s closed %s %s and were not uploaded.  The %d vote(s) on this PEB may not have been included in the certified count.  " % (p[1], p[0], p[2], p[3], p[4], p[5]))
+                r.addTextBox("--In %s (#%s), PEB %s closed %s %s and was not uploaded.  The %d vote(s) on this PEB may not have been included in the certified count.  " % (p[1], p[0], p[2], p[3], p[4], p[5]))
     if b3 == False:
         r.addTextBox(" ")
         r.addTextBox("We recommend that you consider finding these PEB(s), upload them, and update the final vote tallies.  We recommend that you gather the summary tapes for all machines in this polling location, including the ones identified above, and make sure that all votes listed there have been included in the final vote tallies.")
@@ -389,7 +389,8 @@ def machineOpenCloseDiff(data, ballot, el, dc, r):
                     r.addTextBox(" ")
                     b = False
                 #r.addTextBox("In %s (#%s), machine %s was opened with PEB %s and closed with PEB %s. " % (ballot.machinePrecinctNameMap[p], ballot.machinePrecinctNumMap[p], p, PEBmap[p][0], PEBmap[p][1]))
-                diffTable.addRow(["In %s (#%s), " % (p[1], p[0]), " machine %s was opened with PEB %s and closed with PEB %s." % (p[2], p[3][0], p[3][1])])
+                #diffTable.addRow(["In %s (#%s), " % (p[1], p[0]), " machine %s was opened with PEB %s and closed with PEB %s." % (p[2], p[3][0], p[3][1])])
+                r.addTextBox("In %s (#%s), machine %s was opened with PEB %s and closed with PEB %s." % (p[1], p[0], p[2], p[3][0], p[3][1]))
     if b == True:
         r.addTextBox("No problems found.")  
     else:

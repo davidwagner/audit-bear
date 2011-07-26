@@ -176,11 +176,11 @@ def getCalibrationEvents2(data, ballot, date, r):
                 calList.append((ballot.machinePrecinctNumMap[y], ballot.machinePrecinctNameMap[y], y))
     calList.sort()
     for y2 in calList:
-        if b == True:
-            r.addTextBox("The following machines may have recorded votes being cast while the terminal screen seemed to have calibration problems.  You may wish to find these machines and check whether their screen is properly calibrated and verify the votes.")
-            r.addTextBox(" ")
-            b = False
         if ballot.machinePrecinctNameMap.has_key(y):
+            if b == True:
+                r.addTextBox("The following machines may have recorded votes being cast while the terminal screen seemed to have calibration problems.  You may wish to find these machines and check whether their screen is properly calibrated and verify the votes.")
+                r.addTextBox(" ")
+                b = False
             calTable.addRow(["In %s (#%s), " % (y2[1], y2[0]), "machine %s had votes cast when it was possibly not calibrated." % (y2[2],)])
     if b == True:
         r.addTextBox("No problems found.")
