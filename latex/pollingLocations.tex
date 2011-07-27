@@ -12,34 +12,21 @@ To infer long lines, we focused on the polling locations that stayed opened afte
 %Fix this part (add a table precinct name, p-value is less than 10%, p-value > 10%), then explain the table.
 In Berkeley County, we found that 17 precincts were closed after 7:30 P.M. and decided to run the analysis in these locations to determine when there were long lines.  We will emphasize the top five precincts that close very late.  Our analysis reveals that the first precinct Huger \#26, which closed at 8:43:44 P.M., has higher p-values at 7:00 A.M., 8:00 A.M., 10:00 A.M., 11:00 A.M., 1:00 P.M., 2:00 P.M., 3:00 P.M. and 5:00 P.M..  The minimum p-value is 15.4\% at 2:00 P.M. and the maximum is 66.0\% at 11:00 A.M.  Precinct Cordesville \#10 could possibly have had long lines throughout almost the entire day, except for 7:00 A.M. and 12:00 P.M. with a minimum p-value of 13.6\% at 10:00 A.M. and the rest of the time had p-values higher than 20\%.  Precincts Hilton Cross Rd \#24, and Hanahan 1 \#20 also had long lines almost all day.  Precinct Hanahan 3 \#22 only experienced long lines at 5:00 P.M. with a p-value of 38.5\%.  We can conclude that these precincts have experienced long lines during the whole day and it may be the reason for which those precincts closed very late.
 
-%\begin{table*}
-%    \begin{center}
-%    \begin{tabular}{| l | c | c |}
-%    \hline                   
-%    \# Precint &Probably weren't long lines (p-value \textless 10\%)&Possibly long lines (p-value \textgreater 10\%)\\
-%    \hline
-%    26 Huger&9:00 A.M.&7:00 A.M. \\
-%    \hline
-%    7 & 8 & 9 \\
-%    \hline  
-%    \end{tabular}
-%    \end{center}
-%    \caption{An example of table}
-%    \label{my_table}
-%\end{table*}
-
-\begin{tabular}{|l||l|l||l|l|}
-\hline
- &\multicolumn{2}{l|}{Singular}&\multicolumn{2}{l|}{Plural}\\
-\cline{2-5}
- &English&\textbf{Gaeilge}&English&\textbf{Gaeilge}\\
-\hline\hline
-1st Person&at me&\textbf{agam}&at us&\textbf{againn}\\
-2nd Person&at you&\textbf{agat}&at you&\textbf{agaibh}\\
-3rd Person&at him&\textbf{aige}&at them&\textbf{acu}\\
- &at her&\textbf{aici}& & \\
-\hline
-\end{tabular}
+\begin{table*}
+    \begin{center}
+    \begin{tabular}{| l | c | c |}
+    \hline                   
+    \# Precint &Probably weren't long lines (p-value \textless 10\%)&Possibly long lines (p-value \textgreater 10\%)\\
+    \hline
+    26 Huger&9:00 A.M.&7:00 A.M. \\
+    \hline
+    7 & 8 & 9 \\
+    \hline  
+    \end{tabular}
+    \end{center}
+    \caption{An example of table}
+    \label{my_table}
+\end{table*}
 
 We strongly recommend election officials to conduct this analysis after each election to plan for future elections of the same type. Assigning additional personnel, whether poll workers or rovers, and machines to the busy polling locations may reduce long lines of voters.  Our analysis can detect when there is a steady flow of voters, but it does not determine if the long line of voters is caused by a slow registration process or too few voting machines.
 
