@@ -1,14 +1,33 @@
 \subsection{Polling Location Related Analyses}
+\subsubsection{Polling Locations That Closed Late}
+The polling locations in South Carolina must be opened for voting from 7 am until 7 pm. Electors waiting in line after 7 pm should be allowed to vote~\cite{VotingInfo}. Therefore, pollworkers must process those voters prior to closing the voting machines on election night. Election officials could deploy more equipment or personnel to the polling locations that experienced lines of voters at closing time if they had statistical data from previous elections. Our tool can assist them to create that type of statistics overtime.
+
+This analysis uses two iVotronic log files, EL152 and EL155,  to group the machines by polling location. It also uses the iVotronic time/date verification function described in section~\ref{an:date} to exclude any terminal(s) whose time is questionable. This analysis gives election officials information about how many polling locations had to stay open late and for how long. It generates a histograms detailing the number of polling locations that stayed open after 7 pm grouped by 10 minute increments. This information can be useful to election officials as they can identify how many polling locations that closed late and develop a strategy to mitigate those circumstances in future elections. Assigning additional resources to those polling locations can address bottlenecks at the precinct resulting in a more expeditious voting process during in future elections.
 \begin{table*}
     \begin{center}
-    \begin{tabular}{| l | c | c |}
+    \begin{tabular}{| c | p{4cm} | p{3cm} |}
     \hline                   
-    \# Precint &Probably weren't long lines (p-value \textless 10\%)&Possibly long lines (p-value \textgreater 10\%)\\
+    \# Precint & Probably weren't long lines (p-value \textless 10\%)&Possibly long lines (p-value \textgreater 10\%)\\
     \hline
-    26 Huger&9:00 A.M.&7:00 A.M. \\
+    26 Huger&9:00 a.m. - 10:00 a.m. &7:00 a.m. - 9:00 a.m.\\
+            &12:00 p.m. - 1:00 p.m. &10:00 a.m. - 12:00 m.\\
+            &4:00 p.m. - 5:00 p.m. &1:00 p.m. - 4:00 p.m.\\
+            &6:00 p.m. - 7:00 p.m. &5:00 p.m. - 6:00 p.m.\\
     \hline
-    7 & 8 & 9 \\
+    10 Cordesville &7:00 a.m. - 8:00 a.m.&8:00 a.m. - 12:00 m.\\
+                   &12:00 m. - 1:00 p.m.&1:00 p.m. - 7:00 p.m.\\
     \hline  
+    24 Hilton Cross Rd &12:00 m. - 1:00 p.m. &7:00 a.m. - 12:00 m.\\
+                       &5:00 p.m. - 6:00 p.m. &1:00 p.m. - 7:00 p.m.\\
+    \hline
+    22 Hanahan 3 &7:00 a.m. - 5:00 p.m. &5:00 p.m. - 6:00 p.m.\\
+                 &6:00 p.m. - 7:00 p.m.&\\
+    \hline
+    20 Hanahan 1 &12:00 m. - 1:00 p.m. &7:00 a.m. - 12:00 m.\\
+                 &2:00 p.m. - 3:00 p.m. &1:00 p.m. - 2:00 p.m.\\
+                 &5:00 p.m. - 6:00 p.m. &3:00 p.m. - 5:00 p.m.\\
+                 &                      &6:00 p.m. - 7:00 p.m.\\
+    \hline
     \end{tabular}
     \end{center}
     \caption{An example of table}
@@ -28,6 +47,3 @@ To infer long lines, we focused on the polling locations that stayed opened afte
 In Berkeley County, we found that 17 precincts were closed after 7:30 P.M. and decided to run the analysis in these locations to determine when there were long lines.  We will emphasize the top five precincts that close very late.  Our analysis reveals that the first precinct Huger \#26, which closed at 8:43:44 P.M., has higher p-values at 7:00 A.M., 8:00 A.M., 10:00 A.M., 11:00 A.M., 1:00 P.M., 2:00 P.M., 3:00 P.M. and 5:00 P.M..  The minimum p-value is 15.4\% at 2:00 P.M. and the maximum is 66.0\% at 11:00 A.M.  Precinct Cordesville \#10 could possibly have had long lines throughout almost the entire day, except for 7:00 A.M. and 12:00 P.M. with a minimum p-value of 13.6\% at 10:00 A.M. and the rest of the time had p-values higher than 20\%.  Precincts Hilton Cross Rd \#24, and Hanahan 1 \#20 also had long lines almost all day.  Precinct Hanahan 3 \#22 only experienced long lines at 5:00 P.M. with a p-value of 38.5\%.  We can conclude that these precincts have experienced long lines during the whole day and it may be the reason for which those precincts closed very late.
 
 We strongly recommend election officials to conduct this analysis after each election to plan for future elections of the same type. Assigning additional personnel, whether poll workers or rovers, and machines to the busy polling locations may reduce long lines of voters.  Our analysis can detect when there is a steady flow of voters, but it does not determine if the long line of voters is caused by a slow registration process or too few voting machines.
-
-\subsubsection{Polling Locations That Closed Late}
-[To complete by Wednesday].
