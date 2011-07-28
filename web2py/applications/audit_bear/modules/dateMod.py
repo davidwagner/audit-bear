@@ -13,11 +13,6 @@ Update:  This file didn't prove as univerally useful as intended.  Updated to ta
     
 
 import os, sys
-"""
-cmd_folder = os.getenv('HOME') + '/audit-bear/modules'
-if cmd_folder not in sys.path:
-    sys.path.insert(0, cmd_folder)
-"""
 import auditLog
 import datetime
 import dateutil.parser
@@ -27,32 +22,32 @@ import ballotImage
 class DateMod:
         
     def __init__(self,data, date):
-        #These Variables are dependant on a valid path and date parse from the 68a text file
+        #Dependant on a valid path and date parse from the 68a text file
         self.eday = ''  #Parsed Election Date from 68.lst file 
-        self.pday = ''  #Election Day Minus 15
+        # Filled with dateNoms()
+        self.D1 = {}
+        self.D2 = {}
+        self.D3 = {}
+        self.valid = {}
 
 
         if not isinstance(data, auditLog.AuditLog):
             raise Exception('Must pass valid AuditLog object')
 
         if self.daygrab(data, date):
-            #print 'Election Date Retrieved from 68a'
-            pass
+            print 'Election Date Retrieved from 68a'
         else:
-            #print 'No 68a Supplied or unable to parse. Inferring Election Day...'
-            pass
+            print 'No 68a Supplied or unable to parse. Inferring Election Day...'
 
-        self.pday = self.eday - datetime.timedelta(15)
+        self.dateNoms(data)
+        self.validParse()
+        return
 
-    def __del__(self):
-        del self.pday
-        del self.eday
- 
-    """
-    Gets date from l68a file or infer eday
-    """
     def daygrab(self, data, date):
-        #print date
+        """
+        Gets date from l68a file or infer eday
+        """
+
         if not date:
             self.inferEday(data)
             return False
@@ -70,29 +65,224 @@ class DateMod:
                 d.update({key: 1}) 
 
         self.eday = dateutil.parser.parse(max(d.iterkeys(), key=d.get)).date()
-        #print self.eday
+        print self.eday
         return
-    """
-    Returns information about particulary early voting
-    """
-    def voteEarly(self,data):
-        #Holds machines:# of votes, first vote, last vote
-        machines = {}
 
-        for line in data:
-            try: cday = dateutil.parser.parse(line.dateTime).date()
-            except ValueError: cday = self.eday
+    def validDate(self, date):
+        """
+        Helper function for dateNoms.  Test if opening/closing date is reasonable.
+        """
+        if date == None: return False
+        elif date.date() > self.eday: return False
+        elif date.date() < (self.eday - datetime.timedelta(33)): return False
+        else: return True
+
+
+    def dateNoms(self, data):
+        """
+    This function provides a dictionary/list of machines that experiance a variety
+    of different date issues.  The machines are divided into 3 distinct categories
+    to be furthur parsed into intelligent reports.
+
+    -Type 1:
+        Returns machines who closed on election day but had manual adjustments made
+        to their datetime. Includes all machines who never got adjusted until
+        election day and those who were off by an hour.
+    -Type 2:
+        Returns machines which needed adjustments made to their date, but it was 
+        never done.  This really means machines opened and closed on impossible 
+        dates. It won't catch machines who needed adjusting by an hour or so. 
+    -Type 3:
+        Returns machines that had date bugs.  This means that the date randomly 
+        leaped forward or backward in time or decided its date was 00/00/00 for
+        some amount of events.  Sometimes the date is manually changed back or
+        sometimes it jumps back on its own, these are all listed because more 
+        importantly, the machine was experiancing some serious bugs.
+        """
+
+        """
+        State that tracks opening and closing events.
+        This ensures that only the last opening closing states of a machine
+        are saved.  This is because pre-voting opening and closing times are
+        not considered in this analysis. State is overwritten with 1 when last
+        opening occurs (election day usually).  These are the times used.
+        """
+        ostate = 0
+            #0: Machine never opened or closed
+            #1: Machine Opened
+            #2: Machine Opened and Closed Sucessfully
+            #3: Machine Closed without an Open
+
+        timeset,startset = False, False
+        start, end = None, None
         
-            if (cday < self.pday) and (line.eventNumber == '0001511' or line.eventNumber == '0001510'):
-                if line.serialNumber in machines:
-                    v = machines[line.serialNumber]
-                    if v[1] > cday: v[1] = cday
-                    if v[2] < cday: v[2] = cday
-                    machines[line.serialNumber] = [v[0]+1, v[1], v[2]]
-                else:
-                    machines.update({line.serialNumber:[1,cday,cday]})
-        return machines
- 
+        jump = False
+        jumpEvents = 0
+        jumpB, jumpF, jumpZ = False, False, False
+
+        temp = data[0].serialNumber
+        lastTime = data[0].dateTime
+        for line in data:
+            try:
+                cTime = dateutil.parser.parse(line.dateTime)
+            except ValueError:
+                cTime = None 
+        
+            #--New Machine, process last one--
+            if line.serialNumber != temp: 
+               
+                if ostate == 2:
+                    #Populate D1
+                    if end != None and end.date() == self.eday:
+                        if not self.validDate(start):
+                            self.D1.update({temp:(start, end, 'N/A')})
+
+                        elif start.date() == self.eday:
+                            if timeset: 
+                                start = start - diff 
+                                self.D1.update({temp:(start, end, end-start)})
+                            self.valid.update({temp:(start, end, end-start)})
+                    #Populate D2
+                        """
+                        Note: I check for invalid opening as well.  This is because
+                        It is more likely that something ending on a invalid date
+                        without opening on one resulted from a date jump and goes 
+                        with D3
+                        """
+                    elif (not self.validDate(end)) and (not self.validDate(start)):
+                        self.D2.update({temp:(start, end, end-start)})
+
+                    #Populate D3
+                    if jump:
+                        self.D3.update({temp:(startJ,jumpValue,jumpEvents)})
+                       
+                #Machine Neither Closed Nor Opened
+                if ostate == 0: print 'Machine ', temp , ' not closed nor opened'
+                #Machine Opened and Not Closed
+                elif ostate == 1: print 'Machine', temp, ' Not closed'
+
+                temp = line.serialNumber
+                timeset, startset = False, False
+                end, start, diff = None, None, None
+                ostate = 0
+
+                jump = False
+                jumpB, jumpF, jumpZ = False, False, False
+                jumpEvents = 0
+
+            #--Record opening state and times--
+            if line.eventNumber == '0001672': #Open Event
+                ostate = 1
+                start = cTime
+            elif line.eventNumber == '0001673': #Machine Close
+                if ostate == 1:
+                    end = cTime
+                    ostate = 2
+                #Machine Closed without an Open
+                elif ostate == 0:
+                    ostate = 3
+                    print 'Machine ', temp,' closed without open event?!'
+
+            #--If time was adjusted while machine was open record delta--
+            elif line.eventNumber == '0000117' and ostate == 1:
+                diff = cTime
+                startset = True
+
+            elif line.eventNumber == '0001656' and startset:
+            
+                if diff == self.eday or cTime == self.eday:
+                    if diff == None or cTime == None:
+                        diff = datetime.timedelta(0)
+                        timeset = True
+                    else:
+                        diff =  diff - cTime
+                        #We don't care for changes less then 1 minute
+                        if abs(diff) > datetime.timedelta(0,60): timeset = True
+                        else: timeset = False
+                startset = False
+
+            #--Find any date jumping and record date anomalies resulting from bugs--
+            """
+            This currently doesn't really adapt well to machines experiancing
+            many different jumps.  This could be added, but might not be all 
+            that useful.  A machine experiencing date bugs is a machine 
+            experiencing date bugs. Event count is cumulative among multiple
+            jumps however.
+            """
+
+            if ostate == 1:
+                if line.eventNumber != '0001656' and not jumpB and not jumpF and not jumpZ:
+                    #00/00/00 Jump
+                    if cTime == None:
+                        jump, jumpZ = True, True
+                        startJ = lastTime
+                        jumpValue = 'Invalid Date'
+                    #Backword Jump
+                    elif lastTime > cTime:
+                        jump,jumpB = True, True
+                        startJ = lastTime
+                        jumpValue = cTime
+                    #Forward Jump (Threshold is arbitrary but works OK)
+                    elif (cTime-lastTime) > datetime.timedelta(33):
+                        jump,jumpF = True, True
+                        startJ = lastTime
+                        jumpValue = cTime
+                    
+                if jumpB:
+                    if cTime > startJ:
+                        jumbB = False
+                    else:
+                        jumpEvents += 1
+                if jumpF:
+                    if cTime.date() == startJ.date():
+                        jumpF = False
+                    else:
+                        jumpEvents += 1
+                if jumpZ:
+                    if cTime != None:
+                        jumpZ = False
+                    else:
+                        jumpEvents += 1
+            elif ostate == 2:
+                jumpF, jumpB, jumpZ = False, False, False
+                
+            lastTime = cTime
+                
+        return 
+
+    def validParse(self):
+        """
+        This function takes the dictionary from dateNoms and decides if the 
+        datestamp is beleavable.  Uses pretty simple heuristics but works
+        well to create a list of valid machines for analysis that monitors
+        poll closing times
+        """
+
+        d = {}
+
+        #Machine must be open by this time to be assumed valid if open for 12 hours+
+        timeopen = dateutil.parser.parse('07:30:00')
+
+        for k,v in self.valid.iteritems():
+            if v[0] == 0:
+                if v[2] > datetime.timedelta(hours=12) and v[0] < timeopen:
+                    d.update({k:v})
+                else: pass
+
+        self.valid = d
+        return 
+
+
+    def __del__(self):
+        del self.eday
+        del self.D1
+        del self.D2
+        del self.D3
+        del self.valid
+        return
+
+
+"""------DEPRECATED FUNCTIONS BELOW HERE (or soon to be)--------"""
 """
 -Checks for the following day anomolies:
     -Votes before designated pre-voting day
@@ -144,138 +334,25 @@ def check(data, eday, pday):
                     d2.update({key:1})
                 
     return [d1,d2,d3]
-"""
-Return Structure: Returns a dictionary as follows:
-  {machineID:(code, timeopen, timeclosed, totaltime)}
-  {string:(int, datetime, datetime, timedelta)
-  timeopen and totaltimeopen are automatically adjusted if date is changed
-
-Codes:
- 0 - Machine was opened and closed
- 1 - Machine was closed but not open (for pdata: left open from earlyvoting)
-     Has None for timeopen and totaltime
- 2 - Machine was opened but not closed
-     has none for totaltime and timeclosed
- 3 - Machine was neither opened or closed
-     Has none for all times
 
 
-Limitations:  Will not handle unparsible dates.  This will work with edata, pdata, or both sets combined.  Will not deal with a machine with multible openings or closings.
-"""
-def timeopen(data,eday):
-    temp = data[0].serialNumber
-    times = {}
-    a = []
-    ostate = False 
-    eventseen = False 
-    timeset = False
-    startset = False
-    for line in data:
-        
-        if line.serialNumber != temp:
-            #Machine Neither Closed Nor Opened
-            if not eventseen:
-                times.update({temp:(3, None, None, None)})
-                    
-                
-            #Machine Closed Sucessfully
-            elif not ostate:
-                if timeset: 
-                    times.update({temp:(0,start-diff, end, end-start+diff)})
-                    a.append((temp, diff))
-                else:
-                    times.update({temp:(0,start, end, end-start)})
-
-            #Machine Opened and Not Closed
-            else: 
-                if timeset:
-                    times.update({temp:(2, start-diff, end, None)})
-                else:
-                    times.update({temp:(2, start, end, None)})
-
-            temp = line.serialNumber
-            eventseen = False
-            timeset = False
-        if line.eventNumber == '0001672': 
-            try: cdateTime = dateutil.parser.parse(line.dateTime)
-            except ValueError: cdateTime = None
-            else:
-                start = cdateTime
-                ostate = 1
-                eventseen = True
-        elif line.eventNumber == '0001673':
-            if ostate == 1:
-                try: cdateTime = dateutil.parser.parse(line.dateTime)
-                except ValueError: cdateTime = None
-                else:
-                    eventseen = True
-                    end = cdateTime
-                    ostate  = 0
-            #Machine Closed without an Open
-            elif ostate == 0:
-                times.update({temp:(1, None, end, None)})
-                eventseen = True
-
-        #If time was adjusted while machine was open, account for that
-        elif line.eventNumber == '0000117' and ostate == 1:
-            try: cdate = dateutil.parser.parse(line.dateTime).date()
-            except ValueError: cdate = None 
-            
-            diff = cdate
-            startset = True
-        elif line.eventNumber == '0001656' and startset:
-            try: cdate = dateutil.parser.parse(line.dateTime).date()
-            except ValueError: cdate = None
-
-            if diff == eday or cdate == eday:
-                if diff == None or cdate == None:
-                    diff = datetime.timedelta(0)
-                else:
-                    diff =  diff - cdate
-                timeset = True
-            startset = False
-            
-    return times, a
-
-
-"""
-This function takes the dictionary from timesopen and decides if the datestamp is beleavable.  Also tries to determine which machines really don't have the correct date.
-Alot of machines are not sorted into valid or invalid.  As this function becomes more robust it will know what to do with more machines.
-"""
-def timecheck(times):
-    #Catch all machines open more then 12 hours, check for reasonable opening
-    valid = {}
-    invalid = {}
-    #Machine must be open by this time to be assumed valid if open for 12 hours+
-    timeopen = dateutil.parser.parse('07:30:00')
-    for k,v in times.iteritems():
-        if v[0] == 0:
-            if v[3] > datetime.timedelta(hours=12) and v[1] < timeopen:
-                valid.update({k:v})
-            else: pass
-    return valid
-
-"""
----Main---
-This only executes if you run this file as a script.  This serves more as an example then anything else. I also have a test file under /misc/patrick that has more updated uses of this module.
-----------
-"""
-        
+       
 if __name__== "__main__":
 
 
-    path1 = "/home/patrick/audit-bear/data/anderson/anderson_co_01_14_11_el152.txt"
-    path2 = "/home/patrick/audit-bear/data/anderson/anderson_co_03_07_11_el68a.txt"
-    path3 = "/home/patrick/audit-bear/data/anderson/anderson_co_01_14_11_el155.txt"
+    path1 = "/home/patrick/audit-bear/data/richland_co_11_10_10_el152.lst"
+    path2 = "/home/patrick/audit-bear/data/berkeley_co_11_10_10_el68a.LST"
+    path3 = "/home/patrick/audit-bear/data/anderson_co_01_14_11_el155.txt"
     f = open(path1, 'r')
     data = auditLog.AuditLog(f)
     f.close()
 
     dateclass = DateMod(data, None)
     
-    f = open(path3, 'r')
-    f6 = open(path2, 'r')
-    ballotclass = ballotImage.BallotImage(f, data, f6)
-    f.close()
-    f6.close()
-
+    for k,v in dateclass.D1.iteritems():
+        print k, v[0], v[1], v[2]
+    for k,v in dateclass.D2.iteritems():
+        print k,v[0], v[1], v[2]
+    for k,v in dateclass.D3.iteritems():
+        print k,v[0], v[1], v[2]
+    print 'Lengths', len(dateclass.D1), len(dateclass.D2), len(dateclass.D3)
