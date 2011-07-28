@@ -4,9 +4,34 @@ This analysis generates a list of PEBs used to collect votes on election day. It
 
 The South Carolina counties deploy two types of PEBs to each precinct on election day: a Ògreen stripe masterÓ PEB to open and close terminals and Òred stripeÓ PEBs to activate ballots once the iVotronic terminals are opened for voting. The precinct procedures, dictate that a single PEB should be used to open and close all machines at a polling location. Failure to strictly follow this protocol led to problems identified in a recent study~\cite{Buell2011}.  Similar problems were experienced in Miami-Dade County during the 2002 Primary election~\cite{Mazella2002}. In that case, poll workers used two or more PEBs to open and close terminals at their precinct.  As a result, the votes from some machines were not collected on election night.  Election officials were forced to spend several days at the warehouse collecting all PEBs used in the election, printing tapes of every PEB, and uploading the votes from the PEBs that were not transported to election headquarters on election night. This caused a significant delay in the reporting of election results. 
 
-[Document our findings]
-
+\begin{table*}
+    \begin{center}
+    \begin{tabular}{| c | c | c | c |}
+    \hline                   
+    County &PEBs used to collect votes &PEBs not uploaded &PEBs combines votes\\
+    \hline
+    Anderson &77 &1 &163\\
+    \hline
+    Colleton &36 &1 &122\\
+    \hline
+    Georgetown &36 &1 &92\\
+    \hline
+    Greenville &154 &3 &500\\
+    \hline
+    Horry &121 &2 &189\\
+    \hline
+    Richland &128 &5 &648\\
+    \hline
+    Sumter &60 &2 &368\\
+    \hline
+    \end{tabular}
+    \end{center}
+    \caption{PEBs not uploaded}
+    \label{tab:pebs}
+\end{table*}
 This analysis is intended to address the current unavailability of uniform procedures for media upload verification, and to reduce the need for on-the-spot solutions to individual problems that can lead to inaccuracies in election results. Identifying PEBs containing election data which were not uploaded to the cumulative totals will allow election officials to identify and correct those problems during the canvassing process. The information concerning the PEBs not uploaded includes: the serial number of the terminal(s) collected in the PEB(s), the number of votes processed in the terminal(s) and the precinct's name and number. With the detailed information the election officials can gather the missing PEB(s) and recollect votes from terminals not included in the cumulative totals resulting in accuracy of certified totals and voter confidence.
+
+Table~\ref{tab:pebs} summarizes the PEBs not uploaded during the General 2010 elections in South Carolina. The system file EL168a was used to identify which PEBs containing votes were not uploaded to the election reporting software. If the South Carolina counties had access to our tool during their canvass audits they could have quickly located the PEBs providing and automated process.
 
 The following are some recommendations for system improvement that would make this type of analysis easier in the future.  It would be useful if the PEBs used to close terminal(s) can upload not only the total votes collected but also the serial number of the terminals it closed. Additionally, it should be possible to import a text file containing the list of iVotronic machines and master PEBs deployed to each polling location.  That list could produce a crosscheck table for verification of iVotronics and PEBs uploaded during election night reporting.
 
