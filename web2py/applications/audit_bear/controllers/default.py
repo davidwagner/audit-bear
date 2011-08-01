@@ -56,9 +56,9 @@ def index():
 # all the results
 def results():
     if not session.results:
-        redirect(URL('index'))
-
-    return session.results
+        return dict(message='NoSession') 
+    else:
+        return session.results
 
 def about():
     return dict(message='')

@@ -12,10 +12,10 @@ Update:  This file didn't prove as univerally useful as intended.  Updated to ta
 """
     
 
-import os, sys
-import auditLog
+import sys
 import datetime
 import dateutil.parser
+import auditLog
 import ballotImage
 
     
@@ -35,9 +35,11 @@ class DateMod:
             raise Exception('Must pass valid AuditLog object')
 
         if self.daygrab(data, date):
-            print 'Election Date Retrieved from 68a'
+            #print 'Election Date Retrieved from 68a'
+            pass
         else:
-            print 'No 68a Supplied or unable to parse. Inferring Election Day...'
+            #print 'No 68a Supplied or unable to parse. Inferring Election Day...'
+            pass
 
         self.dateNoms(data)
         self.validParse()
@@ -65,7 +67,6 @@ class DateMod:
                 d.update({key: 1}) 
 
         self.eday = dateutil.parser.parse(max(d.iterkeys(), key=d.get)).date()
-        print self.eday
         return
 
     def validDate(self, date):
@@ -86,7 +87,7 @@ class DateMod:
 
     -Type 1:
         Returns machines who closed on election day but had manual adjustments made
-        to their datetime. Includes all machines who never got adjusted until
+        to their datetime. Includes all machines who were never adjusted until
         election day and those who were off by an hour.
     -Type 2:
         Returns machines which needed adjustments made to their date, but it was 
@@ -184,21 +185,22 @@ class DateMod:
                     print 'Machine ', temp,' closed without open event?!'
 
             #--If time was adjusted while machine was open record delta--
-            elif line.eventNumber == '0000117' and ostate == 1:
-                diff = cTime
+            elif line.eventNumber == '0000117' and (ostate==1 or ostate==2):
                 startset = True
 
             elif line.eventNumber == '0001656' and startset:
-            
-                if diff == self.eday or cTime == self.eday:
-                    if diff == None or cTime == None:
+                #Mark changes occuring when open and on eday
+                if cTime != None and cTime.date() == self.eday:
+                    if lastTime == None:
                         diff = datetime.timedelta(0)
                         timeset = True
                     else:
-                        diff =  diff - cTime
+                        diff =  lastTime - cTime
                         #We don't care for changes less then 1 minute
-                        if abs(diff) > datetime.timedelta(0,60): timeset = True
-                        else: timeset = False
+                        if abs(diff) > datetime.timedelta(0,60):
+                            timeset = True
+                        else: 
+                            timeset = False
                 startset = False
 
             #--Find any date jumping and record date anomalies resulting from bugs--
@@ -280,75 +282,29 @@ class DateMod:
         del self.D3
         del self.valid
         return
-
-
-"""------DEPRECATED FUNCTIONS BELOW HERE (or soon to be)--------"""
-"""
--Checks for the following day anomolies:
-    -Votes before designated pre-voting day
-    -Any dates after election day
-    -Unparsible datetimes
--Can be passed either a normal full set of data or just the odata
-
-
-"""
-def check(data, eday, pday):
-
-    #Dictionarys to record anomolies.  Use event and day as key, occurances as value
-    #d1 holds events after election day
-    d1 = {}
-    #d2 holds votes before Prevoting
-    d2 = {}
-    #d3 holds unparsible datetimes
-    d3 = {}
- 
-    ostate = False
-    temp = data[0].serialNumber
-
+def count(data):
+    d={}
     for line in data:
-        if temp != line.serialNumber:
-            ostate = False 
-        if line.eventNumber == '0001672':
-            ostate = True
-        key = (line.serialNumber, line.dateTime[0:10])
-        try:
-            cday = dateutil.parser.parse(line.dateTime).date()
-        except ValueError:
-            #Unparsible Datetime
-            if key in d3:
-                d3[key] += 1
-            else:
-                d3.update({key: 1}) 
-        else:
-            #Past Election Day and machine has been opened (Not at factory)
-            if (cday > eday) and ostate == True:
-                if key in d1:
-                    d1[key] += 1
-                else:
-                    d1.update({key: 1})
-            #Votes before Prevoting Day
-            elif (cday < pday) and (line.eventNumber == '0001511' or line.eventNumber == '0001510'):
-                if key in d2:
-                    d2[key] +=1
-                else:
-                    d2.update({key:1})
-                
-    return [d1,d2,d3]
+       d.update({line.serialNumber:1}) 
 
+    return len(d)
 
-       
 if __name__== "__main__":
 
+    path = sys.argv[1]
 
-    path1 = "/home/patrick/audit-bear/data/richland_co_11_10_10_el152.lst"
-    path2 = "/home/patrick/audit-bear/data/berkeley_co_11_10_10_el68a.LST"
-    path3 = "/home/patrick/audit-bear/data/anderson_co_01_14_11_el155.txt"
-    f = open(path1, 'r')
+    try: f = open(path, 'r')
+    except:
+        print 'Invalid arg'
+        exit()
+
     data = auditLog.AuditLog(f)
     f.close()
 
-    dateclass = DateMod(data, None)
-    
+
+    dateclass = DateMod(data, dateutil.parser.parse('11/02/2010'))
+    count = count(data)
+
     for k,v in dateclass.D1.iteritems():
         print k, v[0], v[1], v[2]
     for k,v in dateclass.D2.iteritems():
@@ -356,3 +312,4 @@ if __name__== "__main__":
     for k,v in dateclass.D3.iteritems():
         print k,v[0], v[1], v[2]
     print 'Lengths', len(dateclass.D1), len(dateclass.D2), len(dateclass.D3)
+    print 'Count', count, '\n'
