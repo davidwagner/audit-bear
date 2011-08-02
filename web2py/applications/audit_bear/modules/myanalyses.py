@@ -19,7 +19,7 @@ def datesUnset(dateclass, ballotclass):
         precinctMap = ballotclass.getPrecinctNameMap()
         d = {}
 
-        r.addTextBox('These machines have been identified as having incorrectly set clocks while they were opened for voting.  Having invalid clocks can preclude further log analysis. The results have been catagorized into two tables')
+        r.addTextBox('These machines have been identified as having incorrectly set clocks. Having invalid clocks can preclude further log analysis. The results have been catagorized into two tables')
 
         r.addTextBox('<p><b>Table 1: Precincts Manually Adjusted During Elections</b>')
         if len(dateclass.D1) == 0:
@@ -48,16 +48,20 @@ def datesUnset(dateclass, ballotclass):
 
             r.addTable(t1)
 
-        r.addTextBox('<p><b>Table 2: Machines never set correctly</b></p>')
-        t2.addHeader('Serial #')
-        t2.addHeader('Open Date')
-        t2.addHeader('Close Date')
-        for k,v in dateclass.D2.iteritems():
-            t2.addRow([str(k), str(v[0]), str(v[1])])
+        if len(dateclass.D2) != 0:
+            r.addTextBox('<p><b>Table 2: Machines never set correctly</b></p>')
+            t2.addHeader('Serial #')
+            t2.addHeader('Open Date')
+            t2.addHeader('Close Date')
+            for k,v in dateclass.D2.iteritems():
+                t2.addRow([str(k), str(v[0]), str(v[1])])
 
-        r.addTable(t2)
+            r.addTable(t2)
+        else:
+            r.addTextBox('No machines found.')
 
     return r 
+
 def dateErrors(dateclass, ballotclass):
     r = report.Report()
     t = report.Table()
@@ -73,7 +77,7 @@ def dateErrors(dateclass, ballotclass):
         t.addHeader('Jump Value')
         t.addHeader('Occurances')
         for k,v in dateclass.D3.iteritems():
-            t.addRow([str(k), str(v[0]), str(v[1]), str([2])])
+            t.addRow([k, str(v[0]), str(v[1]), str(v[2])])
 
         r.addTable(t)
 
