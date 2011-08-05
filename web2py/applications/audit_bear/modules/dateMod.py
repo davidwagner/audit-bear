@@ -141,6 +141,7 @@ class DateMod:
                         elif start.date() == self.eday:
                             if timeset: 
                                 start = start - diff 
+                                print diff
                                 self.D1.update({temp:(start, end, end-start)})
                             self.valid.update({temp:(start, end, end-start)})
                     #Populate D2
@@ -219,7 +220,7 @@ class DateMod:
                         jump, jumpZ = True, True
                         startJ = lastTime
                         jumpValue = 'Invalid Date'
-                    #Backword Jump
+                    #Backward Jump
                     elif lastTime > cTime:
                         jump,jumpB = True, True
                         startJ = lastTime
