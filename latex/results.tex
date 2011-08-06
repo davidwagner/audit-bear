@@ -37,6 +37,42 @@ There were a number of counties' audit logs from the South Carolina 2010 electio
 
 \subsection{Polling Location Related Findings}
 
+Table~\ref{tab:line} summarizes the times periods when the Berkeley County polling locations experienced long lines before 7 p.m.  In South Carolina polls close at 7 p.m.
+
+\begin{table*}
+    \begin{center}
+    \begin{tabular}{| c | p{5cm} | p{4.5cm} |}
+    \hline                   
+    \# Precinct & Possibly not long lines experienced &Possibly long lines experienced\\
+    \hline
+    26 Huger&9:00 a.m. - 10:00 a.m. &7:00 a.m. - 9:00 a.m.\\
+            &12:00 p.m. - 1:00 p.m. &10:00 a.m. - 12:00 m.\\
+            &4:00 p.m. - 5:00 p.m. &1:00 p.m. - 4:00 p.m.\\
+            &6:00 p.m. - 7:00 p.m. &5:00 p.m. - 6:00 p.m.\\
+    \hline
+    10 Cordesville &7:00 a.m. - 8:00 a.m.&8:00 a.m. - 12:00 m.\\
+                   &12:00 m. - 1:00 p.m.&1:00 p.m. - 7:00 p.m.\\
+    \hline  
+    24 Hilton Cross Rd &12:00 m. - 1:00 p.m. &7:00 a.m. - 12:00 m.\\
+                       &5:00 p.m. - 6:00 p.m. &1:00 p.m. - 7:00 p.m.\\
+    \hline
+    22 Hanahan 3 &7:00 a.m. - 5:00 p.m. &5:00 p.m. - 6:00 p.m.\\
+                 &6:00 p.m. - 7:00 p.m.&\\
+    \hline
+    20 Hanahan 1 &12:00 m. - 1:00 p.m. &7:00 a.m. - 12:00 m.\\
+                 &2:00 p.m. - 3:00 p.m. &1:00 p.m. - 2:00 p.m.\\
+                 &5:00 p.m. - 6:00 p.m. &3:00 p.m. - 5:00 p.m.\\
+                 &                      &6:00 p.m. - 7:00 p.m.\\
+    \hline
+    \end{tabular}
+    \end{center}
+    \caption{Long Lines in Berkeley County}
+    \label{tab:line}
+\end{table*}
+
+
+
+
 \subsection{Hardware Issues}
 The machines used in South Carolina have experienced frequent potential hardware issues.  For example, the combination of machines in Berkeley County experienced votes cast on a machine when the machine was not calibrated, machines with possible low batteries, and at least one machine that closed early.  Our analysis found that there were seven counties where at least one machine was possibly not calibrated when votes were cast on that machine; these errors spanned 12 different polling locations.  We suggest an election official or technician inspect these machines for possible calibration issues.  We had similar findings when searching for terminals that recorded a "Warning - Terminal Closed Early" event.  There were machines with this warning in seven counties and 13 polling locations.  Terminals should not close before 7 P.M. in South Carolina on election day; for this reason, we recommend that these machines be evaluated for potential problems that would have caused early closure.  When our tool reports machines with possible low batteries, election officials should verify that the machine is working properly and does not need maintenance.  Florence County and Greenville county experienced a number of Internal Power Supply - related events; at least one machine in each precinct had 53 and 63 instances of this event, respectively.  This could be a possible indicator that the battery is running low; therefore, the election officials should take action to ensure all machines work properly in future elections.
 
