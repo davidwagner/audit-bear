@@ -141,9 +141,9 @@ class DateMod:
                         elif start.date() == self.eday:
                             if timeset: 
                                 start = start - diff 
-                                print diff
                                 self.D1.update({temp:(start, end, end-start)})
                             self.valid.update({temp:(start, end, end-start)})
+                        else: print start
                     #Populate D2
                         """
                         Note: I check for invalid opening as well.  This is because
@@ -256,7 +256,7 @@ class DateMod:
     def validParse(self):
         """
         This function takes the dictionary from dateNoms and decides if the 
-        datestamp is beleavable.  Uses pretty simple heuristics but works
+        datestamp is believable.  Uses pretty simple heuristics but works
         well to create a list of valid machines for analysis that monitors
         poll closing times
         """
@@ -267,10 +267,9 @@ class DateMod:
         timeopen = dateutil.parser.parse('07:30:00')
 
         for k,v in self.valid.iteritems():
-            if v[0] == 0:
-                if v[2] > datetime.timedelta(hours=12) and v[0] < timeopen:
-                    d.update({k:v})
-                else: pass
+            if v[2] > datetime.timedelta(hours=12) and v[0] < timeopen:
+                d.update({k:v})
+            else: pass
 
         self.valid = d
         return 
@@ -304,6 +303,7 @@ if __name__== "__main__":
 
 
     dateclass = DateMod(data, dateutil.parser.parse('11/02/2010'))
+    print dateclass.valid.keys()
     count = count(data)
 
     for k,v in dateclass.D1.iteritems():
@@ -312,5 +312,8 @@ if __name__== "__main__":
         print k,v[0], v[1], v[2]
     for k,v in dateclass.D3.iteritems():
         print k,v[0], v[1], v[2]
-    print 'Lengths', len(dateclass.D1), len(dateclass.D2), len(dateclass.D3)
+    for k,v in dateclass.valid.iteritems():
+        print k, v
+    print 'Lengths', len(dateclass.D1), len(dateclass.D2), len(dateclass.D3), len(dateclass.valid)
+
     print 'Count', count, '\n'

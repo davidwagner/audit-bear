@@ -49,7 +49,8 @@ def datesUnset(dateclass, ballotclass):
             r.addTable(t1)
 
         if len(dateclass.D2) != 0:
-            r.addTextBox('<p><b>Table 2: Machines never set correctly</b></p>')
+            r.addTextBox('<p><b>Table 2: Machines never set correctly</b>')
+            r.addTextBox('<i>List of machines that conducted election day voting start to finish with an incorrect clock.</i></p>')
             t2.addHeader('Serial #')
             t2.addHeader('Open Date')
             t2.addHeader('Close Date')
@@ -71,10 +72,10 @@ def dateErrors(dateclass, ballotclass):
     if len(dateclass.D3) == 0:
         r.addTextBox('No date errors found')
     else:
-        r.addTextBox('Description Here')
+        r.addTextBox('List machines with detected date anomalies.  Includes last known "good" event as well as what event was determined to be the error and how many following events it affected.')
         t.addHeader('Machine')
-        t.addHeader('Pre Jump')
-        t.addHeader('Jump Value')
+        t.addHeader('Last Event')
+        t.addHeader('Anomalous Event')
         t.addHeader('Occurances')
         for k,v in dateclass.D3.iteritems():
             t.addRow([k, str(v[0]), str(v[1]), str(v[2])])
