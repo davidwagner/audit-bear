@@ -67,9 +67,7 @@
  %-----------------------------------------------------------
 \newcommand\Authfont{\normalfont}
 \newcommand\Affilfont{\normalfont}
-%\newcommand\Authsep{, }
-\newcommand\Authsep{ }
-\newcommand\Authsepcks{,}
+\newcommand\Authsep{, }
 \newcommand\Authands{, and }
 \newcommand\Authand{ and }
 \newlength{\affilsep}\setlength{\affilsep}{1em}
@@ -94,15 +92,13 @@
 \newcounter{authors}
 \newcounter{affil}
 \newif\ifnewaffil \newaffiltrue
-\newcommand\AB@authnotecks[2]{#2\textsuperscript{\normalfont#1}}
-\newcommand\AB@authnote[1]{,\textsuperscript{\normalfont#1}}
+\newcommand\AB@authnote[1]{\textsuperscript{\normalfont#1}}
 \newcommand\AB@affilnote[1]{\textsuperscript{\normalfont#1}}
 \providecommand\textsuperscript[1]{$^{#1}$}
 \newcommand\AB@blk@and{\protect\Authfont\protect\AB@setsep}
 \newcommand\AB@pand{\protect\and \protect\Authfont \protect\AB@setsep}
 \@namedef{@sep1}{}
-\@namedef{@sepcks1}{,}
-%\@namedef{@sep2}{\Authand}
+\@namedef{@sep2}{\Authand}
 \newcommand\AB@affilsep{\protect\Affilfont}
 \newcommand\AB@affilsepx{\protect\\\protect\Affilfont}
 \newcommand\AB@setsep{\setlength{\@affilsep}{\affilsep}}
@@ -118,8 +114,7 @@
       \if\relax#1\relax\def\AB@note{\AB@thenote}\else\def\AB@note{#1}%
         \setcounter{Maxaffil}{0}\fi
       \ifnum\value{authors}>1\relax
-      \@namedef{@sep\number\c@authors}{\Authsep}%
-      \@namedef{@sepcks\number\c@authors}{\Authsepcks}\fi
+      \@namedef{@sep\number\c@authors}{\Authsep}\fi
       \addtocounter{authors}{1}%
       \begingroup
           \let\protect\@unexpandable@protect \let\and\AB@pand
@@ -140,11 +135,10 @@
          \let\\=\authorcr
          \xdef\AB@authlist{\the\@temptokena
            \protect\@nameuse{@sep\number\c@authors}%
-           \protect\Authfont#2\AB@authnotecks{\AB@note}{\@nameuse{@sepcks\number\c@authors}}}%
+           \protect\Authfont#2\AB@authnote{\AB@note}}%
       \endgroup
       \ifnum\value{authors}>2\relax
-      \@namedef{@sep\number\c@authors}{\Authand}%
-      \@namedef{@sepcks\number\c@authors}{}\fi
+      \@namedef{@sep\number\c@authors}{\Authands}\fi
       \newaffilfalse
 }
 \newcommand\authorcr{\protect\\ \protect\Authfont \protect\AB@setsep}%
