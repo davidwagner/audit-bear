@@ -1,10 +1,63 @@
 \subsection{Votes Possibly Not Counted}
 \subsubsection{PEBs Not Uploaded}
-Currently, the election officials performing the vote tabulation on election night do not have a way to effectively compare the list of PEBs that have been successfully uploaded to the tabulation software with the pool of PEBs containing vote data throughout the county. This can lead to inaccuracies in election results if any PEBs containing vote data are accidentally left out of the tally process. Our tool provides an analysis that generates a list of PEBs used to collect votes on election day. It warns election officials of any PEB, master or non-master, that was used to close a terminal, whose data wast not uploaded to the election reporting system.   The precinct procedures for poll workers dictate that a single PEB should be used to open and close all machines at a polling location. Failure to strictly follow this protocol led to problems in Miami-Dade County during the 2002 Primary election~\cite{Mazella2002}. In that case, poll workers used two or more PEBs to open and close terminals at their precinct.  However, election workers at county headquarters only uploaded one of these PEBs, expecting all machines to be closed with the same PEB. This caused a significant delay in the reporting of election results. A recent study found similar problems in several South Carolina counties~\cite{Buell2011}.
+The precinct procedures for poll workers dictate that a single PEB
+should be used to open and close all machines at a polling
+location. Failure to strictly follow this protocol led to problems in
+Miami-Dade County during the 2002 Primary
+election~\cite{Mazella2002}. In that case, poll workers used two or
+more PEBs to open and close terminals at their precinct.  However,
+election workers at county headquarters only uploaded one of these
+PEBs, expecting all machines to be closed with the same PEB. This
+caused a significant delay in the reporting of election results. A
+recent study found similar problems in several South Carolina
+counties~\cite{Buell2011}.
 
-This analysis is applicable to any voting system that has equivalencies to a PEB and a voting terminal.  It requires an event log, ballot image file, and a system log.  The event log should record the serial number of the PEB used to close the terminal.  It should also record, in chronological order, vote events processed in the voting machine.  The system log file should contain a running log of the serial number of PEBs uploaded to the ERM tabulation system.  The ballot image file should provide a list of terminals used in each precinct.  Our method keeps track of the serial number of the PEB used to close each voting machine. It also records the polling location each voting machine was assigned to as well as the total votes cast in each machine. Then, it verifies that each PEB that was used to close voting machines is uploaded to the ERM vote tally. It reports any PEB containing vote data that has not been added to the cumulative count.  For each such PEB, our analysis reports the serial numbers of the terminals collected by the PEB, the number of votes processed in those terminals and the precinct's name and number. With this information, election officials can gather the missing PEBs and collect votes from terminals not included in the cumulative totals.
+Currently, the election officials performing the vote tabulation on
+election night do not have a way to effectively compare the list of
+PEBs that have been successfully uploaded to the tabulation software
+with the pool of PEBs containing vote data throughout the county. Our
+tool provides an analysis that generates a list of PEBs used to collect
+votes on election day. It warns election officials of any PEB, master
+or non-master, that was used to close a terminal, whose data wast not
+uploaded to the election reporting system.  
+
+This analysis is applicable to any voting system that has components
+equivalent to a PEB and a voting terminal.  It requires an event log
+that records the serial number of the PEB used to close every voting
+machine and the vote events processed in the voting machine, in
+chronological order. It also requires a system log file that records the
+serial number of every PEB uploaded to the ERM tabulation
+system. Finally, a log providing a list of terminals used in each
+precinct is also required.
+
+Our method keeps track of the serial number of the PEB used to close each voting machine. It also records the polling location each voting machine was assigned to as well as the total votes cast in each machine. Then, it verifies that each PEB that was used to close voting machines is uploaded to the ERM vote tally. It reports any PEB containing vote data that has not been added to the cumulative count.  For each such PEB, our analysis reports the serial numbers of the terminals collected by the PEB, the number of votes processed in those terminals and the precinct's name and number. With this information, election officials can gather the missing PEBs and collect votes from terminals not included in the cumulative totals.
 
 \subsubsection{Machines Not Closed}
-There are two main pieces of the election system that need to be analyzed to determine if votes were left out of the count.  We have discussed the first essential piece: the PEB.  The second piece of the election system that must be taken into account is the voting machine itself.   We have devised a way to determine which machines have not been closed for voting.  If a machine is not closed, then a PEB has not collected this terminal's data; our algorithm will help detect this situation where some votes were not counted.  
+There are two main pieces of the election system that need to be
+analyzed to determine if votes were left out of the count.  We have
+discussed the first essential piece: the PEB.  The second piece of the
+election system that must be taken into account is the voting machine
+itself.   We have devised a way to determine which machines have not
+been closed for voting.  If a machine is not closed, then a PEB has
+not collected its data and its votes can not be counted; our algorithm
+will  detect this situation.   
 
-This analysis uses the event log and the ballot image file to provide feedback; the event log should have the ability to record events marking the opening and closing of each voting machine.  The ballot image file allows us to identify which machines were at each polling location.  We created a method that checks if a machine was closed, given it was also opened for voting.  Our analysis searches through the event log for machines that were opened; these machines are stored in a data structure.  Next, we check that every machine in the data structure also recorded an event representing its closure.  If there are any machines that have been opened and not closed, they are displayed to the election official.  These inconsistencies are only detected if the machines are closed when the CF card is still in the machine and the complete audit data, including the closure event, is saved to the CF card.  If the audit data is not complete, we cannot determine whether a machine was closed or not.  There may be other cases that are undetectable by our analysis because a machine's audit data will not be in the event log or ballot image file if it has not been closed in the normal circumstances or the CF card was never uploaded to the ERM. 
+This analysis requires an event log with recorded events marking the
+opening and closing of each voting machine. It also requires a log
+file that allows us to identify which machines were at each polling
+location. In our analysis we use the event log and the ballot image
+file for this information. We created a method that checks if a
+machine was closed, given it was also opened for voting.  Our analysis
+searches through the event log for machines that were opened; these
+machines are stored in a data structure.  Next, we check that every
+machine in the data structure also recorded an event representing its
+closure.  If there are any machines that have been opened and not
+closed, they are displayed to the election official.  These
+inconsistencies are only detected if the machines are closed when the
+CF card is still in the machine and the complete audit data, including
+the closure event, is saved to the CF card.  If the audit data is not
+complete, we cannot determine whether a machine was closed or not.
+There may be other cases that are undetectable by our analysis because
+a machine's audit data will not be in the event log or ballot image
+file if it has not been closed in the normal circumstances or the CF
+card was never uploaded to the ERM.  
