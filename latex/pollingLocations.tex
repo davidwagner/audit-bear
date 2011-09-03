@@ -34,4 +34,30 @@ resource allocation for future elections.
 
 This analysis reports busy locations by detecting heavily used voting terminals. It requires an event log that captures every vote cast event along with an accurate time stamp and precinct location information. In our analysis we find this information in the event log and the ballot image file. When there are consecutive ballots cast in all machines in a polling location with no time delay in between, we are able to infer that there is a steady flow of voters and possibly a line of voters waiting to use the voting machines. 
 
-However, the analysis is not quite so straightforward. The event logs we used captured the \textquotedblleft cast vote'' event, but that only tells us when the voter finished making their selection. In order to know if there is any idle time between voters, we would also need an event that notes when a new ballot is loaded into a machine. The idle time would be the time between one \textquotedblleft cast vote'' event and the next \textquotedblleft ballot loaded'' event. Unfortunately our logs have no such \textquotedblleft ballot loaded'' event. Instead, we had to infer the idle time. We did this by focusing on the polling locations which stayed opened after poll closing time as we could conclude they were busy processing the voters standing in line at that time and the time between cast vote events includes no idle time. For those locations, we measure the time it took voters to cast ballots during the extended poll hours. We also calculate and keep track of the time per ballot cast during regular poll hours. Using the Kolmogorov- Smirnov statistical test we can determine whether the distribution of time between vote cast events during regular poll hours, in one-hour time windows, matches the distribution of time between vote cast events during the extended poll hours. If the distribution of the two samples is consistent, we can infer the possibility of long lines during the particular one-hour time period. \footnote{The KS test starts with the null hypothesis that the two samples come from the same distribution, which is the situation we are interested in identifying. Therefore, the most we can say is the case that the null hypothesis cannot be rejected, we cannot reject the possibility that there were long lines between a particular time window.}
+However, the analysis is not quite so straightforward. The event logs
+we used captured the \textquotedblleft cast vote'' event, but that
+only tells us when the voter finished making their selection. In order
+to know if there is any idle time between voters, we would also need
+an event that notes when a new ballot is loaded into a machine. The
+idle time would be the time between one \textquotedblleft cast vote''
+event and the next \textquotedblleft ballot loaded''
+event. Unfortunately our logs have no such \textquotedblleft ballot
+loaded'' event. Instead, we had to infer the idle time. We did this by
+focusing on the polling locations which stayed opened after poll
+closing time as we could conclude they were busy processing the voters
+standing in line at that time and the time between cast vote events
+includes no idle time. For those locations, we measure the time it
+took voters to cast ballots during the extended poll hours. We also
+calculate and keep track of the time per ballot cast during regular
+poll hours. Using the Kolmogorov- Smirnov statistical test we can
+determine whether the distribution of time between vote cast events
+during regular poll hours, in one-hour time windows, matches the
+distribution of time between vote cast events during the extended poll
+hours. If the distribution of the two samples is consistent, we can
+infer the possibility of long lines during the particular one-hour
+time period. \footnote{The KS test starts with the null hypothesis
+  that the two samples come from the same distribution, which is the
+  situation we are interested in identifying. Therefore, the most we
+  can say in the case that the null hypothesis cannot be rejected is, we
+  cannot reject the possibility that there were long lines between a
+  particular time window.} 
