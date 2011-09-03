@@ -4,7 +4,33 @@ Next we describe ways to identify machines that have hardware problems, such as 
 \subsubsection{Calibration Errors}
 The first of these analyses detects machines with recurring calibration errors and machines that had recorded votes while possibly not calibrated.  In the case of a machine having ballots cast when it is not calibrated, it may not have correctly captured the voter's intent; if the calibration is inaccurate, a voter may think they are voting for candidate X, but the machine may record a vote for candidate Y.  The importance lies not only in the fact that voters' intents may not be recorded, but also in the possibility that this error may not issue a warning to the voter when it happens.    
 
-To run this analysis, the event log needs to record a collection of events; these events include: a machine's screen is not calibrated or the screen cannot be read; a screen is calibrated by a technician; and a vote is cast.  In addition, it is not sufficient to have chronologically ordered events in the log; it is essential that the events in the event log have accurate date and time stamps.  Our analysis may need to use the system log to determine what the date of election day is because our analysis does not track calibration issues before election day.  To find the polling location of the machines used, the ballot images file should be supplied.  We detect these calibration errors by finding votes cast after a machine recorded a bad calibration event and before the screen has been \textquotedblleft recalibrated.\textquotedblright \hspace{2 mm}  Our algorithm creates a data structure that keeps track of the machines that recorded \textquotedblleft Warning - cannot read terminal screen.\textquotedblright \hspace{2 mm}Next, it checks whether the technicians calibrated it before or after a vote was cast; it does this by searching for either \textquotedblleft Vote cast by voter, \textquotedblright \hspace{1 mm} \textquotedblleft Vote cast by poll worker, \textquotedblright \hspace{1 mm} or \textquotedblleft Terminal touch-screen recalibrated.\textquotedblright \hspace{2 mm} If either of the first two events listed occur before the recalibration event, then the machine is reported to the election official, as this means there was at least one vote cast when the machine's screen may not have been calibrated.  
+To run this analysis, the event log needs to record a collection of
+events; these events include: a machine's screen is not calibrated or
+the screen cannot be read, a screen is calibrated by a technician, and
+a vote is cast.  In addition, it is not sufficient to have
+chronologically ordered events in the log; it is essential that the
+events in the event log have accurate date and time stamps.  Our
+analysis may need to use the system log to determine the date of
+election day because our analysis does not track calibration issues
+that occur before election day.  To find the polling location of the
+machines used, the ballot images file should also be supplied.  
+
+We detect the calibration errors by finding votes cast after a machine
+recorded a bad calibration event and before the screen has been
+\textquotedblleft recalibrated.\textquotedblright \hspace{2 mm}  Our
+algorithm creates a data structure that keeps track of the machines
+that recorded \textquotedblleft Warning - cannot read terminal
+screen.\textquotedblright \hspace{2 mm}Next, it checks whether the
+technicians calibrated it before or after a vote was cast; it does
+this by searching for either \textquotedblleft Vote cast by voter,
+\textquotedblright \hspace{1 mm} \textquotedblleft Vote cast by poll
+worker, \textquotedblright \hspace{1 mm} or \textquotedblleft Terminal
+touch-screen recalibrated.\textquotedblright \hspace{2 mm} If either
+of the first two events listed occur before the recalibration event,
+then the machine is reported to the election official, as this means
+there was at least one vote cast when the machine's screen may not
+have been calibrated.  
+
 
 \subsubsection{Power Supply Errors}
 The second analysis regarding hardware problems looks for machines with possible power supply issues.  We report machines that experience a higher-than-average number of events related to the Internal Power Supply. One possibility is that these machines have a low battery supply, which could lead to an automatic shutdown.  If a machine shuts down because it no longer has enough power to continue working, the polling location will have fewer machines.  In the case where a polling location has limited resources, it is more likely that there will be long lines of voters waiting to vote; some may leave without voting.  
@@ -14,7 +40,20 @@ In order to run this analysis, the event log must contain events related to powe
 \subsubsection{Machines that Closed Early}
 We have also developed a way to detect machines that have closed early. A machine will not shut down before poll closing time unless it is explicitly closed by a technician or a properly trained poll worker. If a machine is closed in this manner during election day, there may be something wrong with it preventing its normal operation.
                   
-Event logs that record dates and times accurately, as well as events that mark a machine being closed for voting, are necessary for this analysis. Also, it is essential to know the official time when polls open and close. To help officials take corrective action, we need the ballot image file to determine the location of the possibly problematic machines.  If this data is known, then this analysis can be performed. By using this analysis, we can identify machines that have at least one recorded instance of this event closing prior to the poll closing time. The event we search for indicates that a machine was closed early; in the case of the iVotronic it is called: \textquotedblleft Warning -- Terminal Closed Early.\textquotedblright \hspace{2 mm} This analysis goes through all of the events on each machine on election day and searches for this event. If an occurrence is found between official poll opening and official poll closing times, the analysis reports the machine that recorded it to indicate a machine that closed early.  
+Event logs that record dates and times accurately, as well as events
+that mark a machine being closed for voting, are necessary for this
+analysis. Also, it is essential to know the official time when polls
+open and close. To help officials take corrective action, we need the
+ballot image file to determine the location of the possibly
+problematic machines. The event we search for indicates that a machine
+was closed early; in the case of the iVotronic it is called:
+\textquotedblleft Warning -- Terminal Closed
+Early.\textquotedblright \hspace{2 mm} This analysis goes through all
+of the events on each machine on election day and searches for this
+event. If an occurrence is found between official poll opening and
+official poll closing times, the analysis reports the machine that
+recorded it to indicate a machine that closed early.  
+
         
 \subsubsection{Anomalous Warnings}
 There may be events in the event log that would raise a red flag for election officials. This analysis will report machines that have recorded at least one of these events. The machines that experience these events should be inspected for possible hardware issues; the warning events may indicate an equipment failure or other problem that should be corrected.
