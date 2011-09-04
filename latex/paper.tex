@@ -1,0 +1,85 @@
+\documentclass[letterpaper,twocolumn,10pt]{article}
+
+
+\usepackage[english]{babel}
+\usepackage{ifpdf}
+\usepackage{subfigure}
+\usepackage{epsfig}
+\usepackage{graphicx}
+\usepackage{usenix,authblk}
+\renewcommand\Affilfont{\itshape\small}
+\usepackage{graphicx}
+\usepackage{url}
+\usepackage{multirow}
+\usepackage[toc,page]{appendix}
+
+\newcommand\cks[1]{\emph{CKS: #1}}
+
+\makeatletter
+\newcommand\appendix@section[1]{%
+  \refstepcounter{section}%
+  \orig@section*{Appendix \@Alph\c@section: #1}%
+  \addcontentsline{toc}{section}{Appendix \@Alph\c@section: #1}%
+}
+\let\orig@section\section
+\g@addto@macro\appendix{\let\section\appendix@section}
+\makeatother
+
+% Hi Everyone, we can start with this template Cynthia gave us and go from here
+% The comment feature is great for annotating text, use it!
+% pdflatex should compile this just fine for now
+
+% This file will be the main file, I just splitted the sections in different latex files, so we can modify any section in an easy and simple way. I joined all the sections in the paper using the \input{filename} command.
+\begin{document}
+\setlength{\parskip}{0pt}
+
+\title{Automated Election Auditing of DRE Audit Logs}
+\author[1]{Patrick Baxter}
+\author[2]{Anne Edmundson}
+\author[3]{Keishla Ortiz}
+\author[4]{Ana Maria Quevedo}
+\author[5]{Samuel Rodr\'{i}guez}
+\author[6]{\\Cynthia Sturton}
+\author[6]{David Wagner}
+
+\affil[1]{Clemson University}
+\affil[2]{Cornell University}
+\affil[3]{University of Puerto Rico-Arecibo}
+\affil[4]{Miami Dade College}
+\affil[5]{University of Puerto Rico-Mayag\"uez}
+\affil[6]{University of California-Berkeley}
+
+% Add additional authors:
+% \and Author n
+\maketitle
+
+%Abstract
+\input{abstract.tex}
+%Introduction section
+\input{introduction.tex}
+%Background section
+\input{background.tex}
+%Analyses section
+\input{analyses.tex}
+%Implementation section
+\input{implementation.tex}
+%Results section
+\input{results.tex}
+% Future Voting System Suggestions
+\input{fvss.tex}
+% Related Work section
+\input{related_work.tex}
+%Conclusion
+\input{conclusion.tex}
+%Acknowledgements section
+\input{acknow.tex}
+
+%This tells latex to use our .bib file
+\bibliographystyle{plain}
+{\footnotesize
+\bibliography{paper}}
+
+%Appendix section
+\input{appendix.tex}
+
+\end{document}
