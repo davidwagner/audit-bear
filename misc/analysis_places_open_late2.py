@@ -11,8 +11,8 @@ def open_late(parsedLog, parsedBallotImage, validMachines):
     dic2 = {}
     
     for line in parsedLog:
-        if not line[0] in validMachines:
-            continue        
+        #if not line[0] in validMachines:
+            #continue        
         if not line[0] in dic:
             dic[line[0]] = []
             dic2[line[0]] = ""
