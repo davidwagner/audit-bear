@@ -143,7 +143,7 @@ class DateMod:
                                 start = start - diff 
                                 self.D1.update({temp:(start, end, end-start)})
                             self.valid.update({temp:(start, end, end-start)})
-                        else: print start
+                        else: pass 
                     #Populate D2
                         """
                         Note: I check for invalid opening as well.  This is because
@@ -303,7 +303,6 @@ if __name__== "__main__":
 
 
     dateclass = DateMod(data, dateutil.parser.parse('11/02/2010'))
-    print dateclass.valid.keys()
     count = count(data)
 
     for k,v in dateclass.D1.iteritems():
@@ -312,8 +311,6 @@ if __name__== "__main__":
         print k,v[0], v[1], v[2]
     for k,v in dateclass.D3.iteritems():
         print k,v[0], v[1], v[2]
-    for k,v in dateclass.valid.iteritems():
-        print k, v
     print 'Lengths', len(dateclass.D1), len(dateclass.D2), len(dateclass.D3), len(dateclass.valid)
 
     print 'Count', count, '\n'

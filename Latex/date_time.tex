@@ -13,15 +13,17 @@ This report identifies any machine determined to open for election day voting wi
 
 The first table identified machines that had their clocks adjusted during election day voting. This caught machines that were only off by a couple hours as well as machines opening on election day with completlely incorrect dates.  Machines whose clock is only incorrect by a couple hours are difficult to identify because opening and closing times are not a consistant point of reference. Because of this ambiguity, only machines who were manually adjusted during election day were marked. The algorithm looked for a manual time adjustment event for any machine that was in an open state during election day.  If the machine then closed successfully on election day, the delta of the time change is recorded. This time delta can be used to correctly adjust the recorded opening time of the machine.
 
-Figure~/ref{fig:Georgetown} shows an example of a 1 hour time change for the Georgetown county.  This county had 125 out of 140 machines adjusted nearly exactly one hour back in time.  This is presumably because the wrong DST algorithm was in use as mentioned in previous audits.~/cite{Buell2011}
-\begin{figure}[h!]
-  \caption{Resetting an iVotronic clock by one hour in Georgetown County}
-  \label{fig:Georgetown}
-  \centering
-    \includegraphics[width=0.5\textwidth]{datefig1.png}
-\end{figure}
-
-The second table found machines that opened on incorrect dates for voting but never had their clocks corrected.  In the first table clocks that were only slightly off were detected because someone changed the date during elections.  These small changes couldn't be detected if there wasn't an obvious manual adjustment. This table detected errors by looking for completely unprobable dates. This means dates a month or so before election day and any dates one or more days after election day.
+The second table found machines that opened on incorrect dates for
+voting but never had their clocks corrected. In the first table, clocks
+that were only slightly off were detected only because someone changed
+the date during elections.  These small changes couldn't be detected if
+there wasn't an obvious manual adjustment. To detected machines whose
+clock was never corrected a threshold was determined to mark machines
+opening and closing on incorrect dates. Dates a month before
+election day and any dates one or more days after election day were
+considered incorrect.  Based on the data set used this appeared to yeild
+only machines that indeed went through election day voting with an
+incorrect clock.
 
 \subsubsection{Datetime Errors}
 The second report identifies anomalies in the time stamps that aren't a result of human error. We found many dates that changed seemingly at random and without a manual date adjustment event. These occurrences suggest an issue with the machine itself rather then procedural error. The cause of these errors remain unknown and have the potential to invalidate other audit statistics. It is concerning that these set values can change arbitrarily. Reporting these anomalies may assist offcials in determining which machines are experiancing errors to potentially report to the DRE vendor.

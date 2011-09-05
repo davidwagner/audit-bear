@@ -94,7 +94,7 @@ identify each election.
  
 The event log (EL152.lst) contains audit log entries from each
 iVotronic terminal used in the election.  The log  records, in
-chronological order, all events that occurred on that machine in the
+chronological order, all events that occurred on that machine during the
 election. It typically begins at election headquarters, before the
 election, with a \textquotedblleft clear and
 test\textquotedblright \hspace{1 mm} of the terminal to delete
@@ -106,23 +106,21 @@ the event that occurred and a description of the event. An excerpt of
 an event log is given in  Appendix~\ref{app:el}. 
  
 The ballot image file (EL155.lst) contains all ballot images saved by
-the iVotronic terminals during the voting process. An ES\&S ballot
-image is a list of all choices made by a single voter (i.e., a cast
-vote record); it is not a scanned or photographic image. The ballot
-images are segregated by precinct and terminal where the votes were
-cast. The ballots are saved in a random order to protect the privacy
-of the voter.  An excerpt of a ballot image file is given in
-Appendix~\ref{app:bi}
+the iVotronic terminals during the voting process. An ES\&S ballot image
+is a list of all choices made for each vote cast; it is not a scanned
+or photographic image. The ballot images are segregated by precinct and
+terminal where the votes were cast. The ballots are saved in a random
+order to protect the privacy of the voter.  An excerpt of a ballot image
+file is given in Appendix~\ref{app:bi}
  
-The system log listing file (EL68a.lst) tracks activity in the
-election reporting database since its creation at the election
-headquarters. Its chronological entries reflect the commands executed
-by the operators during  pre-election testing, election night
-reporting, post-election testing and canvassing. It also contains the
-totals accumulated in the various precincts during election night
-reporting, as well as any warnings or errors reported by the reporting
-software during the tabulation process. The system log also tracks the
-uploading of PEBs and CF cards to the election reporting
-database. Manual adjustment of precinct totals are also recorded in
-the system log file. An excerpt of a system log file is given in
-Appendix~\ref{app:sl}. 
+The system log listing file (EL68a.lst) chronologically tracks activity
+in the election reporting database at the election headquarters. Its
+entries reflect the commands executed by the operators during
+pre-election testing, election night reporting, post-election testing
+and canvassing. It also contains the totals accumulated in the various
+precincts during election night reporting, as well as any warnings or
+errors reported by the software during the tabulation process.
+The system log also tracks the uploading of PEBs and CF cards to the
+election reporting database. Manual adjustment of precinct totals are
+also recorded in the system log file. An excerpt of a system log file is
+given in Appendix~\ref{app:sl}. 
