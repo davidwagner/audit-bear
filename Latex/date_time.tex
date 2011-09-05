@@ -18,7 +18,7 @@ not be relevant. The iVotronic data used in development was found to
 occasionally violate these properties so checks were developed to report these
 violations as well.
 
-Emphasis was placed on the accurate identification of date errors rather then
+Emphasis was placed on the accurate identification of date errors rather than
 complete identification. False positives create excessive amounts of data which
 would undermine the usefulness of the analysis. Determining the accuracy of
 time-stamps during a post-election audit can have a lot of ambiguities. If a
@@ -39,17 +39,17 @@ time changes.
 
 \subsubsection{Incorrectly Set Dates}
 This report identifies any machine determined to open for election day voting
-with an incorrect clock.  This means the opening event and possibly all vote
+with an incorrectly clock.  This means the opening event and possibly all vote
 events were recorded with incorrect time-stamps. This can prevent other analyses
 from properly detecting how long the polls stayed open, whether they opened on
-time, or if they experienced long lines. Additionally, It may be useful for an
+time, or if they experienced long lines. Additionally, it may be useful for an
 election official to identify counties or precincts where these errors were
 particularly common so that pre-election testing procedures can be improved.
 There are two tables to categorize the results for this report.
 
 The first table identified machines that had their clocks adjusted during
-election day voting. This caught machines that were only off by a couple hours
-as well as machines opening on election day with completlely incorrect dates.
+election day voting. This identified machines that were only off by a couple hours
+as well as any machines opening on election day with completely incorrect dates.
 Machines whose clock is only incorrect by a couple hours are difficult to
 identify because opening and closing times are not a consistant point of
 reference. Because of this ambiguity, only machines who were manually adjusted
@@ -81,7 +81,7 @@ anomalies may assist offcials in determining which machines are experiancing
 errors to potentially report to the DRE vendor.
 
 Many machines were found to exhibit odd behavior in which a clock would appear
-to temporarily or permantly shift its clock without human adjustment. This
+to temporarily or permanently shift its clock without human adjustment. This
 algorithm identifies these jumps.  In all the cases observed these jumps in
 clock values were significant enough to not be confused as the passing of time
 between two events in the log. 
@@ -89,14 +89,15 @@ between two events in the log.
 Since events are appended in chronological order; any time-stamp that decreases
 chronologically without a manually date adjustment event is wrong and added to
 this category. Forward jumps in time are not necessarily the result of an
-inconsistent time record because a machine can be shut down for weeks between
-events.  Given the relatively short duration of elections, jumps forward in
-time, that are past a certain threshold, can reasonably be considered erroneous.
-The algorithm looked for deltas between time-stamps that jump forward by more
-then 33 days.  Given the date set used, this number seemed to avoid listing
-machines simply not used between the factory setup and election day voting.
-Additionally, some machines were found to have their clock set to some type of
-null state where the clock stopped incrementing and marked blank dates. 
+inconsistent time record; a machine can be shut down in a hibernation state for
+weeks between events. Given the relatively short duration of elections, jumps
+forward in time, that are past a certain threshold, can reasonably be considered
+erroneous. The algorithm looked for deltas between time-stamps that jump
+forward by more then 33 days. Given the date set used, this number seemed to
+avoid listing machines simply not used between the factory setup and election
+day voting. Additionally, some machines were found to have their clock set to
+some type of null state where the clock stopped incrementing and marked blank
+dates. 
 
 Once one of these odd changes in clock value is detected, the previous
 time-stamp is marked as the start and a counter increments on each subsequent
