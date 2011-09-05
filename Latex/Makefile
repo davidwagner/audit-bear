@@ -1,0 +1,17 @@
+# Makefile for latex paper (conference)
+
+all: paper2.pdf paper.pdf
+
+paper2.pdf paper.pdf: paper2.tex paper2.bib abstract.tex abstract2.tex introduction.tex background.tex analyses.tex implementation.tex results.tex fvss.tex related_work.tex conclusion.tex acknow.tex 
+	pdflatex paper2.tex
+	bibtex paper2
+	pdflatex paper2.tex
+	pdflatex paper2.tex
+	pdflatex paper.tex
+	bibtex paper
+	pdflatex paper.tex
+	pdflatex paper.tex
+
+clean:
+	rm -rf paper2.aux paper2.bbl paper2.blg paper2.log paper2.pdf paper.aux paper.bbl paper.blg paper.log paper.pdf
+

@@ -1,0 +1,80 @@
+\section{Introduction}
+
+A DRE is a type of electronic voting machine in which the
+voter interacts directly with the machine, typically through a touch
+screen. DREs provide a friendly interface to assist the voter with the
+ballot marking process. Similar to the commonly used optical scan
+systems, DRE units can reduce overvoting and undervoting. Uniquely,
+DRE machines can issue electronic ballots on demand; running out of
+paper ballots is no longer an issue. Additionally, audio DREs can
+assist visually impaired voters.
+ 
+Federal standards require that electronic voting machines generate
+detailed audit logs, which can be used during post-election
+audits. These logs record events as they occur on the voting machine 
+such as opening the machine for voting, casting a vote or closing the
+machine at the end of election day. The log data may also include a
+record of every ballot cast in the voting machine.  Previous work has
+shown how these logs can be analyzed to uncover procedural errors and
+anomalies that occur during the election\cite{Buell2011}.
+Unfortunately, manual analysis of raw log data is usually cumbersome
+and time consuming, making county-wide post-election analysis
+impractical and prone to human error. Therefore, at the present time,
+election officials do not regularly perform these types of analyses. 
+
+We aim to make DRE audit log analysis more useful and accessible to
+both election officials and other interested parties. In this work, we
+develop new methods to analyze these audit logs for the detection of
+both procedural errors and system deficiencies. We created a public
+web application that applies our methods to detect procedural errors
+and system deficiencies.  Election officials can use our tool to
+identify memory cartridges containing precinct totals that were not
+uploaded on election night, machines that may have experienced
+hardware problems during the election, and polling locations that
+closed late or had voters waiting in line for extended periods.
+ 
+Our research builds on a similar study that was conducted with DRE audit data collected by fourteen South Carolina counties during the 2010 primary and general elections.  The authors of that study were able to determine, solely by analyzing the audit logs, that 1127 votes did not get included in the official certified tally in Richland County, South Carolina~\cite{Buell2011}. These findings were possible because DRE systems used in South Carolina produce three different types of audit logs, each capturing slightly different information. By cross checking the logs against each other, the authors found inconsistencies that enabled them to uncover the missing votes. In our research we used the same data set as a basis for development of our software. First, we replicated the detection of votes not uploaded. We took this matter further and found fifteen memory devices containing votes that were not uploaded to the tabulation systems from seven counties during the 2010 General election. These memory devices tallied 2082 total votes. Without additional information we could not verify if alternate procedures were used to add these missing votes to the aggregated totals. 
+
+We implement these methods for the ES\&S iVotronic DRE as the 2010 South
+Carolina data was already publically available through a previous
+Freedom of Information Act request and the iVotronic was used in that election. \cks{Is this true? I changed the wording, but I'm not actually sure
+  how the data was made available.} The iVotronic system is a
+standalone, portable, touchscreen system that records vote totals,
+ballot images and an event log on internal flash 
+memory. The event log records, in chronological order, the system
+events including unit configuration, polls opened, votes cast, polls
+closed, calibration or battery issues, and system errors or warnings. 
+iVotronic voting machines represent one of the most widely deployed
+DREs in the U.S. In 2010, 422 jurisdictions tallying more than 22
+million registered voters used this system [cite exact page of
+  verifiedvoting.org]. However, our methods for analysis of audit logs
+are applicable to all DRE voting systems  that produce the necessary
+audit logs.  
+
+A brief description of several problems we detect follows.
+
+\textbf{Votes not uploaded.} We detect  memory cartridges used to close voting machines that have not had their vote data uploaded to the tabulation system. This situation, if not corrected, can result in votes left out of the official results.
+
+\textbf{Machines not closed.} We detect voting machines that were not
+closed for voting at the polling location. Failure to close a machine
+on election night may result in its votes being left out of the
+certified count.
+
+\textbf{Missing terminals from the audit database.} This analysis
+identifies voting machines used during the election whose event log or
+ballot images have not been uploaded to the election reporting
+software. Complete DRE ballot images and event logs will allow for
+more accurate post-election audits. 
+
+\textbf{Polling location related analyses.} Our tool provides a series of analyses related to polling location activity. We identify locations that stayed open late as well as locations that may have experienced long lines during the day. This information can help county officials to identify locations that may need additional resources in the future. 
+
+\textbf{DRE voting machine configuration and hardware problems.} Our tool performs several analyses that can identify  voting machines that may need testing, repair or reconfiguration. These analyses include identifying possible calibration issues, machines with potential power supply issues, machines that were forced to close early, and machines with incorrect date and time settings.
+
+\textbf{Poll worker training related issues.} We also identify incorrect procedures at the precincts such as using the wrong cartridge to close the voting machines in a precinct, forgetting to print the precinct's zero tape or activating ballots with the incorrect cartridge. Election officials may be able to use this information to improve poll worker training and minimize recurrences in the future.
+
+In this work we assume that DRE audit logs are complete, accurate,  trustworthy, and free of accidental or malicious tampering. Detecting and preventing audit log tampering is outside of the scope of this work.
+
+In summary, this paper develops and implements new ways that audit log data can be used meaningfully and in an automated fashion to enhance the accuracy and efficiency of elections. We believe our tool will provide useful feedback to election administrators during the canvassing process. We hope that this study illustrates the potential value of voting systems' audit logs and motivates future election technologies to provide enhanced support for these purposes.
+
+
+
