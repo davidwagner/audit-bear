@@ -1,0 +1,15 @@
+\section{Future Voting System Suggestions}
+Voting systems audit logs need to be readable, orderly and their message should be  comprehensible to the public. Ambiguous or obscure messages will make audit logs unusable to election officials and advocacy groups. During the course of this study we sometimes struggled to understand audit log messages that were vague and possibly concerning. We believe that the following recommendations will make audit files more usable.
+
+\textbf{Vendors should document the meaning of all events.} Explanations of the different events that occur in the voting systems need to be more descriptive.  We found audit logs with the following event messages that were questionable, however we could not determine the gravity of the issue.
+\begin{itemize}
+	\item \textquotedblleft UNKNOWN\textquotedblright
+	\item \textquotedblleft Warning - PEB I/O flag set\textquotedblright
+	\item \textquotedblleft Warning - I/O flagged PEB will be used\textquotedblright
+\end{itemize}
+
+\textbf{Accuracy of date and time logging needs improvement.} Some voting systems allow for system settings to be performed by election workers and therefore are prone to human error. Time and date setting is one of the voting machine parameters that is usually adjusted manually at election central in preparation for precinct deployment. When the time of the machine setting is incorrect, the accuracy of audit logs is questionable making it impossible to recreate election day events. Audit logs are ground truth for election disputes; their accuracy is key.
+
+\textbf{Make system manuals available to the public.} Voting machine audit logs are public information. The general public can request them under the Freedom of Information (FOI) Act. In the same fashion, voting system manuals should be freely available so that the public can interpret the logs. 
+
+\textbf{Some events are not currently logged, but they should be.} We believe that important events can be added to the voting machine event logs. An event that records the time a ballot is activated can be very useful for future analyses; it could be used to determine the time it takes to cast each ballot, which can assist with important precinct statistics.

@@ -1,0 +1,128 @@
+\section{Background}
+\label{sec:background}
+\subsection{Introduction to the iVotronic DRE}
+A brief description of the iVotronic's functionality and its main
+system components follows. 
+
+\begin{itemize} 
+\item \textbf{Voting terminal.} The voting terminal is a stand-alone
+  touchscreen voting unit.  The terminal is equipped with an internal
+  battery, which keeps the unit operational in the event of a power
+  failure, and a removable compact flash card, which is used to store
+  audit data and ballot images (cast vote records). Typically, each
+  polling location is assigned several iVotronic machines. Also, to
+  comply with the federal American with Disabilities Act, at least one
+  audio terminal is placed in each precinct to assist disabled
+  voters. 
+
+\item \textbf{Personalized Electronic Ballot (PEB).} The PEB is a
+  proprietary cartridge designed by ES\&S to operate the iVotronic
+  terminal.  When the PEB is placed in the machine, the terminal and
+  the PEB can communicate through an infrared port.  Typically,
+  counties deploy two types of PEBs to the precinct: a) a master PEB
+  and b) an activator PEB. Both types of PEBs have the same
+  functionality, however, poll workers are trained to keep them
+  separate and use them for different purposes. 
+    \begin{itemize}
+    \item \textbf{Master PEB.}  Poll workers use the master PEB to
+      open polls on election day. When the PEB is placed in the
+      terminal, the touchscreen displays the precinct's name
+      programmed in the PEB so that poll workers can verify the
+      polling location information and date/time registered in the
+      terminal's internal clock. If the information displayed is
+      correct, the poll workers open the terminal for voting. The same
+      master PEB should be used to open all terminals in the polling
+      location. In the same fashion, the master PEB should be used to
+      close all terminals in the polling location at the end of the
+      voting day. When a terminal is closed, it uploads its vote
+      totals onto the PEB inserted into it. When the master PEB is
+      used to close all terminals, this PEB accumulates the precinct
+      totals so that they can later be uploaded and included in the
+      official tally. 
+    \item \textbf{Activator PEBs.}  Activator PEBs are used by  poll
+      workers to activate ballots for voters. Election officials
+      provide each precinct with multiple activator PEBs.  
+    \end{itemize}
+\end{itemize}
+Internally, all PEBs at the precinct are identical. The only
+difference between them is the color of the rubber band on their
+exterior. Thus, a master PEB can be used to activate a voter's ballot
+and an activator PEB can be used to open and close terminals. Though
+as a matter of procedure and training, they should not be used this
+way. If an activator PEB is used to close terminals, the precinct vote
+totals may be only partially uploaded to the aggregated totals on
+election night. Poll workers are trained so that they put the master
+PEB, CF cards and precinct's totals tapes in a designated bag that is
+transported to Election Central after polls close.  Activator PEBs
+used to close terminals may be left behind and their vote data not
+added to the certified count.
+\begin{itemize}
+\item \textbf{Removable Compact Flash (CF) card.} The CF cards are
+  programmed at Election Central and installed in the back of the
+  voting terminal prior to deployment at the polling location. The CF
+  cards contain graphic (bitmap) files read by the voting terminal
+  during the voting process. The CF cards are also used as an external
+  memory device: audit log entries and ballot images are written to
+  the CF card when the terminal is closed for voting. Once the polls
+  close, the CF cards are removed from the back of the terminal and
+  delivered to election headquarters on election night.  
+
+\item \textbf{External printer module.} This module is connected to a
+  serial port on the back of the voting terminal. The thermal printer
+  produces the precinct zero tape and results tape. Poll workers are
+  instructed to print the zero tape once all iVotronics of the polling
+  location are opened for voting. In the same fashion, they are
+  trained to print the results tape when all voting terminals are
+  closed on election night. 
+\end{itemize}
+
+\subsection{iVotronic Audit}
+The ES\&S voting solution produces many log files including the
+Election Reporting Manager (ERM) \textquotedblleft System
+Log\textquotedblright \hspace{1 mm} file, the ERM \textquotedblleft
+Result Correction Log,\textquotedblright \hspace{1 mm} the ERM
+\textquotedblleft Real Time Log,\textquotedblright \hspace{1 mm} the
+iVotronic \textquotedblleft Ballot Image\textquotedblright \hspace{1
+  mm} log and the iVotronic \textquotedblleft Event
+Log.\textquotedblright \hspace{2 mm} We focus on three: the event log
+(EL152.lst), ballot image file (EL155.lst), and the system log
+(EL68a.lst).  The header of these log files identify the county's
+name, the type and date of the election, the date the report was
+generated, and the election ID. The election ID is a parameter
+generated by the ES\&S election programming software to uniquely
+identify each election.  
+ 
+The event log (EL152.lst) contains audit log entries from each
+iVotronic terminal used in the election.  The log  records, in
+chronological order, all events that occurred on that machine in the
+election. It typically begins at election headquarters, before the
+election, with a \textquotedblleft clear and
+test\textquotedblright \hspace{1 mm} of the terminal to delete
+previous election data from the terminal's memory. It also records all
+election day events, including polls open and polls closing and the
+number of ballots cast.  Each event log entry includes the iVotronic's
+terminal serial number, the PEB's serial number, the date and time,
+the event that occurred and a description of the event. An excerpt of
+an event log is given in  Appendix~\ref{app:el}. 
+ 
+The ballot image file (EL155.lst) contains all ballot images saved by
+the iVotronic terminals during the voting process. An ES\&S ballot
+image is a list of all choices made by a single voter (i.e., a cast
+vote record); it is not a scanned or photographic image. The ballot
+images are segregated by precinct and terminal where the votes were
+cast. The ballots are saved in a random order to protect the privacy
+of the voter.  An excerpt of a ballot image file is given in
+Appendix~\ref{app:bi}
+ 
+The system log listing file (EL68a.lst) tracks activity in the
+election reporting database since its creation at the election
+headquarters. Its chronological entries reflect the commands executed
+by the operators during  pre-election testing, election night
+reporting, post-election testing and canvassing. It also contains the
+totals accumulated in the various precincts during election night
+reporting, as well as any warnings or errors reported by the reporting
+software during the tabulation process. The system log also tracks the
+uploading of PEBs and CF cards to the election reporting
+database. Manual adjustment of precinct totals are also recorded in
+the system log file. An excerpt of a system log file is given in
+Appendix~\ref{app:sl}. 
