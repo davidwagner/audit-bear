@@ -321,6 +321,8 @@ class BallotImage:
             votes1 = votes1 + v
         for v2 in machineVotesMap.values():
             votes2 = votes2 + v2
+            
+        self.gvm()
 
         """
         Creates a map from the other maps.  It is of the format <precinct number, [list of machine serial numbers]>.
@@ -335,6 +337,37 @@ class BallotImage:
         self.machinesPerPrecinct = machinesPerPrecinct
 
 
+    def gvm(self):
+        if self.machineVotesMap.has_key('5126321'):
+            print "THE VOTES FOR 5126321 IS %d" % (self.machineVotesMap['5126321'],)
+        if self.machineVotesMap.has_key('5138105'):
+            print "THE VOTES FOR 5138105 IS %d" % (self.machineVotesMap['5138105'],)
+        if self.machineVotesMap.has_key('5129870'):
+            print "THE VOTES FOR 5129870 IS %d" % (self.machineVotesMap['5129870'],)
+        if self.machineVotesMap.has_key('5123670'):
+            print "THE VOTES FOR 5123670 IS %d" % (self.machineVotesMap['5123670'],)
+        if self.machineVotesMap.has_key('5130458'):
+            print "THE VOTES FOR 5130458 IS %d" % (self.machineVotesMap['5130458'],)
+        if self.machineVotesMap.has_key('5123550'):
+            print "THE VOTES FOR 5123550 IS %d" % (self.machineVotesMap['5123550'],)
+        if self.machineVotesMap.has_key('5128106'):
+            print "THE VOTES FOR 5128106 IS %d" % (self.machineVotesMap['5128106'],)
+        if self.machineVotesMap.has_key('5140506'):
+            print "THE VOTES FOR 5140506 IS %d" % (self.machineVotesMap['5140506'],)
+        if self.machineVotesMap.has_key('5132831'):
+            print "THE VOTES FOR 5132831 IS %d" % (self.machineVotesMap['5132831'],)
+        if self.machineVotesMap.has_key('5140365'):
+            print "THE VOTES FOR 5140365 IS %d" % (self.machineVotesMap['5130365'],)
+        if self.machineVotesMap.has_key('5127636'):
+            print "THE VOTES FOR 5127636 IS %d" % (self.machineVotesMap['5127636'],)
+        if self.machineVotesMap.has_key('5121548'):
+            print "THE VOTES FOR 5121548 IS %d" % (self.machineVotesMap['5121548'],)
+        if self.machineVotesMap.has_key('5122516'):
+            print "THE VOTES FOR 5122516 IS %d" % (self.machineVotesMap['5122516'],)
+        if self.machineVotesMap.has_key('5126144'):
+            print "THE VOTES FOR 5126144 IS %d" % (self.machineVotesMap['5126144'],)
+        if self.machineVotesMap.has_key('5137877'):
+            print "THE VOTES FOR 5137877 IS %d" % (self.machineVotesMap['5137877'],)
     """
     Returns the map of the format <machine serial number, precinct number>
     """    
