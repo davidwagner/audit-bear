@@ -1,74 +1,82 @@
-\subsection{Systematic Date and Time Errors}\label{an:date} Correct time-stamps
-are critical in post election audits as they can preclude further log analysis.
-We found it simplest to classify these date errors into two categories: errors
+\subsection{Systematic Date and Time Errors}\label{an:date} Correct
+time-stamps in the audit logs
+are critical in post election audits as any incorrect time-stamps
+could preclude further log analysis. 
+We classify time-stamp errors into two categories: errors
 resulting from incorrectly set clocks and errors resulting from apparent bugs in
-the time-stamp mechanism itself. The algorithm categorizes and generates a list
-of these errors for inclusion in a web report. False positives were avoided by
-testing the algorithm against the iVotronic data-set and tweaking threshold values.
-The algorithm is not specific to these logs but the implementation in this
-project is.
+the time-stamp mechanism itself. Our tool will analyze log files to
+find and report errors of each category type.
 
-This analyses assumes certain properties of the audit logs hold true. Each event
-is marked with a time-stamp based on the machine's internal clock. Each clock is
-manually set.  Any manual adjustments made to the clock are recorded on the
+This analyses requires that each event in the audit log
+is marked with a time-stamp based on the machine's internal clock. If
+the clock can be manually set, we require that any adjustment made to
+the clock is recorded as an event in the
 audit log. Additionally, opening and closing events recorded in the logs proved
-useful to the analysis. This allowed the algorithm to related date and time
-issues with election day voting.  Otherwise, some of the reported errors might
-not be relevant. The iVotronic data used in development was found to
-occasionally violate these properties so checks were developed to report these
-violations as well.
+useful to the analysis. It allowed the analysis to report only those
+errors that occur on election day and to avoid reporting as error
+any inconsistent time-stamps that occur prior to election day and are
+likely the result of pre-election testing or configuration of the
+machines. We developed some checks to report if any of
+the above requirements are not met by the log data.
 
-Emphasis was placed on the accurate identification of date errors rather than
-complete identification. False positives create excessive amounts of data which
-would undermine the usefulness of the analysis. Determining the accuracy of
-time-stamps during a post-election audit can have a lot of ambiguities. If a
-machine has its clocks set an hour back it is difficult to determine if it
-opened early or if its clock is incorrectly set. For these reasons, techniques
-were developed in such as way as to avoid as many false identification of errors
-as possible.
+Often, an analysis of the time-stamps can produce ambiguous
+results. For example, if a machine has its clock set an hour back it
+is difficult to determine, from the log files alone, whether the machine
+was opened early or its clock was incorrectly set. In our analysis, we
+favor accurate identification of date errors over complete
+identification. We want to avoid flooding the user with false or
+ambiguous error reports. For this reason, we developed techniques to
+remove as many ambiguities as possible and report only those
+instances which we can positively identify as errors.
 
-All data was collected by sequentially parsing each time-stamp while looking for
-specific events such as manual time changes or erroneous shifts between
-time-stamps. A machine's open state was tracked by looking at terminal opening
-and closing events. Only the last set of openings and closings were considered
-for each machine. This helped ensure we were looking at election day statistics.
-Early voting was found to be conducted at inconsistant dates among the counties
-and was ignored for accuracy and relative importance of events such as manual
-time changes.
-
+We perform these analyses by sequentially parsing each event in the
+audit log while looking for events marking a manual clock adjustment
+or an erroneous shift between two consecutive time stamps. We explain
+our technique further in the following subsections.
 
 \subsubsection{Incorrectly Set Dates}
-This report identifies any machine determined to open for election day voting
-with an incorrectly clock.  This means the opening event and possibly all vote
-events were recorded with incorrect time-stamps. This can prevent other analyses
+This report identifies any machine that opened for election day voting
+with an incorrectly set clock.  This means the opening event and
+possibly all subsequent vote events were recorded with incorrect
+time-stamps. This error can prevent other analyses
 from properly detecting how long the polls stayed open, whether they opened on
 time, or if they experienced long lines. Additionally, it may be useful for an
 election official to identify counties or precincts where these errors were
 particularly common so that pre-election testing procedures can be improved.
-There are two tables to categorize the results for this report.
+We used two different detection algorithms to identify these errors.
 
-The first table identified machines that had their clocks adjusted during
-election day voting. This identified machines that were only off by a couple hours
-as well as any machines opening on election day with completely incorrect dates.
-Machines whose clock is only incorrect by a couple hours are difficult to
-identify because opening and closing times are not a consistant point of
-reference. Because of this ambiguity, only machines who were manually adjusted
-during election day were marked. The algorithm looked for a manual time
-adjustment event for any machine that was in an open state during election day.
-If the machine then closed successfully on election day, the delta of the time
-change is recorded. This time delta can be used to correctly adjust the recorded
-opening time of the machine.
+The first found machines that opened for voting with wildly incorrect
+dates and times. In this algorithm we looked for any machine which
+opened for election day voting on any date after the official election
+day or any date more than one month prior to election day. This one
+month threshold allowed us to avoid reporting those machines which
+were legitimately opened, possibly for early voting, on a date before
+the official election day. \cks{Patrick, is this the right reason for
+  the one month window? Correct it if I'm wrong.}
 
-The second table found machines that opened on incorrect dates for voting but
-never had their clocks corrected. In the first table, clocks that were only
-slightly off were detected only because someone changed the date during
-elections.  These small changes couldn't be detected if there wasn't an obvious
-manual adjustment. To detected machines whose clock was never corrected a
-threshold was determined to mark machines opening and closing on incorrect
-dates. Dates a month before election day and any dates one or more days after
-election day were considered incorrect.  Based on the data set used this
-appeared to yeild only machines that indeed went through election day voting
-with an incorrect clock.
+The first algorithm found those machines whose date and time were
+off by a large amount, but it will not find machines that have a
+time-stamp that is off by only a small amount, perhaps just an
+hour. To find those machines we used a different technique. Instead of
+looking at the time of opening or closing, we instead looked for
+machines whose time-stamp was manually adjusted at some point while
+the machine was opened for voting. If we saw an event indicating the
+time-stamp was set forward one hour, for example, we could surmise that
+up until that point, the machine's clock had been one hour slow and we
+could retroactively adjust the time-stamps of the earlier events for
+use by our other analyses.
+
+If a machine opens with a clock that is wrong, but by an amount
+smaller than our allowed window of error (one month for slow clocks,
+24 hours for fast clocks), and whose clock is not adjusted at any
+point during election day, our analyses will fail to catch the
+error. We decided on this window size after some trial and error with
+the South Carolina data set we were working with; this size seemed to
+yield the fewest false positives while still returning useful
+results. Possibly, other data sets will require a different
+window. This analysis could reasonably be parametrized to
+allow the user to specify the desired window size if the default does
+not provide useful results.
 
 \subsubsection{Datetime Errors}
 The second report identifies anomalies in the time stamps that aren't a result
