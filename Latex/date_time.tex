@@ -79,41 +79,46 @@ allow the user to specify the desired window size if the default does
 not provide useful results.
 
 \subsubsection{Datetime Errors}
-The second report identifies anomalies in the time stamps that aren't a result
-of human error. We found many dates that changed seemingly at random and without
-a manual date adjustment event. These occurrences suggest an issue with the
-machine itself rather then procedural error. The cause of these errors remain
-unknown and have the potential to invalidate other audit statistics. It is
-concerning that these set values can change arbitrarily. Reporting these
-anomalies may assist offcials in determining which machines are experiancing
-errors to potentially report to the DRE vendor.
+This report identifies anomalies in the time stamps that are not a result
+of human error. In the course of our analysis of the South Carolina
+data set, we found many dates that changed, seemingly at random and without
+a manual date adjustment event. Sometimes these jumps were temporary
+and the clock would jump back to its original time, other jumps
+appeared to be permanent. These occurrences suggest an issue with the
+machine itself rather than a procedural error. The cause of these errors remains
+unknown, but it is concerning that these values can change arbitrarily
+as they have the potential to invalidate other audit analyses.  Reporting these
+anomalies may assist officials in determining which machines require
+inspection by the DRE vendor.
 
-Many machines were found to exhibit odd behavior in which a clock would appear
-to temporarily or permanently shift its clock without human adjustment. This
-algorithm identifies these jumps.  In all the cases observed these jumps in
-clock values were significant enough to not be confused as the passing of time
-between two events in the log. 
-
-Since events are appended in chronological order; any time-stamp that decreases
-chronologically without a manually date adjustment event is wrong and added to
-this category. Forward jumps in time are not necessarily the result of an
+Since events are appended in chronological order, any time-stamp that decreases
+chronologically without a corresponding event indicating a manual
+adjustment took place is an error and is detected by this
+analysis. Forward jumps in time are not necessarily the result of an 
 inconsistent time record; a machine can be shut down in a hibernation state for
-weeks between events. Given the relatively short duration of elections, jumps
+weeks between events. However, given the relatively short duration of elections, jumps
 forward in time, that are past a certain threshold, can reasonably be considered
 erroneous. The algorithm looked for deltas between time-stamps that jump
-forward by more then 33 days. Given the date set used, this number seemed to
-avoid listing machines simply not used between the factory setup and election
-day voting. Additionally, some machines were found to have their clock set to
-some type of null state where the clock stopped incrementing and marked blank
-dates. 
+forward by more then 33 days. With the South Carolina data set we
+analyzed, this threshold seemed to
+avoid including machines that were simply in hibernation between the
+factory setup and election day voting. Additionally, some machines were found to have their clock set to
+a type of null state where the clock stopped incrementing and marked blank
+dates; therefore, our analysis looks for these errors as well.
 
-Once one of these odd changes in clock value is detected, the previous
-time-stamp is marked as the start and a counter increments on each subsequent
-event.  The counter ends and the anomaly is assumed to have ended based on
-criteria for each type of jump. The backward jump is presumed over if an event
+For each error detected, the number of events associated with the error
+is reported, as well as the anomalous date and the machine serial
+number. The number of events associated with an error is the number
+of events in the event log between the point where the anomalous clock
+change occurs and the point where the clock corrects itself, if it ever
+does. If the clock never corrects itself, all subsequent events in the
+log are counted as associated with the error. If the clock
+does correct itself, that is detected as follows. The \emph{start
+event} of the anomaly is the event just prior to the event with the
+anomalous time stamp.
+A backward jump is presumed over if an event
 appears that is chronologically forward in time compared to the start event.
-The forward jump is assumed over if an event appears on the same day of the
+A forward jump is assumed over if an event appears on the same day of the
 starting event.  The zero clock anomaly is detected as returning to normal as
-soon as a non-zero date appears. The number of events associated with an anomaly
-is reported as well as the anomalous date and machine serial number. 
+soon as a non-zero date appears.
 
