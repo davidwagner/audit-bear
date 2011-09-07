@@ -25,11 +25,23 @@
 \usepackage{graphicx}
 \usepackage{subfigure}
 \usepackage{epsfig}
+\usepackage[toc,page]{appendix}
 
 %\usepackage[numbers]{natbib}
 \setcounter{tocdepth}{3}
 
 \usepackage{url}
+
+\makeatletter
+\newcommand\appendix@section[1]{%
+  \refstepcounter{section}%
+  \orig@section*{Appendix \@Alph\c@section: #1}%
+  \addcontentsline{toc}{section}{Appendix \@Alph\c@section: #1}%
+}
+\let\orig@section\section
+\g@addto@macro\appendix{\let\section\appendix@section}
+\makeatother
+
 \newcommand\cks[1]{\emph{CKS: #1}}
 \urldef{\mailsa}\path|{alfred.hofmann, ursula.barth, ingrid.haas, frank.holzwarth,|
 \urldef{\mailsb}\path|anna.kramer, leonie.kunz, christine.reiss, nicole.sator,|
@@ -102,12 +114,6 @@ Tiergartenstr. 17, 69121 Heidelberg, Germany\\
 \bibliography{paper2}
 
 
-\section*{Appendix: Springer-Author Discount}
-LNCS authors are entitled to a 33.3\% discount off all Springer
-publications. Before placing an order, the author should send an email, 
-giving full details of his or her Springer publication,
-to \url{orders-HD-individuals@springer.com} to obtain a so-called token. This token is a
-number, which must be entered when placing an order via the Internet, in
-order to obtain the discount.
+\input{appendix.tex}
 
 \end{document}
