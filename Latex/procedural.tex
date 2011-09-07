@@ -21,6 +21,7 @@ Another procedure that should be avoided is using a master PEB to activate ballo
 This analysis focuses on procedures related to the use of the PEB and the voting machine; it is applicable to other voting systems that use a similar process.  To detect violations of this procedure, the analysis requires that the event log records votes being cast, machines being opened and closed, as well as the PEB number used for each event.  Through this analysis we assign each machine a master PEB, which is the PEB poll workers are trained to open and close the machine with; by doing this, we are assuming that poll workers are following correct procedures.  Then, we check to see if any votes were activated on each machine using the master PEB.  If we find any such cases, we report them.  In the case that poll workers did not follow procedures and a different PEB was used to close the machine than was used to open the machine, our algorithm checks both the opening and closing PEB.  If a ballot was activated with either the closing or opening PEB, then that machine and PEB are reported.  
 
 \subsubsection{Opening and Closing a Machine with Different PEBs}
+\label{sec:opening_closing_diff_pebs}
 Along the same lines, we report incidents of opening and closing a
 machine with different PEBs. A machine should be opened and closed
 with the master PEB; if not, it may be more likely that the non-master
