@@ -2,7 +2,7 @@
 
 all: paper2.pdf paper.pdf
 
-paper2.pdf: paper2.tex paper2.bib abstract.tex abstract2.tex introduction.tex background.tex analyses.tex implementation.tex results.tex fvss.tex related_work.tex conclusion.tex acknow.tex appendix.tex
+paper2.pdf: paper2.tex paper2.bib abstract.tex abstract2.tex introduction.tex background.tex analyses.tex implementation.tex results.tex fvss.tex related_work.tex conclusion.tex acknow.tex appendix2.tex
 	pdflatex paper2.tex
 	bibtex paper2
 	pdflatex paper2.tex
