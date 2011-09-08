@@ -41,7 +41,23 @@ PEBs containing 2082 votes were never uploaded.
 Our tool reported a few instances of machines not being closed.  There was a single machine that wasn't closed in each of the following counties: Greenville County, Horry County, and Sumter County.  
 
 \subsection{Incomplete Audit Data}
-There were a number of counties' audit logs from the South Carolina 2010 elections that showed incomplete data.  Our analysis detected six counties that did not have the same set of machines in both the event log and ballot images file.  Florence County had the most inconsistencies with 65 machines that had votes cast on them according to the event log, but no ballot images.  We also saw cases where there were ballot images for votes cast on machines that did not record any events on the event log.  We also found a couple of very odd situations, such as in Sumter County, where there were two machines that were flagged; one of these machines was in the event log, but not in the ballot image file, and the other machine was in the ballot images, but not in the event log.  In addition to an unusually large amount of missing data, the analysis of Florence county showed machines in both files that did not have the same number of votes cast as ballot images.  If election officials find this error when running an analysis,  they should re-upload the audit data to ensure a set of complete files and therefore, an accurate post-election audit to be conducted.
+There were a number of counties' audit logs from the South Carolina
+2010 elections that showed incomplete data.  Our analysis detected six
+counties that did not have the same set of machines in both the event
+log and ballot images file.  Florence County had the most
+inconsistencies with 65 machines that had votes cast on them according
+to the event log, but no ballot images.  We also saw cases where there
+were ballot images for votes cast on machines that did not record any
+events on the event log.  We also found a couple of very odd
+situations, such as in Sumter County, where there were two machines
+that were flagged; one of these machines was in the event log, but not
+in the ballot image file, and the other machine was in the ballot
+images, but not in the event log.  In addition to an unusually large
+amount of missing data, the analysis of Florence county showed
+machines in both files that did not have the same number of votes cast
+as ballot images.  If election officials find this error when running
+an analysis,  they should re-upload the audit data to ensure a set of
+complete files, allowing an accurate post-election audit to be conducted.
 
 \subsection{Polling Location Related Findings}
 
@@ -56,6 +72,7 @@ Figure~\ref{fig:late} depicts the polling locations that closed late in Berkeley
 
 Table~\ref{tab:line} summarizes the times periods when the Berkeley County polling locations experienced long lines before 7 P.M.  In South Carolina polls close at 7 P.M.
 
+\cks{I think the ``possibly not long lines experienced'' column can be removed.}
 \begin{table*}
     \begin{center}
     \begin{tabular}{| c | p{5cm} | p{4.5cm} |}
@@ -91,24 +108,74 @@ Table~\ref{tab:line} summarizes the times periods when the Berkeley County polli
 
 
 \subsection{Hardware Issues}
-The machines used in South Carolina experienced frequent potential hardware issues.  For example, the combination of machines in Berkeley County experienced votes cast on a machine when the machine was not calibrated, machines with possible low batteries, and at least one machine that closed early.  Our analysis found that there were seven counties where at least one machine was possibly not calibrated when votes were cast on that machine; these errors spanned 12 different polling locations.  We suggest an election official or technician inspect these machines for possible calibration issues.  We had similar findings when searching for terminals that recorded a "Warning - Terminal Closed Early" event.  There were machines with this warning in seven counties and 13 polling locations.  Voting machines should not be closed before 7 P.M. in South Carolina on election day; for this reason, we recommend that these machines be evaluated for potential problems that would have caused early closure.  For machines with power supply issues and possibly low batteries, election officials should verify that the machine is working properly and does not need maintenance.  Florence County and Greenville county experienced a number of Internal Power Supply - related events; at least one machine in each precinct had 53 and 63 instances of this event, respectively.  This could be a possible indicator that the battery is running low; therefore, the election officials should take action to ensure all machines work properly in future elections.
+The machines used in South Carolina experienced frequent potential
+hardware issues.  For example, the machines in Berkeley County
+experienced votes cast on a machine when the machine was not
+calibrated, machines with possible low batteries, and at least one
+machine that closed early.  Our analysis found that there were seven
+counties where at least one machine was possibly not calibrated when
+votes were cast on that machine. These errors spanned 12 different
+polling locations.  We suggest an election official or technician
+inspect these machines for possible calibration issues.  We had
+similar findings when searching for terminals that recorded a "Warning
+- Terminal Closed Early" event.  There were machines with this warning
+in seven counties and 13 polling locations.  Voting machines should
+not be closed before 7 P.M. in South Carolina on election day; for
+this reason, we recommend that these machines be evaluated for
+potential problems that could have caused early closure.  For machines
+with power supply issues and possibly low batteries, election
+officials should verify that the machine is working properly and does
+not need maintenance.  Florence County and Greenville county
+experienced a number of Internal Power Supply - related events; at
+least one machine in each precinct had 53 and 63 instances of this
+event, respectively.  This could be a possible indicator that the
+battery is running low; therefore, the election officials should take
+action to ensure all machines work properly in future elections. 
 
 \subsection{Procedural Errors}
-Our findings reveal the improvements needed for poll worker training.
+Our findings reveal the need for improvements in poll worker training.
 When opening and closing a machine, the same master PEB should be used,
-but in 11 counties there were machines opened and closed with different PEBs.  Our results showed a correlation between this error and certain precincts where poll workers made those mistakes repeatedly.  Colleton County had five instances of this procedural error, but four of those instances took place at one polling location; Walterboro No 4 had machines 5129946, 5133679, 5138439, and 5138563 opened with PEB 155914, but closed with PEB 155925.  This should raise a red flag to the election officials that they may need to emphasize the correct procedure in poll worker training.  When poll workers activate ballots for voters, they should do so with a non-master PEB; we saw two counties that had an unusually high number of violations of this procedure.  Horry County and Richland County had 22 and 32 instances of this violation, respectively.  When election officials see this result, they may wish to revise poll worker training.  Our tool also analyzes the reasons why votes were canceled, which could give insight to procedural errors.  There is likely to be a certain number of vote cancellations due to a number of reasons, but our tool will only report the machines that recorded an abnormally large amount of vote cancellations for a specific reason.  Colleton County had a machine that recorded 12 instances of vote cancellations due to a terminal problem; in this case, we would recommend the officials inspect the machine for potential hardware problems.  A machine in Lexington County experienced an unusually large number of vote cancellations due to a \textquotedblleft wrong ballot;'' this could be the result of many problems.  The machine may have a calibration issue, or there may be a procedural error in that the poll workers are repeatedly selecting the wrong ballot.
+but in 11 counties there were machines opened and closed with
+different PEBs.  Our results showed a correlation between this error
+and certain precincts where poll workers made those mistakes
+repeatedly.  Colleton County had five instances of this procedural
+error, but four of those instances took place at one polling location;
+Walterboro No 4 had machines 5129946, 5133679, 5138439, and 5138563
+opened with PEB 155914, but closed with PEB 155925.  This should raise
+a red flag to the election officials that they may need to emphasize
+the correct procedure in poll worker training.  When poll workers
+activate ballots for voters, they should do so with a non-master PEB;
+we saw two counties that had an unusually high number of violations of
+this procedure.  Horry County and Richland County had 22 and 32
+instances of this violation, respectively.  When election officials
+see this result, they may wish to revise poll worker training.  
+
+Our tool also analyzes the reasons why votes were canceled, which
+could give insight to procedural errors.  There is likely to be a
+certain number of vote cancellations due to a number of reasons, but
+our tool will only report the machines that recorded an abnormally
+large amount of vote cancellations for a specific reason.  Colleton
+County had a machine that recorded 12 instances of vote cancellations
+due to a terminal problem; in this case, we would recommend the
+officials inspect the machine for potential hardware problems.  A
+machine in Lexington County experienced an unusually large number of
+vote cancellations due to a \textquotedblleft wrong ballot.'' This
+could be the result of many problems: the machine may have a
+calibration issue, or there may be a procedural error in that the poll
+workers are repeatedly selecting the wrong ballot.
+
 
 \subsection{Incorrectly Set Dates}
-In the 2010 South Carolina data set, this report found 1465 machines whose date
+In the 2010 South Carolina data set, our report found 1465 machines
+whose date 
 was changed during election day voting out of 4994 machines across 12
-counties. This statistic suggests the widespread usability issues involved in
-having to manually set each machine's date. Thirteen  machines were detected to
+counties. Thirteen  machines were detected to
 have never been set properly by the time the elections concluded.
 
 Figure~\ref{fig:Georgetown} shows an example of a 1 hour time change for the
 Georgetown county.  This county had 125 out of 140 machines adjusted nearly
-exactly one hour back in time.  This is presumably because the wrong DST
-algorithm was in use as mentioned in previous audits.~\cite{Buell2011}
+exactly one hour back in time.  This suggests the wrong DST
+algorithm was in use, as mentioned in previous audits.~\cite{Buell2011}
 \begin{figure}[h!]
   \caption{Resetting an iVotronic clock by one hour in Georgetown
 County}
@@ -119,10 +186,11 @@ County}
 
 \subsection{Datetime Errors}
 Anomalous time changes were detected in 18 machines using the 2010 South
-Carolina data.  These anomalies were any occurances of unexplained date
-changes while machines were open for voting. Figure~\ref{fig:Richland}
+Carolina data.  An anomaly is any occurance of an unexplained date
+change while a machine is open for voting. Figure~\ref{fig:Richland}
 is an example that occured in Richland County.  The machine was manually
-corrected about 30 minutes later.
+corrected about 30 minutes later. \cks{Can you highlight or draw a
+  line around the two time-stamps where the jump occurs?}
 \begin{figure}[h!]
   \caption{This date anomaly occured in Richland County during election day.}
   \label{fig:Richland}
