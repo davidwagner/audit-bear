@@ -1,5 +1,5 @@
-\subsection{Votes Possibly Not Counted}
-\subsubsection{PEBs Not Uploaded}
+\smsubsection{Votes Possibly Not Counted}
+\smsubsubsection{PEBs Not Uploaded}
 \label{sec:pebs_not_uploaded}
 The precinct procedures for poll workers dictate that a single PEB
 should be used to open and close all machines at a polling
@@ -31,9 +31,18 @@ serial number of every PEB uploaded to the ERM tabulation
 system. Finally, a log providing a list of terminals used in each
 precinct is also required.
 
-Our method keeps track of the serial number of the PEB used to close each voting machine. It also records the polling location each voting machine was assigned to as well as the total votes cast in each machine. Then, it verifies that each PEB that was used to close voting machines is uploaded to the ERM vote tally. It reports any PEB containing vote data that has not been added to the cumulative count.  For each such PEB, our analysis reports the serial numbers of the terminals collected by the PEB, the number of votes processed in those terminals and the precinct's name and number. With this information, election officials can gather the missing PEBs and collect votes from terminals not included in the cumulative totals.
+Our method keeps track of the serial number of the PEB used to close each voting
+machine. It also records the polling location each voting machine was assigned
+to as well as the total votes cast in each machine. Then, it verifies that each
+PEB that was used to close voting machines is uploaded to the ERM vote tally. It
+reports any PEB containing vote data that has not been added to the cumulative
+count.  For each such PEB, our analysis reports the serial numbers of the
+terminals collected by the PEB, the number of votes processed in those terminals
+and the precinct's name and number. With this information, election officials
+can gather the missing PEBs and collect votes from terminals not included in the
+cumulative totals.
 
-\subsubsection{Machines Not Closed}
+\smsubsubsection{Machines Not Closed}
 There are two main pieces of the election system that need to be
 analyzed to determine if votes were left out of the count.  We have
 discussed the first essential piece: the PEB.  The second piece of the

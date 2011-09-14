@@ -1,5 +1,6 @@
-\subsection{Systematic Date and Time Errors}\label{an:date} Correct
-time-stamps in the audit logs
+\smsubsection{Systematic Date and Time Errors}\label{an:date} 
+\smvertspace
+Correct time-stamps in the audit logs
 are critical in post election audits as any incorrect time-stamps
 could preclude further log analysis. 
 We classify time-stamp errors into two categories: errors
@@ -34,7 +35,7 @@ audit log while looking for events marking a manual clock adjustment
 or an erroneous shift between two consecutive time stamps. We explain
 our technique further in the following subsections.
 
-\subsubsection{Incorrectly Set Dates}
+\smsubsubsection{Incorrectly Set Dates}
 This report identifies any machine that opened for election day voting
 with an incorrectly set clock.  This means the opening event and
 possibly all subsequent vote events were recorded with incorrect
@@ -78,7 +79,7 @@ window. This analysis could reasonably be parametrized to
 allow the user to specify the desired window size if the default does
 not provide useful results.
 
-\subsubsection{Datetime Errors}
+\smsubsubsection{Datetime Errors}
 This report identifies anomalies in the time stamps that are not a result
 of human error. In the course of our analysis of the South Carolina
 data set, we found many dates that changed, seemingly at random and without

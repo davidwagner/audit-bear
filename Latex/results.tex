@@ -1,11 +1,13 @@
-\section{Results}
+\smsection{Results}
+\smvertspace
 This section discusses our findings after running our algorithms on
 the audit logs from South Carolina 2010 General Election.  The iVotronic
 files used for testing our analyses were downloaded from the website
 titled \textquotedblleft South Carolina Voting
 Information.\textquotedblright \footnote{www.scvotinginfo.com} 
 
-\subsection{Missing Votes}
+\smsubsection{Missing Votes}
+\smvertspace
 Table~\ref{tab:pebs} summarizes the PEBs not uploaded during the
 General 2010 elections in South Carolina. The system file (EL68a) was
 used to identify which PEBs containing votes were not uploaded to the
@@ -40,7 +42,7 @@ PEBs containing 2082 votes were never uploaded.
 
 Our tool reported a few instances of machines not being closed.  There was a single machine that wasn't closed in each of the following counties: Greenville County, Horry County, and Sumter County.  
 
-\subsection{Incomplete Audit Data}
+\smsubsection{Incomplete Audit Data}
 There were a number of counties' audit logs from the South Carolina
 2010 elections that showed incomplete data.  Our analysis detected six
 counties that did not have the same set of machines in both the event
@@ -59,7 +61,7 @@ as ballot images.  If election officials find this error when running
 an analysis,  they should re-upload the audit data to ensure a set of
 complete files, allowing an accurate post-election audit to be conducted.
 
-\subsection{Polling Location Related Findings}
+\smsubsection{Polling Location Related Findings}
 
 Figure~\ref{fig:late} depicts the polling locations that closed late in Berkeley County.  As visible from the graph, the majority of the polling locations closed by 7:30 P.M., but two were still open at 8:40 P.M.  This would be helpful in planning future elections.  Resources can be allocated to those polling locations that stayed open the latest because they were most likely the locations that had the longest lines of voters.  Also, Election Central personnel can dispatch technical staff to assist with the closing of these polling locations as necessary.   
 
@@ -132,7 +134,7 @@ event, respectively.  This could be a possible indicator that the
 battery is running low; therefore, the election officials should take
 action to ensure all machines work properly in future elections. 
 
-\subsection{Procedural Errors}
+\smsubsection{Procedural Errors}
 Our findings reveal the need for improvements in poll worker training.
 When opening and closing a machine, the same master PEB should be used,
 but in 11 counties there were machines opened and closed with
@@ -164,8 +166,9 @@ could be the result of many problems: the machine may have a
 calibration issue, or there may be a procedural error in that the poll
 workers are repeatedly selecting the wrong ballot.
 
-
-\subsection{Incorrectly Set Dates}
+%\smvertspace
+%\subsection{Incorrectly Set Dates}
+\smsubsection{Incorrectly Set Dates}
 In the 2010 South Carolina data set, our report found 1465 machines
 whose date 
 was changed during election day voting out of 4994 machines across 12
@@ -184,6 +187,7 @@ County}
     \includegraphics[width=0.5\textwidth]{datefig1.png}
 \end{figure}
 
+\smvertspace
 \subsection{Datetime Errors}
 Anomalous time changes were detected in 18 machines using the 2010 South
 Carolina data.  An anomaly is any occurance of an unexplained date

@@ -1,5 +1,5 @@
-\subsection{Polling Location Related Analyses}
-\subsubsection{Polling Locations that Closed Late}
+\smsubsection{Polling Location Related Analyses}
+\smsubsubsection{Polling Locations that Closed Late}
 In the United Stated, poll hours are regulated by the state
 officials. Poll closing hours vary from 6pm to 9pm depending on the
 state~\cite{Info2007}. Some state statutes allow the voters waiting in
@@ -13,9 +13,16 @@ information about long lines that occurred in the current election. Election
 officials can use this information to make predictions about where
 long lines might occur in future elections of the same type. 
 
-This analysis gathers the time each machine was closed from the event log and the precinct the machine was assigned to from the ballot image file; to perform the analysis, this data is required.  Our algorithm saves this information in a data structure and generates a countywide chart detailing the number of polling locations that stayed open after poll closing time and for how long. To handle inaccurate machine date/time settings, our tool uses a time verification algorithm described in Section 3.6 to exclude from our database any voting machines whose time stamp is probably incorrect. 
+This analysis gathers the time each machine was closed from the event log and
+the precinct the machine was assigned to from the ballot image file; to perform
+the analysis, this data is required.  Our algorithm saves this information in a
+data structure and generates a countywide chart detailing the number of polling
+locations that stayed open after poll closing time and for how long. To handle
+inaccurate machine date/time settings, our tool uses a time verification
+algorithm described in Section 3.6 to exclude from our database any voting
+machines whose time stamp is probably incorrect. 
 
-\subsubsection{Long Lines}
+\smsubsubsection{Long Lines}
 Election officials assign voting machines and supplies to each polling
 location based on the number of voters registered in the precinct.
 However, voter turnout can vary and as a result, some polling
