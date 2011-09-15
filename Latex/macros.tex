@@ -1,0 +1,39 @@
+%Space saving macros
+% Space saving List environment for enumerations.
+\newcounter{myctr}
+\newenvironment{mylist}{\begin{list}{\arabic{myctr}.}
+{\usecounter{myctr}
+\setlength{\topsep}{1mm}\setlength{\itemsep}{0.25mm}
+\setlength{\parsep}{0.1mm}
+\setlength{\itemindent}{0mm}\setlength{\partopsep}{0mm}
+\setlength{\labelwidth}{15mm}
+\setlength{\leftmargin}{4mm}}}{\end{list}}
+
+% Space saving List environment for descriptions.
+\newenvironment{mydesc}{\begin{description}
+\setlength{\topsep}{0mm}\setlength{\itemsep}{0mm}
+\setlength{\parsep}{0mm}\setlength{\parskip}{0mm}
+\setlength{\partopsep}{0mm}
+}{\end{description}}
+
+% Space saving List environment for itemizing
+\newenvironment{myitemize}{\begin{list}{$\bullet$}
+{\setlength{\topsep}{1mm}\setlength{\itemsep}{0.25mm}
+\setlength{\parsep}{0.1mm}
+\setlength{\itemindent}{0mm}\setlength{\partopsep}{0mm}
+\setlength{\labelwidth}{15mm}
+\setlength{\leftmargin}{4mm}}}{\end{list}}
+
+\newcommand{\smvertspace}{\vspace*{-3mm}}
+\newcommand{\medvertspace}{\vspace*{-5mm}}
+\newcommand{\bigvertspace}{\vspace*{-7mm}}
+
+\newcommand{\smsubsubsection}[1]{\smvertspace\subsubsection{#1}}
+\newcommand{\smsubsection}[1]{\smvertspace\subsection{#1}}
+\newcommand{\smsection}[1]{\smvertspace\section{#1}}
+
+
+\newcommand\cks[1]{\emph{CKS: #1}}
+
+
+

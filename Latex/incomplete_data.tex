@@ -1,6 +1,5 @@
 \smsubsection{Incomplete Audit Data}
-Due to the manner in which both the event log and the ballot image
-file are created, they may not include all audit data. When a machine
+When a machine
 appears in the event log with recorded votes cast on it during
 election day, but does not appear in the ballot image file, this
 indicates that some ballots are missing from the ballot image
@@ -18,8 +17,7 @@ were cast on it according to the event log, the second contains every
 machine with ballot images on it and how many ballots were cast on it
 according to the ballot image file.  Then, we compare these two
 structures.  Ideally, they would have the same contents and we could
-conclude that the files are consistent.  However, there may be cases
-where one file has a machine with more votes on it than the other
-file's corresponding machine.  In this case, we would report file
+conclude that the files are consistent.  However, if this is not the case, we
+report file 
 inconsistencies and provide the user with the machine serial number
 and the conflicting vote counts.      
