@@ -3,20 +3,18 @@
 In the United Stated, poll hours are regulated by the state
 officials. Poll closing hours vary from 6pm to 9pm depending on the
 state~\cite{Info2007}. Some state statutes allow the voters waiting in
-line at poll closing time to cast their ballots at the precinct;
-therefore, polling locations may stay open late in order to
-accommodate those voters waiting in line at the official poll closing
-time. If election officials knew which polling places were likely to
+line at poll closing time to cast their ballots at the precinct, requiring those
+polling locations to stsay open late. If election officials knew which polling
+places were likely to 
 experience long lines they could deploy more equipment or personnel to
 those locations. This analysis can assist them by providing
-information about long lines that occurred in the current election. Election
-officials can use this information to make predictions about where
-long lines might occur in future elections of the same type. 
+information about long lines that occurred in the current election, which they
+could use to make predictions about where
+long lines might occur in future elections.
 
 This analysis gathers the time each machine was closed from the event log and
-the precinct the machine was assigned to from the ballot image file; to perform
-the analysis, this data is required.  Our algorithm saves this information in a
-data structure and generates a countywide chart detailing the number of polling
+the precinct the machine was assigned to from the ballot image file
+and generates a countywide chart detailing the number of polling
 locations that stayed open after poll closing time and for how long. To handle
 inaccurate machine date/time settings, our tool uses a time verification
 algorithm described in Section 3.6 to exclude from our database any voting
