@@ -1,0 +1,17 @@
+\smsubsection{Incomplete Audit Data}
+When a machine
+appears in the event log with recorded votes cast on it during
+election day, but does not appear in the ballot image file, this
+indicates that some ballots are missing from the ballot image
+database. Incomplete DRE ballot images will prevent accurate manual
+recount procedures. The reverse situation reveals the opposite
+procedural error: the event log is not complete.  We developed a
+technique that identifies incomplete databases.   
+
+This analysis requires an event log and a ballot image file, where
+both files record machine serial numbers for any events and ballots
+cast.  Our analysis crosschecks these files for inconsistencies by comparing the
+number of ballots in the ballot image file with the number of cast vote events
+in the event log. If the numbers do not match we report file 
+inconsistencies and provide the user with the machine serial number
+and the conflicting vote counts.      

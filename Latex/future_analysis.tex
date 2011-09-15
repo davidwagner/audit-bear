@@ -1,25 +1,4 @@
-\smsubsection{Polling Location Related Analyses}
-\subsubsection{Polling Locations that Closed Late}
-In the United Stated, poll closing hours vary from 6pm to 9pm depending on the
-state~\cite{Info2007}. Some state statutes allow the voters waiting in
-line at poll closing time to cast their ballots at the precinct, requiring those
-polling locations to stsay open late. If election officials knew which polling
-places were likely to 
-experience long lines they could deploy more equipment or personnel to
-those locations. This analysis can assist them by providing
-information about long lines that occurred in the current election, which they
-could use to make predictions about where
-long lines might occur in future elections.
-
-This analysis gathers the time each machine was closed from the event log and
-the precinct the machine was assigned to from the ballot image file
-and generates a countywide chart detailing the number of polling
-locations that stayed open after poll closing time and for how long. To handle
-inaccurate machine date/time settings, our tool uses a time verification
-algorithm described in Section 3.6 to exclude from our database any voting
-machines whose time stamp is probably incorrect. 
-
-\smsubsubsection{Long Lines}
+\subsection{Future Analysis}
 Election officials assign voting machines and supplies to each polling
 location based on the number of voters registered in the precinct.
 However, voter turnout can vary and as a result, some polling
@@ -31,12 +10,14 @@ common during mid-term and general elections~\cite{Kreitman2010,
 In those circumstances, election officials might like information
 about which locations experienced long lines and at what time of the
 day. However, monitoring all the polling places in a large county can
-be a daunting task. Therefore, we provide an analysis that can analyze
-DRE audit data to identify peak times at the precincts. Such
-information can assist election officials with the planning of
+be a daunting task. Therefore, providing an analysis that can analyze
+DRE audit data to identify peak times at the precincts would be useful; such
+information could assist election officials with the planning of
 resource allocation for future elections.
 
+\begin{comment}
 This analysis reports busy locations by detecting heavily used voting terminals. It requires an event log that captures every vote cast event along with an accurate time stamp and precinct location information. In our analysis we find this information in the event log and the ballot image file. When there are consecutive ballots cast in all machines in a polling location with no time delay in between, we are able to infer that there is a steady flow of voters and possibly a line of voters waiting to use the voting machines. 
+\end{comment}
 
 However, the analysis is not quite so straightforward. The event logs
 we used captured the \textquotedblleft cast vote'' event, but that
@@ -46,7 +27,12 @@ an event that notes when a new ballot is loaded into a machine. The
 idle time would be the time between one \textquotedblleft cast vote''
 event and the next \textquotedblleft ballot loaded''
 event. Unfortunately our logs have no such \textquotedblleft ballot
-loaded'' event. Instead, we had to infer the idle time. We did this by
+loaded'' event. We are exploring the possibility of inferring the idle time by
+comparing the time between cast vote events in any given time period to the time
+between cast vote events at times when we can reasonably assume voters were
+waiting in line and the idle time was likely close to zero.
+\begin{comment}
+Instead, we had to infer the idle time. We did this by
 focusing on the polling locations which stayed opened after poll
 closing time as we could conclude they were busy processing the voters
 standing in line at that time and the time between cast vote events
@@ -65,3 +51,4 @@ time period. \footnote{The KS test starts with the null hypothesis
   can say in the case that the null hypothesis cannot be rejected is, we
   cannot reject the possibility that there were long lines between a
   particular time window.} 
+\end{comment}
