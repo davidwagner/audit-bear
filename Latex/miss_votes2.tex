@@ -5,7 +5,8 @@ The precinct procedures for poll workers dictate that a single PEB
 should be used to open and close all machines at a polling
 location. Failure to strictly follow this protocol can lead to problems if
 election workers at county headquarters upload only one PEB, expecting all
-machines to be closed with the same PEB. This has happened in the past and it 
+machines to be closed with the same PEB. Recall that the PEB contains the
+official cumulative tally for the precint. This has happened in the past and it 
 causes significant delays in the reporting of election
 results~\cite{Buell2011,Mazella2002}. 
 
@@ -25,9 +26,8 @@ system. Finally, a log providing a list of terminals used in each
 precinct is also required.
 
 Our method keeps track of the serial number of the PEB used to close each voting
-machine. It also records the polling location each voting machine was assigned
-to as well as the total votes cast in each machine. Then, it verifies that each
-PEB that was used to close voting machines is uploaded to the ERM. It
+machine, the polling location each voting machine was assigned
+to, and the total votes cast in each machine. Then, it
 reports any PEB containing vote data that has not been added to the cumulative
 count.  For each such PEB, our analysis reports the serial numbers of the
 terminals collected by the PEB, the number of votes processed in those terminals
@@ -36,12 +36,8 @@ can gather the missing PEBs and collect votes from terminals not included in the
 cumulative totals.
 
 \smsubsubsection{Machines Not Closed}
-There are two main pieces of the election system that need to be
-analyzed to determine if votes were left out of the count.  We have
-discussed the first essential piece: the PEB.  The second piece of the
-election system that must be taken into account is the voting machine
-itself.   We have devised a way to determine which machines have not
-been closed for voting.  If a machine is not closed, then a PEB has
+Votes could also be left out of the official tally if poll workers faill to close
+all voting machines. If a machine is not closed, then a PEB has
 not collected its data and its votes can not be counted; our algorithm
 will  detect this situation.   
 
@@ -55,9 +51,6 @@ If there are any machines that have been opened and not
 closed, they are displayed to the election official.  These
 inconsistencies are only detected if the machines are closed when the
 CF card is still in the machine and the complete audit data, including
-the closure event, is saved to the CF card.  If the audit data is not
-complete, we cannot determine whether a machine was closed or not.
-There may be other cases that are undetectable by our analysis because
-a machine's audit data will not be in the event log or ballot image
-file if it has not been closed in the normal circumstances or the CF
-card was never uploaded to the ERM.  
+the closure event, is saved to the CF card and the CF card gets uploaded to the
+ERM.
+
