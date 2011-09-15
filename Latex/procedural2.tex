@@ -1,0 +1,95 @@
+\subsection{Procedural Errors}
+\smvertspace
+It may be beneficial to election officials if they could detect at which
+locations poll workers are following the required procedures. Procedural errors
+can cause many problems including lost votes, incorrect vote counts, disgruntled
+voters, and long lines. A few errors that might occur are: precincts that do not
+print zero tapes on the morning of election day; using a master PEB to activate
+ballots; and opening and closing machines with different PEBs. If election
+officials are aware of the procedures that are not being followed, they could
+improve their precinct checklist. This will allow for more efficient audits as
+well as a better voting experience for voters. 
+
+\smsubsubsection{Printing Zero Tapes}
+This analysis pertains to jurisdictions that require poll workers to
+print at least one zero tape per polling location. The printing of a zero tape
+is important to verify that the voting machines are set to zero; it
+ensures that additional votes will not be included in the certified
+count. In this analysis we check if this procedure is followed.
+
+In order to run this analysis, we require both a ballot image file, which
+contains the machines and precincts, and an event log.  Given an event log that
+has correct date and time stamps, and an event that represents the printing of a
+zero tape, we can detect if this procedure was followed.  We limit our search of
+the event log to events that occurred on election day.  We have noticed that the
+zero tape may be printed before or after the official poll opening time, so we
+do not specify time limitations.  Our analysis groups the machines found in the
+event log by polling location using the ballot images file and requires at least
+one machine per polling location have this event. If none of the
+machines in a polling location record this event, we report the polling location
+and the corresponding machines. 
+%\cks{If multiple PEBs are used to open machines, but only one is used
+%  for the zero tape, do you catch it?}
+
+\smsubsubsection{Ballot Activation with a Master PEB}
+Another procedure that should be avoided is using a master PEB to activate ballots for voters.  Poll workers should be using non-master (activator) PEBs to activate ballots for the reasons outlined in Section \ref{sec:background}.
+
+This analysis focuses on procedures related to the use of the PEB and the voting
+machine; it is applicable to other voting systems that use a similar process.
+To detect violations of this procedure, the analysis requires that the event log
+records votes being cast, machines being opened and closed, as well as the PEB
+number used for each event.  Through this analysis we assign each machine a
+master PEB: the PEB used to open and close the machine. Then, we check to see if
+any votes were activated on each 
+machine using the master PEB.  If we find any such cases, we report them.  In
+the case that two different PEBs were
+used to open and close the machine, our algorithm
+checks both and if a ballot was activated with either one,
+then that machine and PEB are reported.  
+
+
+\smsubsubsection{Opening and Closing a Machine with Different PEBs}
+\label{sec:opening_closing_diff_pebs}
+Along the same lines, we report incidents of opening and closing a
+machine with different PEBs. A machine should be opened and closed
+with the master PEB; if not, it may be more likely that the non-master
+PEB used for closing machines and its corresponding votes will be left behind at the precinct.  Poll workers are trained so that they put the master PEB, CF cards, and printed precinct tape in a designated bag, which is transported to election central after the precinct is closed.  
+
+The requirements for this analysis are similar to the analysis discussed above.
+As this analysis works with procedural errors concerning the interaction between
+PEBs and the machine, it applies to systems that work in the same manner.  The
+event log should contain events signaling the opening and closing of each
+machine and the PEB used for each event.  In this analysis, we find the serial
+numbers of the PEBs used to open and close each machine.  If the two PEBs have
+conflicting numbers, then we report the machine and PEB serial numbers.  If the
+PEBs are the same, then the correct procedure was followed and no machines are
+reported.  
+
+
+\smsubsubsection{Anomalous Vote Cancelled Events}
+There may be
+many reasons why votes are cancelled. According to the iVotronic’s event logs
+there are seven options for canceling a ballot. Depending on the reason chosen, it
+might be possible to identify procedural errors.  For example, if there are any
+instances of canceling a ballot due to a printer problem, it could be an
+indicator of a procedural error because ballots are not normally printed. In other
+cases, if there is a large number of a specific reason, such as having the wrong
+ballot, this could indicate the poll workers are repeatedly issuing the wrong
+ballot or the terminal is experiencing calibration issues.  
+
+This analysis has a higher potential to be used on other voting systems than the
+previous two analyses.  It only requires that the event log record
+votes being cancelled, and reasons as to why the vote is being cancelled.  This
+analysis would perform best if the date and time stamp were accurate as well.
+For each machine, we associate with it the number of each type of vote
+cancellation recorded and report the
+machines that had at least one vote cancellation event type that occurred an
+unusually high number of times. In our analysis, an \textquotedblleft unusually
+high number of times\textquotedblright \hspace{1 mm} is defined as having a
+number of instances greater than three standard deviations above the average for
+that event type.
+If it is the case, we will also report if a machine has an unusually high
+number of instances for more than one vote cancellation event type, and which
+event types they are.  
+
+
