@@ -89,11 +89,9 @@ ballot image file to determine the location of the possibly
 problematic machines. The event we search for indicates that a machine
 was closed early; in the case of the iVotronic it is called:
 \textquotedblleft Warning -- Terminal Closed
-Early.\textquotedblright \hspace{2 mm} This analysis goes through all
-of the events on each machine on election day and searches for this
-event. If an occurrence is found between official poll opening and
-official poll closing times, the analysis reports the machine that
-recorded it to indicate a machine that closed early.  
+Early.\textquotedblright \hspace{2 mm} If an occurrence is found between
+official poll opening and official poll closing times, the analysis reports the
+machine that recorded it to indicate a machine that closed early.  
 
 \smsubsubsection{Anomalous Warnings}
 There may be events in the event log that would raise a red flag for election officials. This analysis will report machines that have recorded at least one of these events. The machines that experience these events should be inspected for possible hardware issues; the warning events may indicate an equipment failure or other problem that should be corrected.
