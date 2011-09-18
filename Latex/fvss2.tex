@@ -1,3 +1,4 @@
+\smvertspace
 \smsection{Future Voting System Suggestions}
 Voting systems audit logs need to be comprehensible to the public. Ambiguous or
 obscure messages make audit 
@@ -6,10 +7,11 @@ this study we sometimes struggled to understand audit log messages that were
 vague, but concerning. We believe the following recommendations
 will make audit files more usable.
 
-
-\textbf{Vendors should document the meaning of all events.} Explanations of the
-different events that occur in the voting systems should be descriptives, this
-is especially true for warning events.
+\smvertspace
+\begin{itemize}
+\item Vendors should document the meaning of all events. %Explanations of the
+%different events that occur in the voting systems should be descriptives, this
+%is especially true for warning events.
 
 %There isn't really a suggestion here, so I took it out. [CKS]
 \begin{comment}
@@ -22,14 +24,15 @@ incorrect, it becomes difficult to recreate election day events. Audit logs are
 ground truth for election disputes; their accuracy is key. 
 \end{comment}
 
-\textbf{Make system manuals available to the public.} Voting machine audit logs
-are public information. The general public can request them under the Freedom of
-Information (FOI) Act. In the same fashion, voting system manuals should be
-freely available so that the public can easily interpret the logs. 
+\item Make system manuals available to the public. %Voting machine audit logs
+%are public information. The general public can request them under the Freedom of
+%Information (FOI) Act. In the same fashion, voting system manuals should be
+%freely available so that the public can easily interpret the logs. 
 
-\textbf{Some events are not currently logged, but they should be.} We believe
-that important events can be added to the voting machine event logs. For
-example, an event that records the time a ballot is activated would make it
-easier to learn when the voting machines were heavily used and when they were idle.
+\item Some events are not currently logged, but they should be. %We believe
+%that important events can be added to the voting machine event logs. For
+%example, an event that records the time a ballot is activated would make it
+%easier to learn when the voting machines were heavily used and when they were idle.
+\end{itemize}
 
 

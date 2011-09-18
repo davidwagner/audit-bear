@@ -38,8 +38,7 @@ Our research builds on a similar study that was conducted with DRE audit data co
 
 We implement these methods for the ES\&S iVotronic DRE as the 2010 South
 Carolina data was already publically available through a previous
-Freedom of Information Act request and the iVotronic was used in that election. \cks{Is this true? I changed the wording, but I'm not actually sure
-  how the data was made available.} The iVotronic system is a
+Freedom of Information Act request and the iVotronic was used in that election.  The iVotronic system is a
 standalone, portable, touchscreen system that records vote totals,
 ballot images and an event log on internal flash 
 memory. The event log records, in chronological order, the system
@@ -51,30 +50,25 @@ million registered voters used this system~\cite{VerVot2010}. However, our metho
 are applicable to all DRE voting systems  that produce the necessary
 audit logs.  
 
-A brief description of several problems we detect follows.
+%A brief description of several problems we detect follows.
 
-\textbf{Votes not uploaded.} We detect  memory cartridges used to close voting machines that have not had their vote data uploaded to the tabulation system. This situation, if not corrected, can result in votes left out of the official results.
+Several of the promblems we detect follow:
 
-\textbf{Machines not closed.} We detect voting machines that were not
-closed for voting at the polling location. Failure to close a machine
-on election night may result in its votes being left out of the
-certified count.
+\textbf{Votes not uploaded.} %We detect  memory cartridges used to close voting machines that have not had their vote data uploaded to the tabulation system. This situation, if not corrected, can result in votes left out of the official results.
 
-\textbf{Missing terminals from the audit database.} This analysis
-identifies voting machines used during the election whose event log or
-ballot images have not been uploaded to the election reporting
-software. Complete DRE ballot images and event logs will allow for
-more accurate post-election audits. 
+\textbf{Machines not closed.} %We detect voting machines that were not closed for voting at the polling location. Failure to close a machine on election night may result in its votes being left out of the certified count.
 
-\textbf{Polling location related analyses.} Our tool provides a series of analyses related to polling location activity. We identify locations that stayed open late as well as locations that may have experienced long lines during the day. This information can help county officials to identify locations that may need additional resources in the future. 
+\textbf{Missing terminals from the audit database.} %This analysis identifies voting machines used during the election whose event log or ballot images have not been uploaded to the election reporting software. Complete DRE ballot images and event logs will allow for more accurate post-election audits. 
 
-\textbf{DRE voting machine configuration and hardware problems.} Our tool performs several analyses that can identify  voting machines that may need testing, repair or reconfiguration. These analyses include identifying possible calibration issues, machines with potential power supply issues, machines that were forced to close early, and machines with incorrect date and time settings.
+\textbf{Polling location related analyses.} %Our tool provides a series of analyses related to polling location activity. We identify locations that stayed open late as well as locations that may have experienced long lines during the day. This information can help county officials to identify locations that may need additional resources in the future. 
 
-\textbf{Poll worker training related issues.} We also identify incorrect procedures at the precincts such as using the wrong cartridge to close the voting machines in a precinct, forgetting to print the precinct's zero tape or activating ballots with the incorrect cartridge. Election officials may be able to use this information to improve poll worker training and minimize recurrences in the future.
+\textbf{DRE voting machine configuration and hardware problems.} %Our tool performs several analyses that can identify  voting machines that may need testing, repair or reconfiguration. These analyses include identifying possible calibration issues, machines with potential power supply issues, machines that were forced to close early, and machines with incorrect date and time settings.
+
+\textbf{Poll worker training related issues.} %We also identify incorrect procedures at the precincts such as using the wrong cartridge to close the voting machines in a precinct, forgetting to print the precinct's zero tape or activating ballots with the incorrect cartridge. Election officials may be able to use this information to improve poll worker training and minimize recurrences in the future.
 
 In this work we assume that DRE audit logs are complete, accurate,  trustworthy, and free of accidental or malicious tampering. Detecting and preventing audit log tampering is outside of the scope of this work.
 
-In summary, this paper develops and implements new ways that audit log data can be used meaningfully and in an automated fashion to enhance the accuracy and efficiency of elections. We believe our tool will provide useful feedback to election administrators during the canvassing process. We hope that this study illustrates the potential value of voting systems' audit logs and motivates future election technologies to provide enhanced support for these purposes.
+%In summary, this paper develops and implements new ways that audit log data can be used meaningfully and in an automated fashion to enhance the accuracy and efficiency of elections. We believe our tool will provide useful feedback to election administrators during the canvassing process. We hope that this study illustrates the potential value of voting systems' audit logs and motivates future election technologies to provide enhanced support for these purposes.
 
 
 
