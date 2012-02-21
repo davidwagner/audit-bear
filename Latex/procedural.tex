@@ -21,8 +21,6 @@ ensures that additional votes will not be included in the certified
 count. In this analysis we check if this procedure is followed.
 
 In order to run this analysis, we require both a ballot image file, which contains the machines and precincts, and an event log.  Given an event log that has correct date and time stamps, and an event that represents the printing of a zero tape, we can detect if this procedure was followed.  We limit our search of the event log to events that occurred on election day.  We have noticed that the zero tape may be printed before or after the official poll opening time, so we do not specify time limitations.  Our analysis groups the machines found in the event log by polling location using the ballot images file.  Then we crosscheck the list of machines with the specified event; our analysis requires at least one machine per polling location to have this event.  Poll workers need to print the zero tape after they have opened all terminals with the same PEB; they must use this same PEB to open the last machine and print the tape.  If none of the machines in a polling location record this event, we report the polling location and the corresponding machines.
-\cks{If multiple PEBs are used to open machines, but only one is used
-  for the zero tape, do you catch it?}
 
 \smsubsubsection{Ballot Activation with a Master PEB}
 Another procedure that should be avoided is using a master PEB to activate ballots for voters.  Poll workers should be using non-master (activator) PEBs to activate ballots for the reasons outlined in Section \ref{sec:background}.

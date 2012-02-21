@@ -14,8 +14,9 @@ used to identify which PEBs containing votes were not uploaded to the
 election reporting software. Our analysis shows that a total of 15
 PEBs containing 2082 votes were never uploaded.
 
-\begin{table*}
+\begin{table*}[t]
     \begin{center}
+    \caption{PEBs that were not uploaded and their corresponding votes.}
     \begin{tabular}{| c | c | c | c |}
     \hline                   
     County &PEBs used to collect votes &PEBs not uploaded &Votes not uploaded\\
@@ -36,7 +37,6 @@ PEBs containing 2082 votes were never uploaded.
     \hline
     \end{tabular}
     \end{center}
-    \caption{PEBs not uploaded}
     \label{tab:pebs}
 \end{table*}
 
@@ -65,44 +65,42 @@ complete files, allowing an accurate post-election audit to be conducted.
 
 Figure~\ref{fig:late} depicts the polling locations that closed late in Berkeley County.  As visible from the graph, the majority of the polling locations closed by 7:30 P.M., but two were still open at 8:40 P.M.  This would be helpful in planning future elections.  Resources can be allocated to those polling locations that stayed open the latest because they were most likely the locations that had the longest lines of voters.  Also, Election Central personnel can dispatch technical staff to assist with the closing of these polling locations as necessary.   
 
-\begin{figure}[h!]
-  \caption{Polling locations that closed late in Berkeley County}
+\begin{figure}[h]
+  \caption{Polling locations that closed late in Berkeley County.}
   \label{fig:late}
   \centering
     \includegraphics[width=0.5\textwidth]{berkeley}
 \end{figure}
 
-Table~\ref{tab:line} summarizes the times periods when the Berkeley County polling locations experienced long lines before 7 P.M.  In South Carolina polls close at 7 P.M.
+The time periods when the Berkeley County polling locations experienced long lines before 7 P.M is summarized in Table~\ref{tab:line}.  In South Carolina polls close at 7 P.M.
 
-\cks{I think the ``possibly not long lines experienced'' column can be removed.}
 \begin{table*}
     \begin{center}
-    \begin{tabular}{| c | p{5cm} | p{4.5cm} |}
+    \begin{tabular}{| c | p{3cm} |}
     \hline                   
-    \# Precinct & Possibly not long lines experienced &Possibly long lines experienced\\
+    \# Precinct & Possible long lines\\
     \hline
-    26 Huger&9:00 a.m. - 10:00 a.m. &7:00 a.m. - 9:00 a.m.\\
-            &12:00 p.m. - 1:00 p.m. &10:00 a.m. - 12:00 m.\\
-            &4:00 p.m. - 5:00 p.m. &1:00 p.m. - 4:00 p.m.\\
-            &6:00 p.m. - 7:00 p.m. &5:00 p.m. - 6:00 p.m.\\
+    26 Huger&7:00 a.m. - 9:00 a.m.\\
+            &10:00 a.m. - 12:00 m.\\
+            &1:00 p.m. - 4:00 p.m.\\
+            &5:00 p.m. - 6:00 p.m.\\
     \hline
-    10 Cordesville &7:00 a.m. - 8:00 a.m.&8:00 a.m. - 12:00 m.\\
-                   &12:00 m. - 1:00 p.m.&1:00 p.m. - 7:00 p.m.\\
+    10 Cordesville &8:00 a.m. - 12:00 m.\\
+                   &1:00 p.m. - 7:00 p.m.\\
     \hline  
-    24 Hilton Cross Rd &12:00 m. - 1:00 p.m. &7:00 a.m. - 12:00 m.\\
-                       &5:00 p.m. - 6:00 p.m. &1:00 p.m. - 7:00 p.m.\\
+    24 Hilton Cross Rd &7:00 a.m. - 12:00 m.\\
+                       &1:00 p.m. - 7:00 p.m.\\
     \hline
-    22 Hanahan 3 &7:00 a.m. - 5:00 p.m. &5:00 p.m. - 6:00 p.m.\\
-                 &6:00 p.m. - 7:00 p.m.&\\
+    22 Hanahan 3 &5:00 p.m. - 6:00 p.m.\\
     \hline
-    20 Hanahan 1 &12:00 m. - 1:00 p.m. &7:00 a.m. - 12:00 m.\\
-                 &2:00 p.m. - 3:00 p.m. &1:00 p.m. - 2:00 p.m.\\
-                 &5:00 p.m. - 6:00 p.m. &3:00 p.m. - 5:00 p.m.\\
-                 &                      &6:00 p.m. - 7:00 p.m.\\
+    20 Hanahan 1 &7:00 a.m. - 12:00 m.\\
+                 &1:00 p.m. - 2:00 p.m.\\
+                 &3:00 p.m. - 5:00 p.m.\\
+                 &6:00 p.m. - 7:00 p.m.\\
     \hline
     \end{tabular}
     \end{center}
-    \caption{Long Lines in Berkeley County}
+    \caption{Times when there were probably long lines in Berkeley County.}
     \label{tab:line}
 \end{table*}
 
@@ -177,14 +175,14 @@ have never been set properly by the time the elections concluded.
 
 Figure~\ref{fig:Georgetown} shows an example of a 1 hour time change for the
 Georgetown county.  This county had 125 out of 140 machines adjusted nearly
-exactly one hour back in time.  This suggests the wrong DST
+exactly one hour back in time.  This suggests the wrong Daylight Savings Time
 algorithm was in use, as mentioned in previous audits.~\cite{Buell2011}
 \begin{figure}[h!]
   \caption{Resetting an iVotronic clock by one hour in Georgetown
-County}
+County.}
   \label{fig:Georgetown}
   \centering
-    \includegraphics[width=0.5\textwidth]{datefig1.png}
+    \includegraphics[width=0.5\textwidth]{datefig1_withRedLine.png}
 \end{figure}
 
 \smvertspace
@@ -193,12 +191,11 @@ Anomalous time changes were detected in 18 machines using the 2010 South
 Carolina data.  An anomaly is any occurance of an unexplained date
 change while a machine is open for voting. Figure~\ref{fig:Richland}
 is an example that occured in Richland County.  The machine was manually
-corrected about 30 minutes later. \cks{Can you highlight or draw a
-  line around the two time-stamps where the jump occurs?}
+corrected about 30 minutes later.
 \begin{figure}[h!]
   \caption{This date anomaly occured in Richland County during election day.}
   \label{fig:Richland}
   \centering
-    \includegraphics[width=0.5\textwidth]{datefig2.png}
+    \includegraphics[width=0.5\textwidth]{datefig2_withRedLine.png}
 \end{figure}
 
