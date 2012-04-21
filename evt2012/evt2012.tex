@@ -21,6 +21,7 @@
 
 % This version uses the latex2e styles, not the very ancient 2.09 stuff.
 \documentclass[letterpaper,twocolumn,10pt]{article}
+\usepackage{graphicx}
 \usepackage{usenix,epsfig}
 \usepackage{url}
 
@@ -340,13 +341,13 @@ uploaded from the 14 counties that we audited in South
 Carolina. Figure~\ref{fig:pebs-not-uploaded} summarizes the PEBs not uploaded
 during the General 2010 elections.  
 
-\begin{figure}[htbp]
+\begin{figure*}[htbp]
 \begin{center}
-
+    \includegraphics{PEBsNotUploaded1.eps}
 \end{center}
 \caption{PEBs not uploaded and their corresponding votes.}
 \label{fig:pebs-not-uploaded}
-\end{figure}
+\end{figure*}
 
 AuditTool also identified a few instances of machines not being closed. A
 machine must be closed in order to collect the votes and audit data from that
@@ -358,13 +359,13 @@ or recount of the votes.
 Figure~\ref{fig:greenville-logs} shows some of AuditTool’s output on Greenville
 County’s log files. 
 
-\begin{figure}[htbp]
+\begin{figure*}[htbp]
 \begin{center}
-
+    \includegraphics{VotesNotUploaded.eps}
 \end{center}
 \caption{Feedback for officials when detecting votes not having been uploaded.}
 \label{fig:greenville-logs}
-\end{figure}
+\end{figure*}
 
 \subsection{Calibration Errors}
  We found seven counties where at least one machine was possibly not calibrated
@@ -374,13 +375,13 @@ or technician inspect these machines for possible calibration issues; see
 Figure~\ref{fig:calibration-issues}.
 
 
-\begin{figure}[htbp]
+\begin{figure*}[htbp]
 \begin{center}
-
+    \includegraphics{NotCalibrated.eps}
 \end{center}
 \caption{Feedback for election officials when calibration issues are detected.}
 \label{fig:calibration-issues}
-\end{figure}
+\end{figure*}
 
 \subsection{Audit Data}
  In several counties, the audit logs appeared to be incomplete. Our analysis
@@ -393,13 +394,13 @@ Figure~\ref{fig:calibration-issues}.
  machines that did not have the same number of votes cast as ballot images. See
  Figure~\ref{fig:incomplete-audit-data} for example output from AuditTool. 
 
-\begin{figure}[htbp]
+\begin{figure*}[htbp]
 \begin{center}
-
+    \includegraphics{IncompleteAuditData.eps}
 \end{center}
 \caption{Feedback when incomplete audit data is detected.}
 \label{fig:incomplete-audit-data}
-\end{figure}
+\end{figure*}
 
 
 \subsection{Procedural Errors}
@@ -420,21 +421,21 @@ violations of this procedure. Horry County and Richland County had 22 and 32
 instances of this violation, respectively. The feedback of this analysis for
 Richland County is shown in Figure~\ref{fig:master-peb-activated}. 
 
-\begin{figure}[htbp]
+\begin{figure*}[htbp]
 \begin{center}
-
+    \includegraphics{OpenClosePEBs.eps}
 \end{center}
 \caption{AuditTool reports machines that were opened and closed with different PEBs.}
 \label{fig:diff-pebs-open-close}
-\end{figure}
+\end{figure*}
 
-\begin{figure}[htbp]
+\begin{figure*}[htbp]
 \begin{center}
-
+    \includegraphics{BallotsActivatedWithMasterPEB.eps}
 \end{center}
 \caption{AuditTool reports ballots activated with a master PEB.}
 \label{fig:master-peb-activated}
-\end{figure}
+\end{figure*}
 
 \subsection{Date/Time Errors}
  AuditTool found 1465 out of 4994 machines across 12 counties whose date was
@@ -444,26 +445,26 @@ Richland County is shown in Figure~\ref{fig:master-peb-activated}.
  the wrong Daylight Savings Time algorithm was in use, as mentioned in previous
  audits~\cite{Buell2011}.
 
-\begin{figure}[htbp]
+\begin{figure*}[htbp]
 \begin{center}
-
+    \includegraphics{ResetClock.eps}
 \end{center}
 \caption{Resetting an iVotronic clock by one hour in Georgetown County.}
 \label{fig:one-hour-reset}
-\end{figure}
+\end{figure*}
 
 Anomalous time changes were detected in 18 machines. An anomaly is any
 occurrence of an unexplained date change while a machine is open for
 voting. Figure~\ref{fig:date-anomaly} is an example that occurred in Richland
 County. The machine was manually corrected about 30 minutes later.  
 
-\begin{figure}[htbp]
+\begin{figure*}[htbp]
 \begin{center}
-
+    \includegraphics{DateAnomaly.eps}
 \end{center}
 \caption{This date anomaly occurred in Richland County during election day.}
 \label{fig:date-anomaly}
-\end{figure}
+\end{figure*}
 
 \subsection{Long Lines}
 We found 671 out of a total of 942 South Carolina precincts stayed open
