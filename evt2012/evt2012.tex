@@ -90,7 +90,19 @@ analyze audit logs for the detection of both procedural errors and system
 deficiencies. We created AuditTool\footnote{The name of the tool has been
   blinded for anonymous submission.}, a public web application that provides our 
 analyses as a free service for use by election officials or interested third
-parties. 
+parties.  
+
+Our tool contributes to an election audit in the following ways.
+
+\begin{itemize}
+\item{Identification of potential errors in the software, hardware, and system 
+configuration. Some errors may raise the possibility of deeper problems.}
+\item{Reports on human error by election officials in following procedures. 
+Patterns across the logs that suggest shortcomings in training officials are 
+identified.}
+\item{Provides statistical analysis of voter flow.  This allows for resouce 
+allocation improvement in future elections.}
+\end{itemize}
 
 We implement these methods for the ES\&S iVotronic DRE; the 2010 South Carolina
 data was already publicly available through a previous Freedom of Information
@@ -299,11 +311,11 @@ report any machine that had ever been in the state ``uncalibrated machine with
 at least one vote cast.'' 
 
 The procedural errors we are concerned with are: not printing zero tapes,
-activating ballots with master PEBs, and opening and closing a machine with
+casting votes with master PEBs, and opening and closing a machine with
 different PEBs. For each polling location, we check that every machine in the
 location recorded printing zero tapes, that each machine was opened and closed
 with the same PEB, and that no PEB used to open or close a machine was also used
-to activate a ballot.  
+to cast a vote.  
 
 Last, we consider how to detect missing data: audit data that was not recorded,
 but should have been. In some cases, this may be impossible; if there is no
@@ -415,11 +427,12 @@ instances of this procedural error, but four of those instances took place at
 one polling location. Figure~\ref{fig:diff-pebs-open-close} shows this report
 from Colleton County.  
 
-When poll workers activate ballots for voters, they should do so with a
-non-master PEB; we saw two counties that had an unusually high number of
-violations of this procedure. Horry County and Richland County had 22 and 32
-instances of this violation, respectively. The feedback of this analysis for
-Richland County is shown in Figure~\ref{fig:master-peb-activated}. 
+A poll worker assigns each voter a PEB to use when it is that voter's turn. When 
+voters cast votes, they should do so with a non-master PEB; we saw two counties 
+that had an unusually high number of violations of this procedure. Horry County 
+and Richland County had 22 and 32 instances of this violation, respectively. The
+ feedback of this analysis for Richland County is shown in 
+Figure~\ref{fig:master-peb-activated}. 
 
 \begin{figure*}[htbp]
 \begin{center}
