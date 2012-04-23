@@ -55,8 +55,8 @@
 
 
 \subsection*{Abstract}
-The voting audit logs produced by electronic voting systems contain information
-that is useful for uncovering procedural errors and election anomalies, but they
+The voting audit logs produced by electronic voting systems contain data
+that could be useful for uncovering procedural errors and election anomalies, but they
 are currently unwieldy and difficult for election officials to use in
 post-election audits. In this work, we develop new methods to analyze these
 audit logs for the detection of both procedural errors and system
@@ -64,7 +64,7 @@ deficiencies. Our methods can be used to detect votes that were not included in
 the final tally, machines that may have experienced hardware problems during the
 election, and polling locations that closed late. We tested our analyses on
 data from the South Carolina 2010 elections and were able to uncover, solely
-through the analysis of audit logs, a variety of problems, such as vote
+through the analysis of audit logs, a variety of problems, including vote
 miscounts. We created a public web application that applies these methods to
 uploaded audit logs and generates useful feedback on any detected issues.
 
@@ -78,11 +78,12 @@ paper ballots is no longer an issue. Additionally, audio DREs can assist
 visually impaired voters.
 
 Federal standards require that electronic voting machines generate detailed
-audit logs for use during post-election audits. Unfortunately, manual analysis
-of raw log data is usually cumbersome and time consuming, making countywide
-post-election analysis impractical and prone to human error. Therefore, at the
-present time, election officials do not regularly perform these types of
-analyses.
+audit logs for use during post-election audits. Unfortunately, while the logs
+contain large amounts of data, it is not immediately obvious what sort of useful
+information can be learned from the data. Furthermore, even simple
+tallies are cumbersome, time consuming, and prone to human error if done
+manually. For these reasons, election officials do not regularly perform
+countywide post-election analysis of the log data.
 
 In this work, we aim to make DRE audit log analysis more useful and accessible
 to election officials and other interested parties. We develop new methods to
@@ -92,16 +93,23 @@ deficiencies. We created AuditTool\footnote{The name of the tool has been
 analyses as a free service for use by election officials or interested third
 parties.  
 
-Our tool contributes to an election audit in the following ways.
+Our research contributes to the election audit process in the following ways.
 
 \begin{itemize}
-\item{Identification of potential errors in the software, hardware, and system 
-configuration. Some errors may raise the possibility of deeper problems.}
-\item{Reports on human error by election officials in following procedures. 
-Patterns across the logs that suggest shortcomings in training officials are 
-identified.}
-\item{Provides statistical analysis of voter flow.  This allows for resouce 
-allocation improvement in future elections.}
+\item We introduce methods for identifying, solely from publicly available audit
+  logs, potential errors in the software, hardware, and system configuration of
+  DREs .
+\item We introduce methods for identifying instances of human error by poll
+  workers. Furthermore, we show how to differentiate between random
+  errors and patterns of error that suggest shortcomings in the training
+  election workers receive.
+\item We introduce a new method for conducting a statistical analysis of voter
+  flow. This allows for improved resouce allocation in future elections.
+\item We conduct a case study using our methods and identify instances of poor
+  worker training, long voting lines, and missing votes during the 2010 South
+  Carolina election.
+\item Using our experience with the case study, we suggest new content that, if
+  included in election log files, would allow for additional useful analysis.
 \end{itemize}
 
 We implement these methods for the ES\&S iVotronic DRE; the 2010 South Carolina
@@ -246,7 +254,7 @@ P.M., AuditTool first compiles a list of every terminal in the event log file
 for which the last vote was cast after 7 P.M. Then, using information from the
 ballot image file, the algorithm groups terminals by polling location and
 computes the mean time of the last cast vote for each group. We take the mean in
-order to account for any chance error in the timestamps.Finally, we report which
+order to account for any chance error in the timestamps. Finally, we report which
 polling locations stayed open late and also provide, for every county, a chart
 detailing the number of polling locations that stayed open late and by how
 long. 
@@ -267,7 +275,7 @@ ballot before casting her vote. Or, it could be that the terminal was idle for
 most of $t_2-t_1$ and at the last moment, voter $v_2$ approached the terminal,
 quickly marked her ballot and then cast her vote. If we knew how long the
 average voter took to mark her ballot we could use that to estimate the length
-of the idle time between two consecutive cast vote events. We don't know that
+of the idle time between two consecutive cast vote events. We do not know that
 information directly, but we can infer it from the logs we have. We know which
 locations were open after 7 P.M. and we also know that a polling location should
 only stay open late if there are people waiting in line at the official poll
@@ -275,21 +283,23 @@ closing time. We assume this protocol is followed, and we further assume that
 the line moves efficiently, and therefore the terminals in a given location
 experience no idle time between voters after 7 P.M. Finally, we assume the time
 it takes to mark a ballot is a random variable and these late voters are a
-random sample of the entire voting population. Therefore the average time it
-takes them to vote represents the time it takes the average voter to vote. We
+random sample of the entire voting population for that precinct. Therefore the
+average time it 
+takes them to vote represents the time it takes the average voter in the
+precinct to vote. We 
 then look for other times throughout the day where the time between votes is
 similar to or less than the time between votes after 7 P.M. Starting at 7 A.M.,
 for each location, we look at each one hour window that starts on the hour and
-compile the set $s_1$ of time-between-consecutive-votes for every machine in
-that location during the window. Next we compare this set to $s_2$, the
+compile the set $S_1$ of time-between-consecutive-votes for every machine in
+that location during the window. Next we compare this set to $S_2$, the
 time-between-consecutive-votes for every machine in that location after 7
 P.M. Note that we only perform this analysis on locations that were open after 7
-P.M. If the mean of $s_1$ is less than the mean of $s_2$, this suggests times in
-$s_1$ were shorter than in $s_2$ and there possibly were long lines in that
+P.M. If the mean of $S_1$ is less than the mean of $S_2$, this suggests times in
+$S_1$ were shorter than in $S_2$ and there possibly were long lines in that
 window. We then perform the Mann Whitney U statistical test to determine whether
 the observed difference in mean is due to chance error. For windows where the
 two-tailed p-value is less than 0.05, there is evidence that the difference in
-mean is real and there possibly were long lines during the window when $s_1$ was
+mean is real and there possibly were long lines during the window when $S_1$ was
 collected.  
 
 This test does make a fair number of assumptions, and we offer no proof that
@@ -452,7 +462,7 @@ Figure~\ref{fig:master-peb-activated}.
 
 \subsection{Date/Time Errors}
  AuditTool found 1465 out of 4994 machines across 12 counties whose date was
- changed during election day voting. Figure~\ref{one-hour-reset} shows an
+ changed during election day voting. Figure~\ref{fig:one-hour-reset} shows an
  example of a 1-hour time change for Georgetown County. This county had 125 out
  of 140 machines adjusted nearly exactly one hour back in time. This suggests
  the wrong Daylight Savings Time algorithm was in use, as mentioned in previous
