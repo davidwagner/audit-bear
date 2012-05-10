@@ -93,7 +93,9 @@ deficiencies. We created AuditTool\footnote{The name of the tool has been
 analyses as a free service for use by election officials or interested third
 parties.  
 
-Our research contributes to the election audit process in the following ways.
+A strength of our tool is that even in the face of missing data, we still are 
+able to pull out useful imformation. Our research contributes to the election 
+audit process in the following ways.
 
 \begin{itemize}
 \item We introduce methods for identifying, solely from publicly available audit
@@ -104,7 +106,7 @@ Our research contributes to the election audit process in the following ways.
   errors and patterns of error that suggest shortcomings in the training
   election workers receive.
 \item We introduce a new method for conducting a statistical analysis of voter
-  flow. This allows for improved resouce allocation in future elections.
+  flow. This allows for improved resource allocation in future elections.
 \item We conduct a case study using our methods and identify instances of poor
   worker training, long voting lines, and missing votes during the 2010 South
   Carolina election.
@@ -112,21 +114,22 @@ Our research contributes to the election audit process in the following ways.
   included in election log files, would allow for additional useful analysis.
 \end{itemize}
 
-We implement these methods for the ES\&S iVotronic DRE; the 2010 South Carolina
-data was already publicly available through a previous Freedom of Information
-Act request and the iVotronic was used in that election. The iVotronic system is
-a standalone, portable, touchscreen system that records vote totals, ballot
-images and an event log on internal flash memory. The iVotronic voting machine
-is one of the most widely deployed DREs in the U.S. In 2010, 422 jurisdictions
-tallying more than 22 million registered voters used this
-system~\cite{VerVot2010}. In addition, the types of analyses we identify and
-our algorithms for analysis are applicable to other DRE voting systems that
-produce the necessary audit logs. We show how the audit log data can be used to
-detect votes that may have been left out of the official results, incorrect
-procedures being followed at the precincts, precincts that had to stay open
-late, and even errors in the collection of the audit data itself. These reports
-can help election officials and fair election advocacy groups better understand
-the events that took place during and after an election. 
+We implement these methods for the ES\&S 
+iVotronic DRE; the 2010 South Carolina data was already publicly available 
+through a previous Freedom of Information Act request and the iVotronic was 
+used in that election. The iVotronic system is a standalone, portable, 
+touchscreen system that records vote totals, ballot images and an event log 
+on internal flash memory. The iVotronic voting machine is one of the most 
+widely deployed DREs in the U.S. In 2010, 422 jurisdictions tallying more 
+than 22 million registered voters used this system~\cite{VerVot2010}. In 
+addition, the types of analyses we identify and our algorithms for analysis 
+are applicable to other DRE voting systems that produce the necessary audit 
+logs. We show how the audit log data can be used to detect votes that may 
+have been left out of the official results, incorrect procedures being 
+followed at the precincts, precincts that had to stay open late, and even 
+errors in the collection of the audit data itself. These reports can help 
+election officials and fair election advocacy groups better understand the 
+events that took place during and after an election. 
 
 In this work we assume that DRE audit logs are complete, accurate, trustworthy,
 and free of accidental or malicious tampering. Detecting and preventing audit
@@ -599,14 +602,15 @@ ballot~\cite{Hall2006}, the voting machine need not be assumed correct, whereas
 our analyses do make this assumption. 
 
 \section{Conclusion}
-We recommend that election administrators conduct routine reviews of voting
-machine audit logs as they contain useful information that can shed light on
-election day procedural and equipment issues. This paper develops methods to
-analyze audit data from DRE voting machines. We perform a variety of analyses on
-the DRE audit data to detect possible miscounts, procedural errors, voting
-machine malfunctions, or system deficiencies. With this information, election
-officials can improve poll worker training, election official checklists,
-election tabulation procedures, and voting machine preparation testing.  
+This paper develops methods to analyze audit data from DRE voting machines. It 
+introduces new methods for identifying anomalies in audit data; these include 
+possible miscounts, procedural errors, voting machine malfunctions, and system 
+deficiencies. In addition, we present a new analysis of voter flow, using only 
+the generated audit logs.  Then we conduct an audit on the 2010 South Carolina 
+election using these methods and use statistical analyses to provide meaningful
+results. With this information, election officials can improve poll worker 
+training, election official checklists, election tabulation procedures, and 
+voting machine preparation testing.  
  
 We built a web application, AuditTool, to perform these analyses. Users can
 upload the DRE log files to our website and run the analyses. By automating our
