@@ -20,6 +20,9 @@
 % usepackage command, below.
 
 % This version uses the latex2e styles, not the very ancient 2.09 stuff.
+\newcommand{\cks}[1]{\emph{cks: #1}}
+\newcommand{\comment}[1]{}
+
 \documentclass[letterpaper,twocolumn,10pt]{article}
 \usepackage{graphicx}
 \usepackage{usenix,epsfig}
@@ -56,7 +59,8 @@
 
 \subsection*{Abstract}
 The voting audit logs produced by electronic voting systems contain data
-that could be useful for uncovering procedural errors and election anomalies, but they
+that could be useful for uncovering procedural errors and election anomalies,
+but they 
 are currently unwieldy and difficult for election officials to use in
 post-election audits. In this work, we develop new methods to analyze these
 audit logs for the detection of both procedural errors and system
@@ -90,8 +94,8 @@ to election officials and other interested parties. We develop new methods to
 analyze audit logs for the detection of both procedural errors and system
 deficiencies. We created AuditTool\footnote{The name of the tool has been
   blinded for anonymous submission.}, a public web application that provides our 
-analyses as a free service for use by election officials or interested third
-parties.  
+fully automated analyses as a free service for use by election officials or
+interested third parties.  
 
 A strength of our tool is that even in the face of missing data, we still are 
 able to pull out useful imformation. Our research contributes to the election 
@@ -102,7 +106,7 @@ audit process in the following ways.
   logs, potential errors in the software, hardware, and system configuration of
   DREs .
 \item We introduce methods for identifying instances of human error by poll
-  workers. Furthermore, we show how to differentiate between random
+  workers. Furthermore, we differentiate between random
   errors and patterns of error that suggest shortcomings in the training
   election workers receive.
 \item We introduce a new method for conducting a statistical analysis of voter
@@ -128,8 +132,8 @@ logs. We show how the audit log data can be used to detect votes that may
 have been left out of the official results, incorrect procedures being 
 followed at the precincts, precincts that had to stay open late, and even 
 errors in the collection of the audit data itself. These reports can help 
-election officials and fair election advocacy groups better understand the 
-events that took place during and after an election. 
+election officials, resesarchers, and fair election advocacy groups better
+understand the events that took place during and after an election. 
 
 In this work we assume that DRE audit logs are complete, accurate, trustworthy,
 and free of accidental or malicious tampering. Detecting and preventing audit
@@ -192,31 +196,78 @@ election-reporting database.
 
 \section{Analysis}
 Our system is structured as a set of analyses, each one designed to shed light
-on one particular aspect of election and post-election activities. In this
-section we present a description of our analyses. 
+on one particular aspect of election-day and post election-day activities. In
+this section we present a description of our analyses.
 
 \subsection{Analyses of Interest}
 We focus on analyses that we expect to be most useful to election officials or
 interested third parties. First, since vote-counting is fundamental to
-elections, we use the audit logs to detect if cast votes are being under- or
-over-counted.
+elections, we use the audit logs to detect instances of cast votes being
+under-counted. \cks{This said we detect over-counting too. How do we do that? I
+  took it out for now.} We do this by looking for discrepencies between the
+different log files that indicate some votes have been left out of the final
+tally. 
 
-Second, we use audit logs to identify which polling locations had long lines or
-had to stay open late to accommodate voters already in line. Long lines in the
-voting place can deter voters from casting their ballot. Knowing when and where
-to expect lines might help election officials better allocate resources at the
+Second, we use audit logs to identify incidents of lines at the polling
+locations. Long lines in the voting place can
+negatively affect the fairness of elections. There is a positive correlation
+between line length and the likelihood of a voter renegging -- that is, leaving
+the polling location without voting~\cite{Spencer2010}. A study conducted by the
+Voting Rights Institue of the Democratic National Committee found that as many
+as $3\%$ of voters in the 2004 general election in Ohio renegged
+~\cite{DNC2005}. A field study conducted 
+during the 2008 presidential primary in California observed close to $2\%$
+of voters leaving the polling location without voting when there were
+lines~\cite{Spencer2010}. In addition to renegging, voters may be deterred from
+going to the polling place in the first place if they expect long lines, what is
+known as balking. A case study of the 2004 presidential election estimates that
+between $4\%$ and $4.9\%$ of voters in Franklin County, Ohio may have balked for
+fear of encountering long lines~\cite{Allen2006}. Finally, incidents of long
+lines do not occur with equal probability at all precincts. Locations in lower
+socio-economic neighborhoods have a higher chance of experiencing long lines on
+election day~\cite{Spencer2010,DNC2005}. For these reasons, understanding where  
+and how often long lines occur is important for gauging the success and fairness
+of an election and can help election officials better allocate resources at the
 next election. 
 
-Third, we identify a number of seemingly small election-day issues that could
-negatively affect the accuracy and fairness of an election, including:
-malfunctioning displays that go unnoticed, which might cause a voter to cast a
-vote other than as intended; malfunctioning machines, which could result in
-fewer working machines and longer lines at the polling place; and failure to
-follow procedures on the part of poll workers, which can lead to loss of votes
-when a machine is not correctly closed out.
+To this end, we conduct two analyses. In the first, we find all
+locations that were open past the official poll closing time and use this as a
+proxy for the existence of long lines at the end of the day. Election officials
+might also like to know when lines occurred throughout the day or whether there
+were lines earlier in the day that had disappeared by closing time. We perform
+the former 
+analysis for those subset of locations that stayed open late. In other words,
+for those locations that stayed open late, we are able to show through analysis
+of the audit logs, at what other times of day they likely had long
+lines. In Section~\ref{suggestions} we suggest simple improvements to the log
+data that would make our long lines analysis possible for all precincts, not
+just those that stayed open late.
 
+\comment{Long lines in the 
+voting place can deter voters from casting their ballot. Knowing when and where
+to expect lines might help election officials better allocate resources at the
+next election. }
+
+In our third set of analyses, we identify a number of seemingly small
+election-day issues that can have a very real, negative effect on the accuracy
+and fairness of an election. These include:
+failure to follow procedures on the part of poll workers, incorrectly set
+internal clocks on the DREs, malfunctioning machines, and malfunctioning
+displays that go unnoticed.  
+Failling to follow election-day protocol can lead to a loss of votes when a
+machine is not correctly closed out at the end of the day. Incorrectly set
+clocks may prevent a voting machine from starting up on
+time~\cite{VotUn2007}. In addition, incorrectly set clocks make analysis of the
+audit log data more difficult and less reliable. Malfunctioning machines could
+result in fewer working machines on election day. Fewer machines can mean longer
+lines at the polling place. The number of machines per voter is also associated
+with the residual vote rate (the rate at which cast votes have errors that
+prevent them from being included in the final tally); the higher the number of
+machines, the more likely the cast votes get counted~\cite{DNC2005}. Finally,
+incorrect displays might cause a voter to cast a vote other than as intended.
+ 
 \subsection{Algorithms}
-We briefly describe here the algorithms used in each of our analyses. For the
+We describe here the algorithms used in each of our analyses. For the
 majority of these we only consider data from election day between the hours of
 7 A.M. and 7 P.M., which are the times that polls open and close in South
 Carolina. In our preliminary analysis, we found examples of log entries with
@@ -530,6 +581,7 @@ Mann Whitney U statistical test for long lines.
 \end{figure}
 
 \section{Future Voting Systems Suggestions}
+\label{suggestions}
 While many other DRE systems do capture data in their audit logs similar to what
 the iVotronic does, no other widely deployed voting system makes it as easy to
 gather all the audit logs from all of the voting machines into a single
