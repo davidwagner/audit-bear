@@ -75,24 +75,25 @@ uploaded audit logs and generates useful feedback on any detected issues.
  
 
 \section{Introduction}
-\comment{Election officials are tasked with the difficult job of ensuring fair
+Election officials are tasked with the difficult job of ensuring fair
   and smooth elections. It is their responsibility to ensure that ballots are
   cast, collected, and tallied properly and that every registered voter who
   comes to a polling place to vote is given the opportunity to do so. This
   requires that every polling location is staffed with well-trained poll-workers
   and provisioned with enough ballots and balloting stations to accomodate all
-  voters.  A number of election day events can conspire to thwart 
+  voters.  A number of election day events can thwart 
   even the best efforts on the part of election officials; surges of voters all
   arriving to vote at the same time, malfunctioning machines, and poll-worker
   errors are a few. Information about election day events can help officials,
   and researchers who study elections, better understand
-  what worked and what did not work and better prepare for the next election.}
+  what worked and what did not work and better prepare for the next election.
 
-A Direct Recording Electronic (DRE) voting machine is one in which the voter
-interacts directly with the terminal, typically through a touch screen. DREs
-provide a friendly interface to assist the voter with the ballot marking
-process. DRE machines can issue electronic ballots on demand; running out of
-paper ballots is no longer an issue. Additionally, audio DREs can assist
+The logs this research is concerned with are produced by Direct Recording 
+Electronics. A Direct Recording Electronic (DRE) voting machine is one in which
+ the voter interacts directly with the terminal, typically through a touch 
+screen. DREs provide a friendly interface to assist the voter with the ballot 
+marking process. DRE machines can issue electronic ballots on demand; running 
+out of paper ballots is no longer an issue. Additionally, audio DREs can assist
 visually impaired voters.
 
 In the November 2010 U.S. elections, 33\% of registered voters were using Direct
@@ -105,11 +106,11 @@ tallies are cumbersome, time consuming, and prone to human error if done
 manually. For these reasons, election officials do not regularly perform
 countywide post-election analysis of the log data.
 
-\comment{However, log data contains a trove of information that can shed light
-  on what takes place at the polling place on election day. For example,
-  election officials can use the information to learn about voting machines that
-  may need maintenance, or ways that poll-workers and other resources may be
-  better allocated.}
+However, log data contains a trove of information that can shed light
+on what takes place at the polling place on election day. For example,
+election officials can use the information to learn about voting machines that
+may need maintenance, or ways that poll-workers and other resources may be
+better allocated.
 
 In this work, we aim to make DRE audit log analysis more useful and accessible
 to election officials and other interested parties. We develop new methods to
@@ -225,8 +226,7 @@ this section we present a description of our analyses.
 We focus on analyses that we expect to be most useful to election officials or
 interested third parties. First, since vote-counting is fundamental to
 elections, we use the audit logs to detect instances of cast votes being
-under-counted. \cks{This said we detect over-counting too. How do we do that? I
-  took it out for now.} We do this by looking for discrepencies between the
+under-counted. We do this by looking for discrepencies between the
 different log files that indicate some votes have been left out of the final
 tally. 
 
@@ -241,7 +241,7 @@ as $3\%$ of voters in the 2004 general election in Ohio renegged
 during the 2008 presidential primary in California observed close to $2\%$
 of voters leaving the polling location without voting when there were
 lines~\cite{Spencer2010}. In addition to renegging, voters may be deterred from
-going to the polling place in the first place if they expect long lines, what is
+going to the polling place in the first place if they expect long lines, which is
 known as balking. A case study of the 2004 presidential election estimates that
 between $4\%$ and $4.9\%$ of voters in Franklin County, Ohio may have balked for
 fear of encountering long lines~\cite{Allen2006}. Finally, incidents of long
@@ -396,12 +396,6 @@ socio-economic level of the polling location~\cite{Spencer2010,
   Allen2006}. Between locations, the average time to vote can vary by as much as
 1.5 minutes~\cite{Spencer2010}.
 
-
-\cks{I took out the disclaimer paragraph about all the assumptions we're
-  making. I thought we might not need it anymore since we justify our
-  assumptions w/in the paragraph a bit more now. But put it back in if you think
-  we should.}
-
 \comment{
 This test does make a fair number of assumptions, and we offer no proof that
 they are valid. However, we feel they are not entirely unreasonable, and more
@@ -532,7 +526,11 @@ Our findings reveal the need for improvements in poll worker training. When
 opening and closing a machine, the same master PEB should be used, but in 11
 counties there were machines opened and closed with different PEBs. Our results
 showed a correlation between this error and certain precincts where poll workers
-made those mistakes repeatedly. This indicates that perhaps the poll workers do
+made those mistakes repeatedly. The event of opening and closing a machine 
+usually happens only once or twice on each machine in a precinct; therefore, 
+when this error occurs, it creates a high error percentage for the precinct. 
+When this error is made multiple times at a single precinct, it indicates 
+that perhaps the poll workers do
 not know the procedures, whereas a random distribution of these errors across
 polling locations probably means a mistake was made. Colleton County had five
 instances of this procedural error, but four of those instances took place at
@@ -540,11 +538,12 @@ one polling location. Figure~\ref{fig:diff-pebs-open-close} shows this report
 from Colleton County.  
 
 A poll worker assigns each voter a PEB to use when it is that voter's turn. When 
-voters cast votes, they should do so with a non-master PEB; we saw two counties 
-that had an unusually high number of violations of this procedure. Horry County 
-and Richland County had 22 and 32 instances of this violation, respectively. The
- feedback of this analysis for Richland County is shown in 
-Figure~\ref{fig:master-peb-activated}. 
+voters cast votes, they should do so with a non-master PEB. Florence County exhibited 
+four counties that had unusually large numbers of this error; Mill Branch had 
+this error on 56 out of 540 votes, Pamplico 2 had this error on 82 out of 579 
+votes, McAllister Hill had this error on 102 out of 749 votes, and Effingham 
+had this error on 86 out of 591 votes. Figure~\ref{fig:master-peb-activated} 
+shows this relationship in Florence County. 
 
 \begin{figure}[htbp]
 \begin{center}
@@ -556,9 +555,11 @@ Figure~\ref{fig:master-peb-activated}.
 
 \begin{figure}[htbp]
 \begin{center}
-    \includegraphics[width=0.5\textwidth,height=0.4\textheight]{BallotsActivatedWithMasterPEB.eps}
+    \includegraphics[width=0.5\textwidth,height=0.4\textheight]{PEBactivateHist.eps}
 \end{center}
-\caption{AuditTool reports ballots activated with a master PEB.}
+\caption{This histogram shows the percentage of votes at each precinct that were 
+cast with a master PEB.  The precincts that showed the highest percentages had 
+between 56 and 102 instances of this error.}
 \label{fig:master-peb-activated}
 \end{figure}
 
