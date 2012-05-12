@@ -22,6 +22,7 @@
 % This version uses the latex2e styles, not the very ancient 2.09 stuff.
 \newcommand{\cks}[1]{\emph{cks: #1}}
 \newcommand{\comment}[1]{}
+\hyphenation{time-stamps}
 
 \documentclass[letterpaper,twocolumn,10pt]{article}
 \usepackage{graphicx}
@@ -230,7 +231,7 @@ under-counted. We do this by looking for discrepancies between the
 different log files that indicate some votes have been left out of the final
 tally. 
 
-Second, we use audit logs to identify incidents of lines at the polling
+Second, we use audit logs to identify incidents of lines at polling
 locations. Long lines in the voting place can
 negatively affect the fairness of elections. There is a positive correlation
 between line length and the likelihood of a voter reneging -- that is, leaving
@@ -305,8 +306,8 @@ results of this timestamp analysis.
 AuditTool detects whether any votes were left out of the tally. We assume the
 tabulation software is correct and instead use the audit logs to check that all
 cast votes are entered into the tabulation software. Recall that each voting
-terminal’s vote totals are loaded onto a PEB when polls are closed and then all
-these PEBs’ data are loaded in to the election reporting database. There are two
+terminal's vote totals are loaded onto a PEB when polls are closed and then all
+these PEBs' data are loaded in to the election reporting database. There are two
 points in this process where votes could be omitted: a terminal may be forgotten
 and never closed, so that no PEB contains its vote totals; or a PEB used to
 close a terminal might be forgotten and not uploaded to the database. We show
