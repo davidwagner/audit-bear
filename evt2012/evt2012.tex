@@ -88,13 +88,13 @@ Election officials are tasked with the difficult job of ensuring fair
   and researchers who study elections, better understand
   what worked and what did not work and better prepare for the next election.
 
-The logs this research is concerned with are produced by Direct Recording 
+\comment{The logs this research is concerned with are produced by Direct Recording 
 Electronic voting machines. A Direct Recording Electronic (DRE) voting machine is one in which
  the voter interacts directly with the terminal, typically through a touch 
 screen. DREs provide a friendly interface to assist the voter with the ballot 
 marking process. DRE machines can issue electronic ballots on demand; running 
 out of paper ballots is no longer an issue. Additionally, audio DREs can assist
-visually impaired voters.
+visually impaired voters.}
 
 In the November 2010 U.S. elections, 33\% of registered voters were using Direct
 Recording Electronic (DRE) voting machines~\cite{verifiedvoting-votingsystems}.
@@ -151,12 +151,12 @@ widely deployed DREs in the U.S. In 2010, 422 jurisdictions tallying more
 than 22 million registered voters used this system~\cite{VerVot2010}. In 
 addition, the types of analyses we identify and our algorithms for analysis 
 are applicable to other DRE voting systems that produce the necessary audit 
-logs. We show how the audit log data can be used to detect votes that may 
+logs. \comment{We show how the audit log data can be used to detect votes that may 
 have been left out of the official results, incorrect procedures being 
 followed at the precincts, precincts that had to stay open late, and even 
 errors in the collection of the audit data itself. These reports can help 
 election officials, resesarchers, and fair election advocacy groups better
-understand the events that took place during and after an election. 
+understand the events that took place during and after an election. }
 
 In this work we assume that DRE audit logs are complete, accurate, trustworthy,
 and free of accidental or malicious tampering. Detecting and preventing audit
@@ -693,7 +693,7 @@ determine if a machine acted ``normally'' on election
 day~\cite{Antonyan2009}. They built a finite state machine that models the
 sequences of events that a well-behaved AccuVote-OS scanner might produce and
 used it to analyze AccuVote-OS logs. This type of analysis could be useful for
-the iVotronic systems that we studied, too.  
+the iVotronic systems that we studied, too~\cite{Mascher2010}.  
 
 Other work has focused specifically on detecting or predicting long
 lines. Formal models adapted from queuing theory and simulations of voter queues
