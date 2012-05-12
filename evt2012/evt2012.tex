@@ -411,8 +411,8 @@ vote was cast; there is the possibility that those votes may not have been cast
 as intended. When detecting votes cast on uncalibrated machines, we looked for
 three specific events in the event log: a machine uncalibrated event, a vote
 cast event, and a machine recalibrated event. We used a simple finite state
-machine with states = {uncalibrated machine with no votes cast, uncalibrated
-  machine with at least one vote cast, calibrated machine} and tracked the
+machine with states = \{uncalibrated machine with no votes cast, uncalibrated
+  machine with at least one vote cast, calibrated machine\} and tracked the
 current state of each terminal as we iterated through the event log. We then
 report any machine that had ever been in the state ``uncalibrated machine with
 at least one vote cast.'' 
