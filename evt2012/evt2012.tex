@@ -80,7 +80,7 @@ Election officials are tasked with the difficult job of ensuring fair
   cast, collected, and tallied properly and that every registered voter who
   comes to a polling place to vote is given the opportunity to do so. This
   requires that every polling location is staffed with well-trained poll-workers
-  and provisioned with enough ballots and balloting stations to accomodate all
+  and provisioned with enough ballots and balloting stations to accommodate all
   voters.  A number of election day events can thwart 
   even the best efforts on the part of election officials; surges of voters all
   arriving to vote at the same time, malfunctioning machines, and poll-worker
@@ -121,7 +121,7 @@ fully automated analyses as a free service for use by election officials or
 interested third parties.  
 
 A strength of our tool is that even in the face of missing data, we are still 
-able to pull out useful imformation. Our research contributes to the election 
+able to pull out useful information. Our research contributes to the election 
 audit process in the following ways.
 
 \begin{itemize}
@@ -155,7 +155,7 @@ logs. \comment{We show how the audit log data can be used to detect votes that m
 have been left out of the official results, incorrect procedures being 
 followed at the precincts, precincts that had to stay open late, and even 
 errors in the collection of the audit data itself. These reports can help 
-election officials, resesarchers, and fair election advocacy groups better
+election officials, researchers, and fair election advocacy groups better
 understand the events that took place during and after an election. }
 
 In this work we assume that DRE audit logs are complete, accurate, trustworthy,
@@ -181,7 +181,7 @@ components follows.
   terminals on election day. When a terminal is closed, it uploads its vote
   totals onto the PEB inserted into it. The PEB accumulates the precinct totals
   so that they can later be uploaded and included in the official tally.
-\item{Activator PEBs.} Activator PEBs are used bypoll workers to activate ballots
+\item{Activator PEBs.} Activator PEBs are used by poll workers to activate ballots
   for voters. Each voter’s session with the voting terminal starts with a poll
   worker inserting an Activator PEB into the terminal. 
 \end{itemize}
@@ -226,21 +226,21 @@ this section we present a description of our analyses.
 We focus on analyses that we expect to be most useful to election officials or
 interested third parties. First, since vote-counting is fundamental to
 elections, we use the audit logs to detect instances of cast votes being
-under-counted. We do this by looking for discrepencies between the
+under-counted. We do this by looking for discrepancies between the
 different log files that indicate some votes have been left out of the final
 tally. 
 
 Second, we use audit logs to identify incidents of lines at the polling
 locations. Long lines in the voting place can
 negatively affect the fairness of elections. There is a positive correlation
-between line length and the likelihood of a voter renegging -- that is, leaving
+between line length and the likelihood of a voter reneging -- that is, leaving
 the polling location without voting~\cite{Spencer2010}. A study conducted by the
-Voting Rights Institue of the Democratic National Committee found that as many
-as $3\%$ of voters in the 2004 general election in Ohio renegged
+Voting Rights Institute of the Democratic National Committee found that as many
+as $3\%$ of voters in the 2004 general election in Ohio reneged
 ~\cite{DNC2005}. A field study conducted 
 during the 2008 presidential primary in California observed close to $2\%$
 of voters leaving the polling location without voting when there were
-lines~\cite{Spencer2010}. In addition to renegging, voters may be deterred from
+lines~\cite{Spencer2010}. In addition to reneging, voters may be deterred from
 going to the polling place in the first place if they expect long lines, which is
 known as balking. A case study of the 2004 presidential election estimates that
 between $4\%$ and $4.9\%$ of voters in Franklin County, Ohio may have balked for
@@ -276,7 +276,7 @@ and fairness of an election. These include:
 failure to follow procedures on the part of poll workers, incorrectly set
 internal clocks on the DREs, malfunctioning machines, and malfunctioning
 displays that go unnoticed.  
-Failling to follow election-day protocol can lead to a loss of votes when a
+Failing to follow election-day protocol can lead to a loss of votes when a
 machine is not correctly closed out at the end of the day. Incorrectly set
 clocks may prevent a voting machine from starting up on
 time~\cite{VotUn2007}. In addition, incorrectly set clocks make analysis of the
@@ -336,7 +336,7 @@ detailing the number of polling locations that stayed open late and by how
 long. 
 	 		
 Identifying locations that had lines throughout the day is trickier. We start by
-positing that when there is a line of voters waiting, there will be negligable
+positing that when there is a line of voters waiting, there will be negligible
 idle time for each machine between voters. We would like to identify windows of
 time where this was the case for a particular polling location. (Note that this
 does not allow us to differentiate between voters standing in line and voters
@@ -439,7 +439,7 @@ We built a web application called AuditTool to give election officials and
 advocacy groups easy access to our toolset. AuditTool requires the user to
 upload an event log and a ballot images file; we strongly suggest they also
 submit the system log to take advantage of the full range of analyses our tool
-provides. AuditTool uses only publically available log data and does not store
+provides. AuditTool uses only publicly available log data and does not store
 any information from the logs, so does not endanger voter privacy.  
 
 AuditTool produces reports that warn election officials about possible miscounts
@@ -469,7 +469,7 @@ during the General 2010 elections.
 
 AuditTool also identified a few instances of machines not being closed. A
 machine must be closed in order to collect the votes and audit data from that
-machine. There was a single machine that wasn’t closed in each of the following
+machine. There was a single machine that was not closed in each of the following
 counties: Greenville County, Horry County, and Sumter County. If this was a
 close election, information such as this could be cause for an extensive audit
 or recount of the votes.  
