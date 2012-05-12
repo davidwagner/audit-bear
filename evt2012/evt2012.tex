@@ -692,6 +692,18 @@ sequences of events that a well-behaved AccuVote-OS scanner might produce and
 used it to analyze AccuVote-OS logs. This type of analysis could be useful for
 the iVotronic systems that we studied, too.  
 
+Other work has focused specifically on detecting or predicting long
+lines. Formal models adapted from queuing theory and simulations of voter queues
+can be used to better understand the factors that affect the length and duration
+of lines at the polling place~\cite{Allen2006, Edel2010}. Our work is
+complementary, and in fact information about election day events gathered by
+AuditTool can be used to inform the queuing models. A field study, such as that
+done by Spencer and Markovitz~\cite{Spencer2010}, can provide ground truth about
+the occurrence of long lines on election day, but in the absence of that ideal,
+our analysis can provide some information about the time and duration of long
+lines. 
+
+
 Voter Verified Paper Audit Trails (VVPATs) are a different type of audit
 log. Unlike the audit logs we used in our analyses, VVPATs are viewed and
 verified by the voter and are more suited to audits concerning a DRE incorrectly
