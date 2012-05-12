@@ -73,7 +73,21 @@ miscounts. We created a public web application that applies these methods to
 uploaded audit logs and generates useful feedback on any detected issues.
 
 
+
 \section{Introduction}
+\comment{Election officials are tasked with the difficult job of ensuring fair
+  and smooth elections. It is their responsibility to ensure that ballots are
+  cast, collected, and tallied properly and that every registered voter who
+  comes to a polling place to vote is given the opportunity to do so. This
+  requires that every polling location is staffed with well-trained poll-workers
+  and provisioned with enough ballots and balloting stations to accomodate all
+  voters.  A number of election day events can conspire to thwart 
+  even the best efforts on the part of election officials; surges of voters all
+  arriving to vote at the same time, malfunctioning machines, and poll-worker
+  errors are a few. Information about election day events can help officials,
+  and researchers who study elections, better understand
+  what worked and what did not work and better prepare for the next election.}
+
 A Direct Recording Electronic (DRE) voting machine is one in which the voter
 interacts directly with the terminal, typically through a touch screen. DREs
 provide a friendly interface to assist the voter with the ballot marking
@@ -81,6 +95,8 @@ process. DRE machines can issue electronic ballots on demand; running out of
 paper ballots is no longer an issue. Additionally, audio DREs can assist
 visually impaired voters.
 
+In the November 2010 U.S. elections, 33\% of registered voters were using Direct
+Recording Electronic (DRE) voting machines~\cite{verifiedvoting-votingsystems}.
 Federal standards require that electronic voting machines generate detailed
 audit logs for use during post-election audits. Unfortunately, while the logs
 contain large amounts of data, it is not immediately obvious what sort of useful
@@ -88,6 +104,12 @@ information can be learned from the data. Furthermore, even simple
 tallies are cumbersome, time consuming, and prone to human error if done
 manually. For these reasons, election officials do not regularly perform
 countywide post-election analysis of the log data.
+
+\comment{However, log data contains a trove of information that can shed light
+  on what takes place at the polling place on election day. For example,
+  election officials can use the information to learn about voting machines that
+  may need maintenance, or ways that poll-workers and other resources may be
+  better allocated.}
 
 In this work, we aim to make DRE audit log analysis more useful and accessible
 to election officials and other interested parties. We develop new methods to
