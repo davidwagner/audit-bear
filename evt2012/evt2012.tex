@@ -66,7 +66,7 @@ post-election audits. In this work, we develop new methods to analyze these
 audit logs for the detection of both procedural errors and system
 deficiencies. Our methods can be used to detect votes that were not included in
 the final tally, machines that may have experienced hardware problems during the
-election, and polling locations that closed late. We tested our analyses on
+election, and polling locations that exhibited long lines. We tested our analyses on
 data from the South Carolina 2010 elections and were able to uncover, solely
 through the analysis of audit logs, a variety of problems, including vote
 miscounts. We created a public web application that applies these methods to
@@ -89,7 +89,7 @@ Election officials are tasked with the difficult job of ensuring fair
   what worked and what did not work and better prepare for the next election.
 
 The logs this research is concerned with are produced by Direct Recording 
-Electronics. A Direct Recording Electronic (DRE) voting machine is one in which
+Electronic voting machines. A Direct Recording Electronic (DRE) voting machine is one in which
  the voter interacts directly with the terminal, typically through a touch 
 screen. DREs provide a friendly interface to assist the voter with the ballot 
 marking process. DRE machines can issue electronic ballots on demand; running 
@@ -120,7 +120,7 @@ deficiencies. We created AuditTool\footnote{The name of the tool has been
 fully automated analyses as a free service for use by election officials or
 interested third parties.  
 
-A strength of our tool is that even in the face of missing data, we still are 
+A strength of our tool is that even in the face of missing data, we are still 
 able to pull out useful imformation. Our research contributes to the election 
 audit process in the following ways.
 
@@ -169,7 +169,7 @@ A brief description of the iVotronic's functionality and its main system
 components follows.  
 
 \begin{description}
-\item{Voting terminal} The voting terminal is a stand-alone touchscreen voting
+\item{Voting terminal.} The voting terminal is a stand-alone touchscreen voting
   unit. It is equipped with an internal battery and a removable compact flash
   card Personalized Electronic Ballot (PEB). The PEB is a proprietary cartridge
   required to operate the iVotronic terminal. Typically, counties deploy two
@@ -177,15 +177,15 @@ components follows.
   are interchangeable, but poll workers are trained to keep them separate and
   use them for different purposes.
 \begin{itemize}
-\item{Master PEB} Poll workers use the master PEB to open and close all
+\item{Master PEB.} Poll workers use the master PEB to open and close all
   terminals on election day. When a terminal is closed, it uploads its vote
   totals onto the PEB inserted into it. The PEB accumulates the precinct totals
   so that they can later be uploaded and included in the official tally.
-\item{Activator PEBs} Activator PEBs are used bypoll workers to activate ballots
+\item{Activator PEBs.} Activator PEBs are used bypoll workers to activate ballots
   for voters. Each voter’s session with the voting terminal starts with a poll
   worker inserting an Activator PEB into the terminal. 
 \end{itemize}
-\item{Removable Compact Flash (CF) card} The CF cards are programmed at Election
+\item{Removable Compact Flash (CF) card.} The CF cards are programmed at Election
   Central and installed in the back of the voting terminal prior to deployment
   at the polling location. They store the event log and ballot images when the
   terminal is closed for voting. Once the polls close, the CF cards are removed
@@ -539,7 +539,7 @@ from Colleton County.
 
 A poll worker assigns each voter a PEB to use when it is that voter's turn. When 
 voters cast votes, they should do so with a non-master PEB. Florence County exhibited 
-four counties that had unusually large numbers of this error; Mill Branch had 
+four precincts that had unusually large numbers of this error; Mill Branch had 
 this error on 56 out of 540 votes, Pamplico 2 had this error on 82 out of 579 
 votes, McAllister Hill had this error on 102 out of 749 votes, and Effingham 
 had this error on 86 out of 591 votes. Figure~\ref{fig:master-peb-activated} 
