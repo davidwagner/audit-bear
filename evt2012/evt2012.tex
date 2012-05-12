@@ -314,7 +314,7 @@ detailing the number of polling locations that stayed open late and by how
 long. 
 	 		
 Identifying locations that had lines throughout the day is trickier. We start by
-positing that when there is a line of voters waiting, there will be very little
+positing that when there is a line of voters waiting, there will be negligable
 idle time for each machine between voters. We would like to identify windows of
 time where this was the case for a particular polling location. (Note that this
 does not allow us to differentiate between voters standing in line and voters
@@ -322,8 +322,8 @@ arriving in a steady stream that keeps the machines at maximum capacity. It is a
 shortcoming of our approach, but seems difficult to avoid given only the log
 data.) The analysis is complicated however, by the fact that the logs do not
 record an event when a new ballot is activated for a voter, only when a ballot
-is cast. Given the timestamps $t_1$ and $t_2$ of two cast vote events for voter
-$v_1$ and voter $v_2$, it could be the case that $v_2$ walked up to the terminal
+is cast. Given the timestamps $t_1$ and $t_2$ of two cast vote events for voters
+$v_1$ and $v_2$, it could be the case that $v_2$ walked up to the terminal
 as soon as $v_1$ cast her vote and then spent $t_2-t_1$ minutes marking her
 ballot before casting her vote. Or, it could be that the terminal was idle for
 most of $t_2-t_1$ and at the last moment, voter $v_2$ approached the terminal,
@@ -333,35 +333,61 @@ of the idle time between two consecutive cast vote events. We do not know that
 information directly, but we can infer it from the logs we have. We know which
 locations were open after 7 P.M. and we also know that a polling location should
 only stay open late if there are people waiting in line at the official poll
-closing time. We assume this protocol is followed, and we further assume that
+closing time. We assume this protocol is followed, and that
 the line moves efficiently, and therefore the terminals in a given location
-experience no idle time between voters after 7 P.M. Finally, we assume the time
-it takes to mark a ballot is a random variable and these late voters are a
-random sample of the entire voting population for that precinct. Therefore the
-average time it 
-takes them to vote represents the time it takes the average voter in the
-precinct to vote. We 
+experience very little idle time between voters after 7 P.M. We also assume
+the time it takes to mark a ballot is a random variable and these late voters
+are a random sample of the entire voting population for that precinct. Therefore
+the average time it takes them to vote represents the time it takes the average
+voter in the precinct to vote.\footnote{It is possible that voters who arrive later in
+the day are from a particular population that has a different average
+time-to-vote than voters who arrive earlier in the day, however, in their field
+study of the California 2008 primary, Spencer and Markovitz found that, at a
+given location, the
+average time to vote was constant throughout the day~\cite{Spencer2010}, so we
+feel our assumption is not unreasonable.} We 
 then look for other times throughout the day where the time between votes is
 similar to or less than the time between votes after 7 P.M. Starting at 7 A.M.,
 for each location, we look at each one hour window that starts on the hour and
 compile the set $S_1$ of time-between-consecutive-votes for every machine in
 that location during the window. Next we compare this set to $S_2$, the
 time-between-consecutive-votes for every machine in that location after 7
-P.M. Note that we only perform this analysis on locations that were open after 7
 P.M. If the mean of $S_1$ is less than the mean of $S_2$, this suggests times in
 $S_1$ were shorter than in $S_2$ and there possibly were long lines in that
 window. We then perform the Mann Whitney U statistical test to determine whether
-the observed difference in mean is due to chance error. For windows where the
+the observed difference in mean is likely due to chance error. For windows where the
 two-tailed p-value is less than 0.05, there is evidence that the difference in
 mean is real and there possibly were long lines during the window when $S_1$ was
-collected.  
+collected. For those precincts open after 7 P.M., we report the hours during the
+day that possibly experienced long lines.
 
+Note that we only perform this analysis on locations that were open
+after 7 P.M. This analysis would be useful to perform on all locations
+-- after all, it is possible a polling place had long lines early in the day, but
+was still able to close on time -- however, doing so would require assuming that
+the late voters are a random sample of the entire voting population across all
+precincts in the county and have a representative average time-to-vote; this is
+not a safe assumption. The average time to vote depends on a number of factors
+that can vary widely from precinct to precinct, including: the number of issues
+on the ballot, the clarity and length of the writing on the ballot, and the
+socio-economic level of the polling location~\cite{Spencer2010,
+  Allen2006}. Between locations, the average time to vote can vary by as much as
+1.5 minutes~\cite{Spencer2010}.
+
+
+\cks{I took out the disclaimer paragraph about all the assumptions we're
+  making. I thought we might not need it anymore since we justify our
+  assumptions w/in the paragraph a bit more now. But put it back in if you think
+  we should.}
+
+\comment{
 This test does make a fair number of assumptions, and we offer no proof that
 they are valid. However, we feel they are not entirely unreasonable, and more
 important, our goal here is not to prove there were lines, but merely to alert
 election officials about the possibility of lines occurring at certain times
 throughout the day. Election officials can use this information to help them
 allocate resources for future elections.  
+}
 
 We also report on machines that had an uncalibrated display at the time when a
 vote was cast; there is the possibility that those votes may not have been cast
@@ -617,7 +643,7 @@ learn when the voting machines were heavily used and when they were idle.
  
  \section{Related Work}
 Two recent studies used event logs from the iVotronic voting system to audit
-elections~\cite{Buel2011, Sandler2007}. Buell et al.~\cite{Buel2011} analyzed
+elections~\cite{Buell2011, Sandler2007}. Buell et al.~\cite{Buell2011} analyzed
 the same South Carolina elections that we did and also discovered votes not
 included in the certified counts and problems with the audit data. By consulting
 additional audit materials, such as the printed results tapes, the authors were
