@@ -723,16 +723,16 @@ our analyses do make this assumption.
 \section{Conclusion}
 This paper develops methods to analyze audit data from DRE voting machines. It 
 introduces new methods for extracting information about election-day activities
-and post-election anomalies from audit data; these include 
+and post-election anomalies from audit data.\comment{; these include 
 possible miscounts, procedural errors, voting machine malfunctions, and system 
-deficiencies. In addition, we present a new way to detect long lines and make
-suggestions for future audit logs that would make our analysis even more
-informative. We conduct an audit on the 2010 South Carolina 
+deficiencies. In addition, we present a new way to detect long lines and }  We conduct an audit on the 2010 South Carolina 
 election using these methods and are able to detect instances of missing votes,
 procedural errors, and likely instances of lines throughout the day. With this
 information, election officials can improve poll worker 
 training, resource allocation, election tabulation procedures, and 
-voting machine preparation testing.  
+voting machine preparation testing. Based on our experience during this
+research, we make suggestions for future audit logs that would make an automated
+analysis such as ours even more informative.
  
 We built a web application, AuditTool, to perform these analyses. Users can
 upload the DRE log files to our website and run the analyses. By automating our
