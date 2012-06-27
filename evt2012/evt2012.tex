@@ -171,25 +171,47 @@ components follows.
 
 \begin{description}
 \item{Voting terminal.} The voting terminal is a stand-alone touchscreen voting
-  unit. It is equipped with an internal battery and a removable compact flash
-  card.
+  unit. It is equipped with an internal battery, which keeps the unit operational 
+  in the event of a power failure, and a removable compact flash card, which is 
+  used to store audit data and ballot images (cast vote records).  Typically, 
+  each polling location is assigned several iVotronic machines.
 \item{Personalized Electronic Ballot (PEB).} The PEB is a proprietary cartridge
-  required to operate the iVotronic terminal. Typically, counties deploy two
-  types of PEBs to the precinct: a) a master PEB and b) an activator PEB. They
-  are interchangeable, but poll workers are trained to keep them separate and
-  use them for different purposes.
+  required to operate the iVotronic terminal. When the PEB is placed in the 
+  machine, the terminal and the PEB can communicate through an infrared port.  
+  Typically, counties deploy two types of PEBs to the precinct: a) a master PEB
+  and b) an activator PEB. They are interchangeable, but poll workers are trained 
+  to keep them separate and use them for different purposes.
 \begin{itemize}
 \item{Master PEB.} Poll workers use the master PEB to open and close all
-  terminals on election day. When a terminal is closed, it uploads its vote
-  totals onto the PEB inserted into it. The PEB accumulates the precinct totals
-  so that they can later be uploaded and included in the official tally.
+  terminals on election day. The same master PEB should be used to open all 
+  terminals in the polling location.  In the same fashion, the master PEB should
+  be used to close all terminals in the polling location at the end of the voting
+  day.  When a terminal is closed, it uploads its vote totals onto the PEB 
+  inserted into it. The PEB accumulates the precinct totals so that they can 
+  later be uploaded and included in the official tally.
 \item{Activator PEBs.} Activator PEBs are used by poll workers to activate ballots
-  for voters. Each voter’s session with the voting terminal starts with a poll
-  worker inserting an Activator PEB into the terminal. 
+  for voters. Each voter's session with the voting terminal starts with a poll
+  worker inserting an Activator PEB into the terminal. Election officials provide 
+  each precinct with multiple activator PEBs.  
 \end{itemize}
+
+Internally, all PEBs at the precinct are identical. The only
+difference between them is the color of the rubber band on their
+exterior. Thus, a master PEB can be used to activate a voter's ballot
+and an activator PEB can be used to open and close terminals. Though
+as a matter of procedure and training, they should not be used this
+way. If an activator PEB is used to close terminals, the precinct vote
+totals may be only partially uploaded to the aggregated totals on
+election night. Poll workers are trained so that they put the master
+PEB, CF cards and precinct's totals tapes in a designated bag that is
+transported to Election Central after polls close.  Activator PEBs
+used to close terminals may be left behind and their vote data not
+added to the certified count.
+
 \item{Removable Compact Flash (CF) card.} The CF cards are programmed at Election
   Central and installed in the back of the voting terminal prior to deployment
-  at the polling location. They store the event log and ballot images when the
+  at the polling location. They contain files read by the voting terminal during 
+  the voting process and store the event log and ballot images when the
   terminal is closed for voting. Once the polls close, the CF cards are removed
   from the back of the terminal and delivered to election headquarters on
   election night.
@@ -203,21 +225,30 @@ system log (EL68a.lst).
 The event log (EL152.lst) comes from the removable CF card and contains audit
 log entries from each iVotronic terminal used in the election. The log records,
 in chronological order, all events that occurred on that machine during the
-election. Each event log entry includes the iVotronic's terminal serial number,
-the PEB's serial number, the date and time, the event that occurred and a
-description of the event.
+election. It typically begins at election headquarters, before the election, 
+with a \textquotedblleft clear and test\textquotedblright \hspace{1 mm} of the 
+terminal to delete previous election data from the terminal's memory.  It also 
+records all election day events, including polls open and polls closing and 
+the number of ballots cast. Each event log entry includes the iVotronic's 
+terminal serial number, the PEB's serial number, the date and time, the event 
+that occurred and a description of the event.
 
 The ballot image file (EL155.lst) is also from the removable CF card and
 contains all ballot images saved by the iVotronic terminals during the voting
-process. The ballot images are segregated by precinct and terminal where the
-votes were cast. 
+process. An ES\&S ballot image is a list of all choices made for each vote 
+cast; it is not a scanned or photographic image. The ballot images are 
+segregated by precinct and terminal where the votes were cast. The ballots are 
+saved in a random order to protect the privacy of the voter.
 
 The system log listing file (EL68a.lst) chronologically tracks activity in the
-election reporting database at the election headquarters. It contains the totals
+election reporting database at the election headquarters. Its entries reflect 
+the commands executed by the operators during pre-election testing, election 
+night reporting, post-election testing and convassing.  It also contains the totals
 accumulated in the various precincts during election night reporting, as well as
 any warnings or errors reported by the software during the tabulation
 process. The system log also tracks the uploading of PEBs and CF cards to the
-election-reporting database.
+election-reporting database. Manual adjustment of precinct totals are also recorded 
+in the system log file.
 
 \section{Analysis}
 Our system is structured as a set of analyses, each one designed to shed light
