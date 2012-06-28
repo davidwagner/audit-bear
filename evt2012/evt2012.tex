@@ -231,8 +231,14 @@ added to the certified count.
 \subsection{iVotronic Audit Data}
 The ES\&S voting solution produces many log files, but in our analysis we focus
 on three: the event log (EL152.lst), the ballot image file (EL155.lst), and the
-system log (EL68a.lst). \comment{Include information about the other logs and 
-why we don't use them.}
+system log (EL68a.lst). Other files produced by the iVotronic are the Unofficial Precinct Report-Group
+Details (EL30a.lst), the Official Precinct Report (EL30.lst), the Unofficial Summary 
+Report-Group Details (EL45a.lst), the Official Summary Report (EL45.lst), and the 
+Manual Changes Log Listing (EL68.lst). We did not use these for two primary reasons; 
+firstly, unofficial data detracts from the validity of our analyses. Secondly, these 
+logs were not available for the majority of counties. There is limited documentation 
+about the iVotronic logs, therefore there may be additional files 
+that have not been released to the public.
 
 The event log (EL152.lst) contains audit
 log entries from each iVotronic terminal used in the election. The log records,
