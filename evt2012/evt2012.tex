@@ -159,7 +159,16 @@ errors in the collection of the audit data itself. These reports can help
 election officials, researchers, and fair election advocacy groups better
 understand the events that took place during and after an election. }
 
-In this work we assume that DRE audit logs are complete, accurate, trustworthy,
+Many studies have shown the various security weaknesses of DRE machines \cite{}. 
+While many states are moving away from this method of voting for these reasons, 
+they are still in widespread use and our tool provides easy-to-apply techniques 
+that make results and future election more reliable. Our tool does not attempt to 
+encourage continued or increased use of DRE machines.  Although the iVotronic is 
+most likely susceptible to many security exploits, our tool does not aim to detect 
+or prevent these. Rather than making DREs more secure, our tool aims to make them 
+more reliable. While it is crucial to discover machines that experience malicious 
+tampering, finding a number of uncounted votes is important too. In this work we 
+assume that DRE audit logs are complete, accurate, trustworthy,
 and free of accidental or malicious tampering. Detecting and preventing audit
 log tampering is outside the scope of this work. 
 
@@ -217,12 +226,15 @@ added to the certified count.
   election night.
 \end{description}
 
+\comment{Include a paragraph about how the data is aggregated.}
+
 \subsection{iVotronic Audit Data}
 The ES\&S voting solution produces many log files, but in our analysis we focus
 on three: the event log (EL152.lst), the ballot image file (EL155.lst), and the
-system log (EL68a.lst). 
+system log (EL68a.lst). \comment{Include information about the other logs and 
+why we don't use them.}
 
-The event log (EL152.lst) comes from the removable CF card and contains audit
+The event log (EL152.lst) contains audit
 log entries from each iVotronic terminal used in the election. The log records,
 in chronological order, all events that occurred on that machine during the
 election. It typically begins at election headquarters, before the election, 
@@ -233,7 +245,7 @@ the number of ballots cast. Each event log entry includes the iVotronic's
 terminal serial number, the PEB's serial number, the date and time, the event 
 that occurred and a description of the event.
 
-The ballot image file (EL155.lst) is also from the removable CF card and
+The ballot image file (EL155.lst) 
 contains all ballot images saved by the iVotronic terminals during the voting
 process. An ES\&S ballot image is a list of all choices made for each vote 
 cast; it is not a scanned or photographic image. The ballot images are 
@@ -249,6 +261,11 @@ any warnings or errors reported by the software during the tabulation
 process. The system log also tracks the uploading of PEBs and CF cards to the
 election-reporting database. Manual adjustment of precinct totals are also recorded 
 in the system log file.
+
+\comment{Include a paragraph about the privacy implications of the logs.}
+
+\subsection{Other DRE Machines}
+\comment{Discuss generality and defend our choice of iVotronic here.}
 
 \section{Analysis}
 Our system is structured as a set of analyses, each one designed to shed light
@@ -315,10 +332,10 @@ clocks may prevent a voting machine from starting up on
 time~\cite{VotUn2007}. In addition, incorrectly set clocks make analysis of the
 audit log data more difficult and less reliable. Malfunctioning machines could
 result in fewer working machines on election day. Fewer machines can mean longer
-lines at the polling place. The number of machines per voter is also associated
-with the residual vote rate (the rate at which cast votes have errors that
-prevent them from being included in the final tally); the higher the number of
-machines, the more likely the cast votes get counted~\cite{DNC2005}. Finally,
+lines at the polling place. Also, the number of machines per voter appears to have an 
+affect on the percentage of votes not included in the final tally due to error; 
+as the number of machines per voter increases, the more likely the cast votes 
+get counted~\cite{DNC2005}. Finally,
 incorrect displays might cause a voter to cast a vote other than as intended.
  
 \subsection{Algorithms}
@@ -757,7 +774,8 @@ This paper develops methods to analyze audit data from DRE voting machines. It
 introduces new methods for extracting information about election-day activities
 and post-election anomalies from audit data.\comment{; these include 
 possible miscounts, procedural errors, voting machine malfunctions, and system 
-deficiencies. In addition, we present a new way to detect long lines and }  We conduct an audit on the 2010 South Carolina 
+deficiencies. In addition, we present a new way to detect long lines and }  
+We conduct an audit on the 2010 South Carolina 
 election using these methods and are able to detect instances of missing votes,
 procedural errors, and likely instances of lines throughout the day. With this
 information, election officials can improve poll worker 
@@ -779,6 +797,25 @@ produce accurate election results. AuditTool is freely available online.
 {\footnotesize \bibliographystyle{acm}
 \bibliography{../Latex/paper2.bib}}
 
+%Appendix
+\clearpage
+\onecolumn
+\begin{center}
+\appendix
+\section{Event Log File}\label{app:el} 
+\includegraphics[width=0.8\textwidth]{eventLog.eps}
+%~\ref{app:el}
+
+\clearpage
+\section{Ballot Image File}\label{app:bi}
+\includegraphics[width=0.9\textwidth]{ballot.eps}
+%This is app~\ref{app:bi}
+
+\clearpage
+\section{System Log File}\label{app:sl}
+\includegraphics[width=0.9\textwidth]{system.eps}
+%This is app~\ref{app:sl}
+\end{center}
 
 %\theendnotes
 
