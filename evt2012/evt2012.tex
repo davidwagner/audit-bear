@@ -280,7 +280,22 @@ process. The system log also tracks the uploading of PEBs and CF cards to the
 election-reporting database. Manual adjustment of precinct totals are also recorded 
 in the system log file.
 
-\comment{Include a paragraph about the privacy implications of the logs.}
+None of these logs contain personally identifiable information nor is there a known
+and reasonable way that a malicious person could endanger voter privacy with the 
+contents of these logs. The event log contains the times and machines on which votes 
+were cast, but contains no voter information and no form of a ballot image; It simply 
+states that a vote was cast on machine X at time Y. The ballot images file is a 
+record of all cast ballots; this contains the ballot images.  Each ballot image 
+depicts the choices a voter made, which machine they used, and which precinct they 
+voted in. In order to protect voter privacy, the system records the ballot images 
+in a random order. Due to this functionality, the ballot image cannot be traced back 
+to a specific voter. The system log only reflects operator actions and vote totals, 
+and therefore has no impact on voter privacy.  Because the event log does not 
+contain any cast vote records and the ballot images are randomly ordered, there is 
+no way to link the two log files to determine how a voter voted.  Public information 
+in combination with these logs does not affect voter privacy either; even if a spectator 
+views the order of voters, no voter can be linked to his/her respective ballot image.    
+
 
 \subsection{Other DRE Machines}
 \comment{Discuss generality and defend our choice of iVotronic here.}
@@ -507,8 +522,17 @@ We built a web application called AuditBear to give election officials and
 advocacy groups easy access to our toolset. AuditBear requires the user to
 upload an event log and a ballot images file; we strongly suggest they also
 submit the system log to take advantage of the full range of analyses our tool
-provides. AuditBear uses only publicly available log data and does not store
-any information from the logs, so does not endanger voter privacy.  
+provides. 
+
+AuditBear uses only publicly available log data and does not store
+any information from the logs. This tool does not and cannot make connections 
+between the given logs so as to endanger voter privacy. In the case that there 
+is a malicious person with access to the tool, no harm can be done because the 
+logs do not contain any private information and it cannot be derived from the 
+use of multiple logs or public information.  Additionally, voter privacy will 
+not be harmed if there is a web security breach in the log upload process for 
+the same reasons.  Therefore, the storage and distribution of these logs does 
+not pose a risk to voter privacy. 
 
 AuditBear produces reports that warn election officials about possible miscounts
 or procedural errors. Each report provides details about the errors found and
