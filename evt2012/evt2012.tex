@@ -40,15 +40,26 @@
 
 %for single author (just remove % characters)
 \author{
-% {\rm Your N.\ Here}\\
-% Your Institution
-% \and
-% {\rm Second Name}\\
-% Second Institution
-% copy the following lines to add more authors
-% \and
-% {\rm Name}\\
-%Name Institution
+ {\rm Patrick Baxter}\\
+ Clemson University
+ \and
+ {\rm Anne Edmundson}\\
+ Cornell University
+ \and
+ {\rm Keishla Ortiz}\\
+University of Puerto Rico-Arecibo
+ \and
+ {\rm Ana Maria Quevedo}\\
+Miami Dade College
+ \and
+ {\rm Samuel Rodr\'{i}guez}\\
+University of Puerto Rico-Mayag\"uez
+ \and
+ {\rm Cynthia Sturton}\\
+University of California-Berkeley
+ \and
+ {\rm David Wagner}\\
+University of California-Berkeley
 } % end author
 
 \maketitle
@@ -116,8 +127,7 @@ better allocated.
 In this work, we aim to make DRE audit log analysis more useful and accessible
 to election officials and other interested parties. We develop new methods to
 analyze audit logs for the detection of both procedural errors and system
-deficiencies. We created AuditTool\footnote{The name of the tool has been
-  blinded for anonymous submission.}, a public web application that provides our 
+deficiencies. We created AuditBear, a public web application that provides our 
 fully automated analyses as a free service for use by election officials or
 interested third parties.  
 
@@ -360,7 +370,7 @@ may miss some terminals with an incorrect clock, but we try to minimize the
 number of false reports we give. We provide the user with a report detailing the
 results of this timestamp analysis.  
 
-AuditTool detects whether any votes were left out of the tally. We assume the
+AuditBear detects whether any votes were left out of the tally. We assume the
 tabulation software is correct and instead use the audit logs to check that all
 cast votes are entered into the tabulation software. Recall that each voting
 terminal's vote totals are loaded onto a PEB when polls are closed and then all
@@ -382,9 +392,9 @@ Looking for terminals that were never closed is a challenging problem:
 essentially we need to identify events that are missing from the logs. We do
 this by finding terminals that were opened, but never closed.  
 
-AuditTool also reports on polling locations that stayed open late and that had
+AuditBear also reports on polling locations that stayed open late and that had
 long lines throughout the day. To identify locations that stayed open past 7
-P.M., AuditTool first compiles a list of every terminal in the event log file
+P.M., AuditBear first compiles a list of every terminal in the event log file
 for which the last vote was cast after 7 P.M. Then, using information from the
 ballot image file, the algorithm groups terminals by polling location and
 computes the mean time of the last cast vote for each group. We take the mean in
@@ -493,14 +503,14 @@ log. We report those terminals where the two values are not equal as the logs
 must be missing data from those machines.  
 
 \section{Implementation}
-We built a web application called AuditTool to give election officials and
-advocacy groups easy access to our toolset. AuditTool requires the user to
+We built a web application called AuditBear to give election officials and
+advocacy groups easy access to our toolset. AuditBear requires the user to
 upload an event log and a ballot images file; we strongly suggest they also
 submit the system log to take advantage of the full range of analyses our tool
-provides. AuditTool uses only publicly available log data and does not store
+provides. AuditBear uses only publicly available log data and does not store
 any information from the logs, so does not endanger voter privacy.  
 
-AuditTool produces reports that warn election officials about possible miscounts
+AuditBear produces reports that warn election officials about possible miscounts
 or procedural errors. Each report provides details about the errors found and
 explains the possible consequences of the error and suggests, where applicable,
 steps the election officials might take to address the error.
@@ -525,14 +535,14 @@ during the General 2010 elections.
 \label{fig:pebs-not-uploaded}
 \end{figure}
 
-AuditTool also identified a few instances of machines not being closed. A
+AuditBear also identified a few instances of machines not being closed. A
 machine must be closed in order to collect the votes and audit data from that
 machine. There was a single machine that was not closed in each of the following
 counties: Greenville County, Horry County, and Sumter County. If this was a
 close election, information such as this could be cause for an extensive audit
 or recount of the votes.  
 
-Figure~\ref{fig:greenville-logs} shows some of AuditTool’s output on Greenville
+Figure~\ref{fig:greenville-logs} shows some of AuditBear’s output on Greenville
 County’s log files. 
 
 \begin{figure}[htbp]
@@ -568,7 +578,7 @@ Figure~\ref{fig:calibration-issues}.
  on machines that did not record any events on the event log. In addition to an
  unusually large amount of missing data, the analysis of Florence County showed
  machines that did not have the same number of votes cast as ballot images. See
- Figure~\ref{fig:incomplete-audit-data} for example output from AuditTool. 
+ Figure~\ref{fig:incomplete-audit-data} for example output from AuditBear. 
 
 \begin{figure}[htbp]
 \begin{center}
@@ -610,7 +620,7 @@ shows this relationship in Florence County.
 \begin{center}
     \includegraphics[width=0.5\textwidth,height=0.2\textheight]{OpenClosePEBs.eps}
 \end{center}
-\caption{AuditTool reports machines that were opened and closed with different PEBs.}
+\caption{AuditBear reports machines that were opened and closed with different PEBs.}
 \label{fig:diff-pebs-open-close}
 \end{figure}
 
@@ -625,7 +635,7 @@ between 56 and 102 instances of this error.}
 \end{figure}
 
 \subsection{Date/Time Errors}
- AuditTool found 1465 out of 4994 machines across 12 counties whose date was
+ AuditBear found 1465 out of 4994 machines across 12 counties whose date was
  changed during election day voting. Figure~\ref{fig:one-hour-reset} shows an
  example of a 1-hour time change for Georgetown County. This county had 125 out
  of 140 machines adjusted nearly exactly one hour back in time. This suggests
@@ -725,7 +735,7 @@ Capture the ballot activation event. Recording the time each ballot is activated
 (as opposed to only recording when the ballot is cast) would make it easier to
 learn when the voting machines were heavily used and when they were idle. This
 is a simple change that would not compromise voter privacy, and would make it
-simple for an automated tool such as AuditTool to extract information
+simple for an automated tool such as AuditBear to extract information
 about long lines during the day.
  
  \section{Related Work}
@@ -761,7 +771,7 @@ lines. Formal models adapted from queuing theory and simulations of voter queues
 can be used to better understand the factors that affect the length and duration
 of lines at the polling place~\cite{Allen2006, Edel2010}. Our work is
 complementary, and in fact information about election day events gathered by
-AuditTool can be used to inform the queuing models. A field study, such as that
+AuditBear can be used to inform the queuing models. A field study, such as that
 done by Spencer and Markovitz~\cite{Spencer2010}, can provide ground truth about
 the occurrence of long lines on election day, but in the absence of that ideal,
 our analysis can provide some information about the time and duration of long
@@ -792,11 +802,11 @@ voting machine preparation testing. Based on our experience during this
 research, we make suggestions for future audit logs that would make an automated
 analysis such as ours even more informative.
  
-We built a web application, AuditTool, to perform these analyses. Users can
+We built a web application, AuditBear, to perform these analyses. Users can
 upload the iVotronic log files to our website and run the analyses. By automating our
 analyses we can provide intelligent feedback to election officials during the
 canvassing process and help them quickly correct any problems in order to
-produce accurate election results. AuditTool is freely available online.  
+produce accurate election results. AuditBear is freely available online.  
  
 
 %\section{Acknowledgments}
