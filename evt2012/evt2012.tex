@@ -298,7 +298,9 @@ views the order of voters, no voter can be linked to his/her respective ballot i
 
 
 \subsection{Other DRE Machines}
+
 \comment{Discuss generality and defend our choice of iVotronic here.}
+
 
 \section{Analysis}
 Our system is structured as a set of analyses, each one designed to shed light
@@ -562,8 +564,10 @@ during the General 2010 elections.
 AuditBear also identified a few instances of machines not being closed. A
 machine must be closed in order to collect the votes and audit data from that
 machine. There was a single machine that was not closed in each of the following
-counties: Greenville County, Horry County, and Sumter County. If this was a
-close election, information such as this could be cause for an extensive audit
+counties: Greenville County, Horry County, and Sumter County. None of the races in 
+the South Carolina 2010 elections were close enough for 2082 votes to affect the 
+outcome~\cite{http://www.enr-scvotes.org/SC/19077/40477/en/summary.html}. If this 
+was a close election, information such as this could be cause for an extensive audit 
 or recount of the votes.  
 
 Figure~\ref{fig:greenville-logs} shows some of AuditBear’s output on Greenville
@@ -771,7 +775,8 @@ additional audit materials, such as the printed results tapes, the authors were
 able to offer possible explanations for why the problems occurred. Our work
 takes a slightly different approach. We focus on developing an automated
 analysis of the publicly available audit log data that can be used by
-anyone. While our tool did discover and report similar problems, we simply
+anyone to detect more possible errors than missing votes. While our tool 
+did discover and report similar problems, we simply
 report what was wrong, but can not provide a possible explanation for the cause
 of the error as we do not have access to printed results tapes.  
 
