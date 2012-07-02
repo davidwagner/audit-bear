@@ -273,7 +273,7 @@ saved in a random order to protect the privacy of the voter.
 The system log listing file (EL68a.lst) chronologically tracks activity in the
 election reporting database at the election headquarters. Its entries reflect 
 the commands executed by the operators during pre-election testing, election 
-night reporting, post-election testing and convassing.  It also contains the totals
+night reporting, post-election testing and canvassing.  It also contains the totals
 accumulated in the various precincts during election night reporting, as well as
 any warnings or errors reported by the software during the tabulation
 process. The system log also tracks the uploading of PEBs and CF cards to the
@@ -494,9 +494,11 @@ collected. For those precincts open after 7 P.M., we report the hours during the
 day that possibly experienced long lines.
 
 Note that we only perform this analysis on locations that were open
-after 7 P.M. This analysis would be useful to perform on all locations
--- after all, it is possible a polling place had long lines early in the day, but
-was still able to close on time -- however, doing so would require assuming that
+after 7 P.M. This analysis would be useful to perform on all locations; after all, it is possible a polling place had long lines early in the day, but
+was still able to close on time. One way to do that would be to define $S_2$ to
+be the time-between-consecutive-votes after 7 P.M. for every machine in
+\emph{every} location that is open late and then separately compare each location's $S_1$
+set to the global $S_2$. However, doing so assumes that
 the late voters are a random sample of the entire voting population across all
 precincts in the county and have a representative average time-to-vote; this is
 not a safe assumption. The average time to vote depends on a number of factors
@@ -504,7 +506,11 @@ that can vary widely from precinct to precinct, including: the number of issues
 on the ballot, the clarity and length of the writing on the ballot, and the
 socio-economic level of the polling location~\cite{Spencer2010,
   Allen2006}. Between locations, the average time to vote can vary by as much as
-1.5 minutes~\cite{Spencer2010}. 
+1.5 minutes~\cite{Spencer2010}. In order to make the long lines analysis
+applicable to all voting locations, one would have to correct for each
+of these confounding factors. How one might do so is an interesting open
+question and we feel that extending the long lines analysis to all voting locations
+might be amenable to deeper analysis.
 
 \comment{
 This test does make a fair number of assumptions, and we offer no proof that
