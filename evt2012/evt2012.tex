@@ -193,11 +193,22 @@ components follows.
 \begin{description}
 \item{Voting terminal.} The voting terminal is a stand-alone touchscreen voting
   unit. It is equipped with an internal battery, which keeps the unit operational 
-  in the event of a power failure, and a removable compact flash card, which is 
-  used to store audit data and ballot images (cast vote records).  Typically, 
-  each polling location is assigned several iVotronic machines.
+  in the event of a power failure.  The terminal 
+  features three internal flash memories, which store the votes and terminal audit 
+  data during the voting process. Three memories are used for redundancy as the 
+  three store the same data.  A removable compact flash card (CF) is installed in 
+  the back of the terminal prior to deployment to the precinct; this is 
+  used to store audit data and ballot images (cast vote records). Typically, 
+  each polling location is assigned several iVotronic machines as well as one audio 
+  (ADA) terminal .
 \item{Personalized Electronic Ballot (PEB).} The PEB is a proprietary cartridge
-  required to operate the iVotronic terminal. When the PEB is placed in the 
+  required to operate the iVotronic terminal. The voting terminal is 
+  delivered to the precinct with no ballot style information which is later supplied 
+  by the PEB. The PEBs are programmed at election central with the ballot data to be 
+  used at the predetermined voting locations. The precinct’s ballot definition is 
+  stored in the PEB’s internal flash memory. At the opening of the polls, pollworkers 
+  download ballot style information from the PEB to the terminal.  When the PEB is 
+  placed in the 
   machine, the terminal and the PEB can communicate through an infrared port.  
   Typically, counties deploy two types of PEBs to the precinct: a) a master PEB
   and b) an activator PEB. They are interchangeable, but poll workers are trained 
@@ -208,12 +219,22 @@ components follows.
   terminals in the polling location.  In the same fashion, the master PEB should
   be used to close all terminals in the polling location at the end of the voting
   day.  When a terminal is closed, it uploads its vote totals onto the PEB 
-  inserted into it. The PEB accumulates the precinct totals so that they can 
-  later be uploaded and included in the official tally.
+  inserted into it. The Master PEB accumulates the precinct totals so that they can 
+  later be transported to the tabulation center where the vote totals are uploaded 
+  (through PEB readers) and included in the official tally.
 \item{Activator PEBs.} Activator PEBs are used by poll workers to activate ballots
   for voters. Each voter's session with the voting terminal starts with a poll
   worker inserting an Activator PEB into the terminal. Election officials provide 
-  each precinct with multiple activator PEBs.  
+  each precinct with multiple activator PEBs. Internally, all PEBs at the precinct 
+  are identical. The only difference between them and the Master PEB  is the color 
+  of the rubber band on their exterior. Thus, a Master PEB can be used to activate 
+  a voter's ballot and an Activator PEB can be used to open and close terminals. Though 
+  as a matter of procedure and training, they should not be used this way. If an Activator 
+  PEB is used to close terminals, the precinct vote totals may be partially uploaded to the 
+  aggregated totals on election night. Poll workers are trained to put the Master PEB, CF 
+  cards and precinct's total tapes in a designated bag that is transported to Election Central 
+  after polls close.  Activator PEBs used to close terminals may be left behind and their 
+  vote data not added to the certified count.
 \end{itemize}
 
 Internally, all PEBs at the precinct are identical. The only
@@ -231,11 +252,17 @@ added to the certified count.
 
 \item{Removable Compact Flash (CF) card.} The CF cards are programmed at Election
   Central and installed in the back of the voting terminal prior to deployment
-  at the polling location. They contain files read by the voting terminal during 
-  the voting process and store the event log and ballot images when the
-  terminal is closed for voting. Once the polls close, the CF cards are removed
-  from the back of the terminal and delivered to election headquarters on
-  election night.
+  at the polling location. The CF cards contain graphic (bitmap) files read by 
+  the voting terminal during the voting process. The audio files required for the 
+  ADA terminals are also stored in the CF cards. The CF cards are also used as an 
+  external memory device as the terminal’s event log and ballot images are written 
+  to the CF card when the terminal is closed for voting. Once the polls close, the 
+  CF cards are removed from the back of the terminal and delivered to election 
+  headquarters on election night. The CF cards are uploaded to the election management 
+  system during the canvassing process. Election officials generate the election’s 
+  ballot image and event log databases from each precinct’s set of CF cards.  For the 
+  remainder of this paper, any reference to the iVotronic logs will refer to the 
+  aggregated data from all precincts in a single county.
 \end{description}
 
 \comment{Include a paragraph about how the data is aggregated.}
