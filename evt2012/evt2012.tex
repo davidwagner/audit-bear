@@ -449,20 +449,29 @@ and never closed, so that no PEB contains its vote totals; or a PEB used to
 close a terminal might be forgotten and not uploaded to the database. We show
 how to use the audit logs to detect both of these problems.  
 
-When searching the audit logs for instances of PEBs that were not uploaded, we
+In order to find instances of PEBs that were not uploaded, we
 compared the contents of the event log and ballot image files to that of the
 systems log listing file. We first identify, by parsing the event log, the set
-of PEBs used to close out voting terminals and then verify each one appears as
+of PEBs used to close out all voting terminals in the county and then verify each one appears as
 uploaded in the system log file. When a PEB is missing from the system log file,
 we report the case because it signifies that the PEB was not uploaded and the
-votes may not be in the certified totals.  
+votes may not be in the certified totals. Our tool only has the ability to detect missing 
+PEBs when the corresponding CF card has been uploaded; there may be additional missing 
+votes and audit information that we do not detect.
 
 Looking for terminals that were never closed is a challenging problem:
 essentially we need to identify events that are missing from the logs. We do
 this by finding terminals that were opened, but never closed.  
 
 AuditBear also reports on polling locations that stayed open late and that had
-long lines throughout the day. To identify locations that stayed open past 7
+long lines throughout the day. While the totals report for each precinct specifies 
+what time the totals report was printed, this may not be indicative of the time that 
+the polls closed for that precinct. For example, a poll worker may work on other 
+closing procedures before printing the totals report; if election officials were to 
+refer to these tapes to identify polling locations open late, then they would 
+experience many false positives. Additionally, this allows a more convenient way for 
+election officials to find out which precincts were open after 7 P.M. In order to 
+identify locations that stayed open past 7
 P.M., AuditBear first compiles a list of every terminal in the event log file
 for which the last vote was cast after 7 P.M. Then, using information from the
 ballot image file, the algorithm groups terminals by polling location and
