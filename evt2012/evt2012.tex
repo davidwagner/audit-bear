@@ -493,12 +493,14 @@ this by finding terminals that were opened, but never closed.
 
 AuditBear also reports on polling locations that stayed open late and that had
 long lines throughout the day. While the totals report for each precinct specifies 
-what time the totals report was printed, this may not be indicative of the time that 
+what time the totals report was printed, it may not be indicative of the time  
 the polls closed for that precinct. For example, a poll worker may work on other 
 closing procedures before printing the totals report; if election officials were to 
-refer to these tapes to identify polling locations open late, then they would 
+refer to these tapes to identify polling locations open late, they would 
 experience many false positives. Additionally, this allows a more convenient way for 
-election officials to find out which precincts were open after 7 P.M. In order to 
+election officials to find out which precincts were open after 7 P.M. 
+
+In order to 
 identify locations that stayed open past 7
 P.M., AuditBear first compiles a list of every terminal in the event log file
 for which the last vote was cast after 7 P.M. Then, using information from the
