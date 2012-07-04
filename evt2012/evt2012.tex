@@ -644,6 +644,14 @@ from the South Carolina 2010 General Election. We tested our analysis using log
 files downloaded from the website titled “South Carolina Voting
 Information.”\footnote{\url{www.scvotinginfo.com}} 
 
+While we report the anomalies AuditBear detects, there are limited resources for 
+confirmation. There is no plausible way to confirm long lines or problematic 
+machines in the 2010 elections. As we do not handle malicious tampering of the 
+logs, we assume that they are correct. While we do detect incomplete logs, we 
+have no means to know whether there are errors inthe FOIA request. With the 
+assumption that the logs are correct, we can compare our detected number of 
+missing votes to the number found in a previous study for corroboration.  
+
 \subsection{Missing Votes}
 Our analysis shows that a total of 15 PEBs containing 2082 votes were not
 uploaded from the 14 counties that we audited in South
@@ -837,6 +845,11 @@ requirements for audit logs; this could make it easier to apply our analyses to
 other voting systems~\cite{Wagner2010}. 
 
 We believe that the following recommendations will make audit files more usable. 
+
+Voting systems should support automatic generation and collection of audit logs 
+in a central location. Not many systems have this capability, which is essential 
+for third-party analysis.  In addition, audit logs should have a universal 
+electronic file format.  This would allow for a more extendable tool.
  
 Vendors should document the meaning of all events. We found audit logs with
 event messages, such as ``UNKNOWN,'' ``Warning – PEB I/O flag set,'' and
@@ -858,7 +871,12 @@ there were any problems that should be addressed.
  
 Capture the ballot activation event. Recording the time each ballot is activated
 (as opposed to only recording when the ballot is cast) would make it easier to
-learn when the voting machines were heavily used and when they were idle. This
+learn when the voting machines were heavily used and when they were idle. As the 
+ballot images file is still randomized, there is still no way to connect a voter 
+to his or her vote.  Even if a spectator watches the polling location and records 
+how long each voter spends in the voting booth, there are hundreds (if not thousands) 
+of ballot images in the ballot images file.  It is unlikely that a malicious person 
+could use this information in order to determine a voter's choice.  This
 is a simple change that would not compromise voter privacy, and would make it
 simple for an automated tool such as AuditBear to extract information
 about long lines during the day.
