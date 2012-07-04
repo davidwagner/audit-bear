@@ -169,12 +169,12 @@ errors in the collection of the audit data itself. These reports can help
 election officials, researchers, and fair election advocacy groups better
 understand the events that took place during and after an election. }
 
+\comment{
 Many studies have shown the various security weaknesses of DRE machines
 \cite{appel-evtwote09, butler-evt08, calandrino-toptobottom}. 
 While many states are moving away from this method of voting for these reasons, 
 DREs are still in widespread use and our tool provides easy-to-apply techniques 
-that make results and future elections more reliable. \comment{Our tool does not attempt to 
-encourage continued or increased use of DRE machines.} The iVotronic may be
+that make results and future elections more reliable.  The iVotronic may be
 susceptible to many security exploits, and our tool does not aim to detect 
 or prevent these; rather than making DREs more secure, our tool aims to make them 
 more reliable. While it is crucial to discover machines that experience malicious 
@@ -183,7 +183,27 @@ discouraged from voting by long lines is important too. In this work we
 assume that DRE audit logs are complete, accurate, trustworthy,
 and free of accidental or malicious tampering. Detecting and preventing audit
 log tampering is outside the scope of this work. 
-
+}
+Many studies have examined the various security weaknesses of DRE machines. DREs
+have been found to be susceptible to poor software
+engineering practices leading directly to exploitable
+vulnerabilities~\cite{kohno2008, butler-evt08}, insider attacks~\cite{appel-evtwote09}, viruses that spread
+between voting machines and the election management system
+server~\cite{calandrino-toptobottom, Feldman07},  and
+return-oriented programming exploits~\cite{Checkoway2009}. In all these cases, the demonstrated
+payload is usually a vote-stealing or vote-altering attack and often the
+associated logs aand counters are modified to remove any traces of the attack. 
+The iVotronic may be susceptible to many security exploits, and our tool does
+not aim to detect or prevent these; in this work we assume that DRE audit logs
+are complete, accurate, trustworthy, and free of accidental or malicious
+tampering. Detecting and preventing audit log tampering is outside the scope of
+this work. Rather than making DREs more secure, our tool aims to make them  
+more reliable. While it is crucial to discover machines that experience malicious 
+tampering, finding a number of uncounted votes or learning where voters may be
+discouraged from voting by long lines is important too. While many states are
+moving away from the use of DREs precisely because of their security failings,
+DREs are still in widespread use and our tool provides easy-to-apply techniques
+that make results and future elections more reliable.
 
 \section{Background}
 \subsection{Introduction to the iVotronic DRE}
