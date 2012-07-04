@@ -346,10 +346,10 @@ views the order of voters, no voter can be linked to his/her respective ballot i
 
 \subsection{Other DRE Audit Logs}
 
-Our tool focuses on the iVotronic system because it has the best support for third-party 
-analysis.  Our tool may be applicable to other systems, provided that their logs contain 
-the information described in Section 3, as well as a way to collect the logs at a central 
-location in an electronic format. Other machines that were considered were due to popularity were the ES\&S (formerly 
+Our tool focuses on the iVotronic system, but it can be \comment{ because it has the best support for third-party 
+analysis.  Our tool may be }applicable to other systems, provided their logs contain 
+the information described in Section~\ref{sec:analysis}, as well as a way to collect the logs at a central 
+location in an electronic format. Other machines that we considered based on their popularity were the ES\&S (formerly 
 Premier Election Solutions) AccuVote-TSX, Sequoia AVC Edge, and Hart eSlate. Both the 
 AccuVote-TSX and AVC Edge lack the ability to export logs to a central location for analysis. 
 Additionally, it is not clear from available documentation that these two machines support 
@@ -358,23 +358,25 @@ a tool such as ours. This machine allows for the automatic collection of audit l
 central location. It also contains the most complete logging of the three systems; it is 
 more likely that the eSlate contains all of the required information necessary to run our 
 analyses.  
-
+\comment{
 It is difficult to specify which systems our tool can be extended to without access to the 
 specific audit logs of the three systems. We cannot verify that they log all of the events that 
 are essential to our analyses.  In addition, we cannot confirm that there are no privacy 
-implications as a result of using our tool on these systems' audit logs. It is known that the 
-eSlate contains a weakness in the protection of voter privacy; the audit log includes information 
-that could connect voters' to their votes. 
-
+implications as a result of using our tool on these systems' audit logs. It} However, it is known that the 
+eSlate contains a weakness in the protection of voter privacy: the audit log includes information 
+that could connect voters to their votes. 
+\comment{
 If we were to extend our tool to support one of these systems, it would either be difficult for 
-election officials to use or would compromise voter privacy. This is not a fundamental limitation 
+election officials to use or would compromise voter privacy. This is} These are not fundamental limitations 
 of the idea of log analysis, but rather a shortcoming of existing systems, so we scoped our work 
-to reflect this. More details on suggestions for future systems is discussed in Section 6.
+to reflect this. More details on suggestions to make logging systems more
+amenable to this type of analysis is discussed in Section~\ref{sec:suggestions}.
 
 \comment{How would proposed and most recent US standards affect this?}
 
 
 \section{Analysis}
+\label{sec:analysis}
 Our system is structured as a set of analyses, each one designed to shed light
 on one particular aspect of election-day and post election-day activities. In
 this section we present a description of our analyses.
@@ -418,7 +420,7 @@ the former
 analysis for those subset of locations that stayed open late. In other words,
 for those locations that stayed open late, we are able to show through analysis
 of the audit logs, at what other times of day they likely had long
-lines. In Section~\ref{suggestions} we suggest simple improvements to the log
+lines. In Section~\ref{sec:suggestions} we suggest simple improvements to the log
 data that would make our long lines analysis possible for all precincts, not
 just those that stayed open late.
 
@@ -822,7 +824,7 @@ Mann Whitney U statistical test for long lines.
 \end{figure}
 
 \section{Future Voting Systems Suggestions}
-\label{suggestions}
+\label{sec:suggestions}
 While many other DRE systems do capture data in their audit logs similar to what
 the iVotronic does, no other widely deployed voting system makes it as easy to
 gather all the audit logs from all of the voting machines into a single
