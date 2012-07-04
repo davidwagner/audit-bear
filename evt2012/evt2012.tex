@@ -184,6 +184,9 @@ assume that DRE audit logs are complete, accurate, trustworthy,
 and free of accidental or malicious tampering. Detecting and preventing audit
 log tampering is outside the scope of this work. 
 }
+In this work we assume that DRE audit logs
+are complete, accurate, trustworthy, and free of accidental or malicious
+tampering
 Many studies have examined the various security weaknesses of DRE machines. DREs
 have been found to be susceptible to poor software
 engineering practices leading directly to exploitable
@@ -194,9 +197,7 @@ return-oriented programming exploits~\cite{Checkoway2009}. In all these cases, t
 payload is usually a vote-stealing or vote-altering attack and often the
 associated logs aand counters are modified to remove any traces of the attack. 
 The iVotronic may be susceptible to many security exploits, and our tool does
-not aim to detect or prevent these; in this work we assume that DRE audit logs
-are complete, accurate, trustworthy, and free of accidental or malicious
-tampering. Detecting and preventing audit log tampering is outside the scope of
+not aim to detect or prevent these; detecting and preventing audit log tampering is outside the scope of
 this work. Rather than making DREs more secure, our tool aims to make them  
 more reliable. While it is crucial to discover machines that experience malicious 
 tampering, finding a number of uncounted votes or learning where voters may be
@@ -835,22 +836,26 @@ Mann Whitney U statistical test for long lines.
 
 \section{Future Voting Systems Suggestions}
 \label{sec:suggestions}
-While many other DRE systems do capture data in their audit logs similar to what
+We believe the following recommendations will make audit files more usable. 
+
+Voting systems should support automatic generation and collection of audit logs 
+in a central location. \comment{Not many systems have this capability, which is essential 
+for third-party analysis.} While many other DRE systems do capture data in their audit logs similar to what
 the iVotronic does, no other widely deployed voting system makes it as easy to
 gather all the audit logs from all of the voting machines into a single
 place. As a result, while our methods are in principle applicable to other
 deployed voting systems, in practice this would require additional effort from
-election officials. Future voting system standards introduce stronger
-requirements for audit logs; this could make it easier to apply our analyses to
-other voting systems~\cite{Wagner2010}. 
-
-We believe that the following recommendations will make audit files more usable. 
-
-Voting systems should support automatic generation and collection of audit logs 
-in a central location. Not many systems have this capability, which is essential 
-for third-party analysis.  In addition, audit logs should have a universal 
+election officials. 
+ In addition, audit logs should have a universal 
 electronic file format.  This would allow for a more extendable tool.
- 
+
+Future voting system standards introduce stronger
+requirements for audit logs; this could make it easier to apply our analyses to
+other voting systems~\cite{Wagner2010}. \cks{What exactly are those stronger
+  requirements? Are they the same as what we're suggesting here? A subset?
+  Superset? Depending on the answer, this piece might do better at the end of
+  the section.} 
+
 Vendors should document the meaning of all events. We found audit logs with
 event messages, such as ``UNKNOWN,'' ``Warning – PEB I/O flag set,'' and
 ``Warning – I/O flagged PEB will be used,'' which sound ominous, however we
