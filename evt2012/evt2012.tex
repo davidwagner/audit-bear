@@ -23,6 +23,7 @@
 \newcommand{\cks}[1]{\emph{cks: #1}}
 \newcommand{\comment}[1]{}
 \hyphenation{time-stamps}
+\hyphenation{i-Vo-tron-ic}
 
 \documentclass[letterpaper,twocolumn,10pt]{article}
 \usepackage{graphicx}
@@ -224,15 +225,14 @@ components follows.
   (ADA) terminal .
 \item{Personalized Electronic Ballot (PEB).} The PEB is a proprietary cartridge
   required to operate the iVotronic terminal. The voting terminal is 
-  delivered to the precinct with no ballot style information which is later supplied 
-  by the PEB. The PEBs are programmed at election central with the ballot data to be 
-  used at the predetermined voting locations. The precinct’s ballot definition is 
-  stored in the PEB’s internal flash memory. At the opening of the polls, pollworkers 
-  download ballot style information from the PEB to the terminal.  When the PEB is 
+  delivered to the precinct with no ballot style information; that is later supplied 
+  by the PEB. The PEBs are programmed at election central with the ballot data
+  for each voting location. At the opening of the polls, pollworkers 
+  download ballot style information from the PEB's internal flash memory to the terminal.  When the PEB is 
   placed in the 
   machine, the terminal and the PEB can communicate through an infrared port.  
-  Typically, counties deploy two types of PEBs to the precinct: a) a master PEB
-  and b) an activator PEB. They are interchangeable, but poll workers are trained 
+  Typically, counties deploy two types of PEBs to the precinct: a) a Master PEB
+  and b) an Activator PEB. They are interchangeable, but poll workers are trained 
   to keep them separate and use them for different purposes.
 \begin{itemize}
 \item{Master PEB.} Poll workers use the master PEB to open and close all
@@ -246,16 +246,17 @@ components follows.
 \item{Activator PEBs.} Activator PEBs are used by poll workers to activate ballots
   for voters. Each voter's session with the voting terminal starts with a poll
   worker inserting an Activator PEB into the terminal. Election officials provide 
-  each precinct with multiple activator PEBs. Internally, all PEBs at the precinct 
-  are identical. The only difference between them and the Master PEB  is the color 
+  each precinct with multiple Activator PEBs. Internally, all PEBs at the precinct 
+  are identical. The only difference between the two types is the color 
   of the rubber band on their exterior. Thus, a Master PEB can be used to activate 
-  a voter's ballot and an Activator PEB can be used to open and close terminals. Though 
-  as a matter of procedure and training, they should not be used this way. If an Activator 
-  PEB is used to close terminals, the precinct vote totals may be partially uploaded to the 
-  aggregated totals on election night. Poll workers are trained to put the Master PEB, CF 
+  a voter's ballot and an Activator PEB can be used to open and close terminals;
+  though,  
+  as a matter of procedure and training, they should not be used this way. Poll workers are trained to put the Master PEB, CF 
   cards and precinct's total tapes in a designated bag that is transported to Election Central 
   after polls close.  Activator PEBs used to close terminals may be left behind and their 
-  vote data not added to the certified count.
+  vote data not added to the certified count. Thus, if an Activator 
+  PEB is used to close terminals, the precinct vote totals may be only partially uploaded to the 
+  aggregated totals on election night.
 \end{itemize}
 
 Internally, all PEBs at the precinct are identical. The only
