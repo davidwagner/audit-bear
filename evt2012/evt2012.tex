@@ -469,12 +469,15 @@ errors resulting from incorrectly set clocks and errors resulting from apparent
 bugs in the timestamp mechanism itself. Given only a timestamp in the logs, it
 is impossible to know whether it is correct; however, we developed a number of
 heuristics to find those terminals that likely do have an incorrect clock. We
-may miss some terminals with an incorrect clock, but we try to minimize the
-number of false reports we give. We provide the user with a report detailing the
-results of this timestamp analysis. This analysis serves as an indicator of a 
-machine that had a noticeably incorrect time; our 
-analyses do not piece together the order of events that took place in two 
-different machines, therefore we neither require nor suggest that 
+try to minimize the number of false positive reports we give; therefore, we
+may miss some terminals with an incorrect clock. We provide the user with a report detailing the
+results of this timestamp analysis. 
+
+This analysis is meant only to indicate whether a 
+machine had a noticeably incorrect time; we are not concerned with whether
+multiple machines in a precinct have synchronized internal clocks. Our 
+analyses never require piecing together the order of events that took place in two 
+different machines; therefore we neither require nor suggest that 
 election officials should synchronize the clocks on different machines. While 
 our tool can tolerate a fair amount of error, we do 
 recommend that the machines be set with a reasonably correct time.
