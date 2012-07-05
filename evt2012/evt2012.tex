@@ -246,7 +246,7 @@ components follows.
 \item{Activator PEBs.} Activator PEBs are used by poll workers to activate ballots
   for voters. Each voter's session with the voting terminal starts with a poll
   worker inserting an Activator PEB into the terminal. Election officials provide 
-  each precinct with multiple Activator PEBs. Internally, all PEBs at the precinct 
+  each precinct with multiple Activator PEBs. \comment{Internally, all PEBs at the precinct 
   are identical. The only difference between the two types is the color 
   of the rubber band on their exterior. Thus, a Master PEB can be used to activate 
   a voter's ballot and an Activator PEB can be used to open and close terminals;
@@ -256,21 +256,20 @@ components follows.
   after polls close.  Activator PEBs used to close terminals may be left behind and their 
   vote data not added to the certified count. Thus, if an Activator 
   PEB is used to close terminals, the precinct vote totals may be only partially uploaded to the 
-  aggregated totals on election night.
+  aggregated totals on election night.}
 \end{itemize}
 
 Internally, all PEBs at the precinct are identical. The only
 difference between them is the color of the rubber band on their
-exterior. Thus, a master PEB can be used to activate a voter's ballot
-and an activator PEB can be used to open and close terminals. Though
+exterior. Thus, a Master PEB can be used to activate a voter's ballot
+and an Activator PEB can be used to open and close terminals; though,
 as a matter of procedure and training, they should not be used this
-way. If an activator PEB is used to close terminals, the precinct vote
-totals may be only partially uploaded to the aggregated totals on
-election night. Poll workers are trained so that they put the master
-PEB, CF cards and precinct's totals tapes in a designated bag that is
-transported to Election Central after polls close.  Activator PEBs
-used to close terminals may be left behind and their vote data not
-added to the certified count.
+way. Poll workers are trained so that they put each precinct's Master
+PEB, CF cards and totals tapes in a designated bag that is
+transported to Election Central after polls close; Activator PEBs
+may be left behind. Thus, if an Activator PEB is used to close terminals, its
+vote data may not be uploaded to the aggregated totals on
+election night.
 
 \item{Removable Compact Flash (CF) card.} The CF cards are programmed at Election
   Central and installed in the back of the voting terminal prior to deployment
