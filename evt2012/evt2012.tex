@@ -276,12 +276,12 @@ election night.
   at the polling location. The CF cards contain graphic (bitmap) files read by 
   the voting terminal during the voting process. The audio files required for the 
   ADA terminals are also stored in the CF cards. The CF cards are also used as an 
-  external memory device as the terminal’s event log and ballot images are written 
+  external memory device as the terminal's event log and ballot images are written 
   to the CF card when the terminal is closed for voting. Once the polls close, the 
   CF cards are removed from the back of the terminal and delivered to election 
   headquarters on election night. The CF cards are uploaded to the election management 
-  system during the canvassing process. Election officials generate the election’s 
-  ballot image and event log databases from each precinct’s set of CF cards.  For the 
+  system during the canvassing process. Election officials generate the election's 
+  ballot image and event log databases from each precinct's set of CF cards.  For the 
   remainder of this paper, any reference to the iVotronic logs will refer to the 
   aggregated data from all precincts in a single county.
 \end{description}
@@ -297,7 +297,7 @@ Report-Group Details (EL45a.lst), the Official Summary Report (EL45.lst), and th
 Manual Changes Log Listing (EL68.lst). We did not use these for two primary reasons: 
 first, unofficial data detracts from the validity of our analyses; second, these 
 logs were not available for the majority of counties. There is limited documentation 
-about the iVotronic logs, therefore there may be additional files 
+about the iVotronic logs; therefore there may be additional files 
 that have not been released to the public.
 
 The event log (EL152.lst) contains audit
@@ -313,8 +313,10 @@ that occurred and a description of the event.
 
 The ballot image file (EL155.lst) 
 contains all ballot images saved by the iVotronic terminals during the voting
-process. An ES\&S ballot image is a list of all choices made for each vote 
-cast; it is not a scanned or photographic image. The ballot images are 
+process. An ES\&S ballot image is a bit of a misnomer and might more rightfully
+be called a cast vote record: it is a list of all choices made for each vote 
+cast; it is not a scanned or photographic image. However, we stick with the
+ES\&S terminology and refer to each cast vote record as a ballot image. The ballot images are 
 segregated by precinct and terminal where the votes were cast. The ballots are 
 saved in a random order to protect the privacy of the voter.
 
@@ -328,22 +330,30 @@ process. The system log also tracks the uploading of PEBs and CF cards to the
 election-reporting database. Manual adjustment of precinct totals are also recorded 
 in the system log file.
 
-None of these logs contain personally identifiable information nor is there a known
-and reasonable way that a malicious person could endanger voter privacy with the 
-contents of these logs. The event log contains the times and machines on which votes 
-were cast, but contains no voter information and no form of a ballot image; It simply 
+\subsection{Voter Privacy}
+Our tool depends on the audit logs being publically available. It is important
+that neither the logs themselves, nor our analyses endanger voter privacy. 
+
+None of the logs we use in our analyses contain personally identifiable
+information. The event log contains the times and machines on which votes  
+were cast, but contains no voter information and no form of a ballot image. It
+simply  
 states that a vote was cast on machine X at time Y. The ballot images file is a 
-record of all cast ballots; this contains the ballot images.  Each ballot image 
+record of all cast ballots.  Each ballot image 
 depicts the choices a voter made, which machine they used, and which precinct they 
 voted in. In order to protect voter privacy, the system records the ballot images 
-in a random order. Due to this functionality, the ballot image cannot be traced back 
-to a specific voter. The system log only reflects operator actions and vote totals, 
-and therefore has no impact on voter privacy.  Because the event log does not 
-contain any cast vote records and the ballot images are randomly ordered, there is 
-no way to link the two log files to determine how a voter voted.  Public information 
-in combination with these logs does not affect voter privacy either; even if a spectator 
-views the order of voters, no voter can be linked to his/her respective ballot image.    
+in a random order. As long as no machine was used by only a single voter, the
+ballot image cannot be traced back 
+to a particular entry in the event log. Because the event log does not 
+contain any cast vote records and the ballot images are randomly ordered, and
+assuming no machine was used by only a single voter, there is 
+no way to link the two log files to determine how a voter voted. Public
+information in combination with these logs does not affect voter privacy either;
+even if a spectator views the order of voters, no voter can be linked to his or
+her respective ballot image.     
 
+The system log only reflects operator actions and vote
+totals, and therefore has no forseeable impact on voter privacy. 
 
 \subsection{Other DRE Audit Logs}
 
