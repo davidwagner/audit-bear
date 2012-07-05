@@ -227,7 +227,7 @@ components follows.
   required to operate the iVotronic terminal. The voting terminal is 
   delivered to the precinct with no ballot style information; that is later supplied 
   by the PEB. The PEBs are programmed at election central with the ballot data
-  for each voting location. At the opening of the polls, pollworkers 
+  for each voting location. At the opening of the polls, poll workers 
   download ballot style information from the PEB's internal flash memory to the terminal.  When the PEB is 
   placed in the 
   machine, the terminal and the PEB can communicate through an infrared port.  
@@ -666,6 +666,35 @@ have no means to know whether there are errors in the FOIA request. With the
 assumption that the logs are correct, we can compare our detected number of 
 missing votes to the number found in a previous study for corroboration.  
 
+\subsection{Date/Time Errors}
+ AuditBear found 1465 out of 4994 machines across 12 counties whose date was
+ changed during election day voting. Figure~\ref{fig:one-hour-reset} shows an
+ example of a 1-hour time change for Georgetown County. This county had 125 out
+ of 140 machines adjusted nearly exactly one hour back in time. This suggests
+ the wrong Daylight Savings Time algorithm was in use, as mentioned in previous
+ audits~\cite{Buell2011}.
+
+\begin{figure}[htbp]
+\begin{center}
+    \includegraphics[width=0.5\textwidth,height=0.1\textheight]{ResetClock.eps}
+\end{center}
+\caption{Resetting an iVotronic clock by one hour in Georgetown County.}
+\label{fig:one-hour-reset}
+\end{figure}
+
+Anomalous time changes were detected in 18 machines. An anomaly is any
+occurrence of an unexplained date change while a machine is open for
+voting. Figure~\ref{fig:date-anomaly} is an example that occurred in Richland
+County. The machine was manually corrected about 30 minutes later.  
+
+\begin{figure}[htbp]
+\begin{center}
+    \includegraphics[width=0.5\textwidth,height=0.1\textheight]{DateAnomaly.eps}
+\end{center}
+\caption{This date anomaly occurred in Richland County during election day.}
+\label{fig:date-anomaly}
+\end{figure}
+
 \subsection{Missing Votes}
 Our analysis shows that a total of 15 PEBs containing 2082 votes were not
 uploaded from the 14 counties that we audited in South
@@ -698,116 +727,6 @@ County's log files.
 \end{center}
 \caption{Feedback for officials when detecting that some votes were not uploaded.}
 \label{fig:greenville-logs}
-\end{figure}
-
-\subsection{Calibration Errors}
- We found seven counties where at least one machine was possibly not calibrated
-when votes were cast on that machine. An uncalibrated display could potentially
-cause votes to not be cast as intended. Our report suggests an election official
-or technician inspect these machines for possible calibration issues; see
-Figure~\ref{fig:calibration-issues}.
-
-
-\begin{figure}[htbp]
-\begin{center}
-    \includegraphics[width=0.5\textwidth,height=0.2\textheight]{NotCalibrated.eps}
-\end{center}
-\caption{Feedback for election officials when calibration issues are detected.}
-\label{fig:calibration-issues}
-\end{figure}
-
-\subsection{Audit Data}
- In several counties, the audit logs appeared to be incomplete. Our analysis
- detected six counties that did not have the same set of machines in both the
- event log and ballot images file. Florence County had the most inconsistencies
- with 65 machines that had votes cast on them according to the event log, but no
- ballot images. We also saw cases where there were ballot images for votes cast
- on machines that did not record any events on the event log. In addition to an
- unusually large amount of missing data, the analysis of Florence County showed
- machines that did not have the same number of votes cast as ballot images. See
- Figure~\ref{fig:incomplete-audit-data} for example output from AuditBear. 
-
-\begin{figure}[htbp]
-\begin{center}
-    \includegraphics[width=0.5\textwidth,height=0.2\textheight]{IncompleteAuditData.eps}
-\end{center}
-\caption{Feedback when incomplete audit data is detected.}
-\label{fig:incomplete-audit-data}
-\end{figure}
-
-
-\subsection{Procedural Errors}
-Our findings reveal the need for improvements in poll worker training. When
-opening and closing a machine, the same master PEB should be used, but in 11
-counties there were machines opened and closed with different PEBs. Our results
-showed an association between this error and certain precincts where poll workers
-made those mistakes repeatedly. \comment{The event of opening and closing a machine 
-usually happens only once or twice on each machine in a precinct; therefore, 
-when this error occurs, it creates a high error percentage for the precinct.} 
-When this error is made multiple times at a single precinct, it indicates 
-that perhaps the poll workers do
-not know the procedures, whereas a random distribution of these errors across
-polling locations probably means a mistake was made. Colleton County had five
-instances of this procedural error, but four of those instances took place at
-one polling location. Figure~\ref{fig:diff-pebs-open-close} shows this report
-from Colleton County.  
-
-A poll worker assigns each voter a PEB to use when it is that voter's turn. When 
-voters cast votes, they should not do so with a Master PEB. For most precincts
-in Florence County, this error never occurred, however, four precincts had large
-numbers of this error; Mill Branch had  
-this error on 56 out of 540 votes, Pamplico 2 had this error on 82 out of 579 
-votes, McAllister Hill had this error on 102 out of 749 votes, and Effingham 
-had this error on 86 out of 591 votes. This pattern of errors again suggests
-certain pollworkers did not know the proper
-procedure. Figure~\ref{fig:master-peb-activated}  
-shows this relationship in Florence County. 
-
-\begin{figure}[htbp]
-\begin{center}
-    \includegraphics[width=0.5\textwidth,height=0.2\textheight]{OpenClosePEBs.eps}
-\end{center}
-\caption{AuditBear reports machines that were opened and closed with different PEBs.}
-\label{fig:diff-pebs-open-close}
-\end{figure}
-
-\begin{figure}[htbp]
-\begin{center}
-    \includegraphics[width=0.5\textwidth,height=0.4\textheight]{PEBactivateHist.eps}
-\end{center}
-\caption{This histogram shows the percentage of votes at each precinct that were 
-cast with a Master PEB.  The precincts that showed the highest percentages had 
-between 56 and 102 instances of this error.}
-\label{fig:master-peb-activated}
-\end{figure}
-
-\subsection{Date/Time Errors}
- AuditBear found 1465 out of 4994 machines across 12 counties whose date was
- changed during election day voting. Figure~\ref{fig:one-hour-reset} shows an
- example of a 1-hour time change for Georgetown County. This county had 125 out
- of 140 machines adjusted nearly exactly one hour back in time. This suggests
- the wrong Daylight Savings Time algorithm was in use, as mentioned in previous
- audits~\cite{Buell2011}.
-
-\begin{figure}[htbp]
-\begin{center}
-    \includegraphics[width=0.5\textwidth,height=0.1\textheight]{ResetClock.eps}
-\end{center}
-\caption{Resetting an iVotronic clock by one hour in Georgetown County.}
-\label{fig:one-hour-reset}
-\end{figure}
-
-Anomalous time changes were detected in 18 machines. An anomaly is any
-occurrence of an unexplained date change while a machine is open for
-voting. Figure~\ref{fig:date-anomaly} is an example that occurred in Richland
-County. The machine was manually corrected about 30 minutes later.  
-
-\begin{figure}[htbp]
-\begin{center}
-    \includegraphics[width=0.5\textwidth,height=0.1\textheight]{DateAnomaly.eps}
-\end{center}
-\caption{This date anomaly occurred in Richland County during election day.}
-\label{fig:date-anomaly}
 \end{figure}
 
 \subsection{Long Lines}
@@ -845,6 +764,86 @@ Mann Whitney U statistical test for long lines.
 \end{center}
 \caption{Long lines in Berkeley County.}
 \label{fig:mann-whitney-u}
+\end{figure}
+
+\subsection{Calibration Errors}
+ We found seven counties where at least one machine was possibly not calibrated
+when votes were cast on that machine. An uncalibrated display could potentially
+cause votes to not be cast as intended. Our report suggests an election official
+or technician inspect these machines for possible calibration issues; see
+Figure~\ref{fig:calibration-issues}.
+
+
+\begin{figure}[htbp]
+\begin{center}
+    \includegraphics[width=0.5\textwidth,height=0.2\textheight]{NotCalibrated.eps}
+\end{center}
+\caption{Feedback for election officials when calibration issues are detected.}
+\label{fig:calibration-issues}
+\end{figure}
+
+\subsection{Procedural Errors}
+Our findings reveal the need for improvements in poll worker training. When
+opening and closing a machine, the same master PEB should be used, but in 11
+counties there were machines opened and closed with different PEBs. Our results
+showed an association between this error and certain precincts where poll workers
+made those mistakes repeatedly. \comment{The event of opening and closing a machine 
+usually happens only once or twice on each machine in a precinct; therefore, 
+when this error occurs, it creates a high error percentage for the precinct.} 
+When this error is made multiple times at a single precinct, it indicates 
+that perhaps the poll workers do
+not know the procedures, whereas a random distribution of these errors across
+polling locations probably means a mistake was made. Colleton County had five
+instances of this procedural error, but four of those instances took place at
+one polling location. Figure~\ref{fig:diff-pebs-open-close} shows this report
+from Colleton County.  
+
+A poll worker assigns each voter a PEB to use when it is that voter's turn. When 
+voters cast votes, they should not do so with a Master PEB. For most precincts
+in Florence County, this error never occurred, however, four precincts had large
+numbers of this error; Mill Branch had  
+this error on 56 out of 540 votes, Pamplico 2 had this error on 82 out of 579 
+votes, McAllister Hill had this error on 102 out of 749 votes, and Effingham 
+had this error on 86 out of 591 votes. This pattern of errors again suggests
+certain poll workers did not know the proper
+procedure. Figure~\ref{fig:master-peb-activated}  
+shows this relationship in Florence County. 
+
+\begin{figure}[htbp]
+\begin{center}
+    \includegraphics[width=0.5\textwidth,height=0.2\textheight]{OpenClosePEBs.eps}
+\end{center}
+\caption{AuditBear reports machines that were opened and closed with different PEBs.}
+\label{fig:diff-pebs-open-close}
+\end{figure}
+
+\begin{figure}[htbp]
+\begin{center}
+    \includegraphics[width=0.5\textwidth,height=0.4\textheight]{PEBactivateHist.eps}
+\end{center}
+\caption{This histogram shows the percentage of votes at each precinct that were 
+cast with a Master PEB.  The precincts that showed the highest percentages had 
+between 56 and 102 instances of this error.}
+\label{fig:master-peb-activated}
+\end{figure}
+
+\subsection{Audit Data}
+ In several counties, the audit logs appeared to be incomplete. Our analysis
+ detected six counties that did not have the same set of machines in both the
+ event log and ballot images file. Florence County had the most inconsistencies
+ with 65 machines that had votes cast on them according to the event log, but no
+ ballot images. We also saw cases where there were ballot images for votes cast
+ on machines that did not record any events on the event log. In addition to an
+ unusually large amount of missing data, the analysis of Florence County showed
+ machines that did not have the same number of votes cast as ballot images. See
+ Figure~\ref{fig:incomplete-audit-data} for example output from AuditBear. 
+
+\begin{figure}[htbp]
+\begin{center}
+    \includegraphics[width=0.5\textwidth,height=0.2\textheight]{IncompleteAuditData.eps}
+\end{center}
+\caption{Feedback when incomplete audit data is detected.}
+\label{fig:incomplete-audit-data}
 \end{figure}
 
 \section{Future Voting Systems Suggestions}
