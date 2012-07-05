@@ -92,11 +92,11 @@ Election officials are tasked with the difficult job of ensuring fair
   and smooth elections. It is their responsibility to ensure that ballots are
   cast, collected, and tallied properly and that every registered voter who
   comes to a polling place to vote is given the opportunity to do so. This
-  requires that every polling location is staffed with well-trained poll-workers
+  requires that every polling location is staffed with well-trained poll workers
   and provisioned with enough ballots and balloting stations to accommodate all
   voters.  A number of election day events can thwart 
   even the best efforts on the part of election officials; surges of voters all
-  arriving to vote at the same time, malfunctioning machines, and poll-worker
+  arriving to vote at the same time, malfunctioning machines, and poll worker
   errors are a few. Information about election day events can help officials,
   and researchers who study elections, better understand
   what worked and what did not work and better prepare for the next election.
@@ -122,7 +122,7 @@ countywide post-election analysis of the log data.
 However, log data contains a trove of information that can shed light
 on what takes place at the polling place on election day. For example,
 election officials can use the information to learn about voting machines that
-may need maintenance, or ways that poll-workers and other resources may be
+may need maintenance, or ways that poll workers and other resources may be
 better allocated.
 
 In this work, we aim to make DRE audit log analysis more useful and accessible
@@ -139,7 +139,7 @@ audit process in the following ways.
 \begin{itemize}
 \item We introduce methods for identifying, solely from publicly available audit
   logs, potential errors in the software, hardware, and system configuration of
-  DREs .
+  DREs.
 \item We introduce methods for identifying instances of human error by poll
   workers. Furthermore, we differentiate between random
   errors and patterns of error that suggest shortcomings in the training
@@ -196,7 +196,7 @@ between voting machines and the election management system
 server~\cite{calandrino-toptobottom, Feldman07},  and
 return-oriented programming exploits~\cite{Checkoway2009}. In all these cases, the demonstrated
 payload is usually a vote-stealing or vote-altering attack and often the
-associated logs aand counters are modified to remove any traces of the attack. 
+associated logs and counters are modified to remove any traces of the attack. 
 The iVotronic may be susceptible to many security exploits, and our tool does
 not aim to detect or prevent these; detecting and preventing audit log tampering is outside the scope of
 this work. Rather than making DREs more secure, our tool aims to make them  
@@ -375,7 +375,7 @@ specific audit logs of the three systems. We cannot verify that they log all of 
 are essential to our analyses.  In addition, we cannot confirm that there are no privacy 
 implications as a result of using our tool on these systems' audit logs. It} However, it is known that the 
 eSlate contains a weakness in the protection of voter privacy: the audit log includes information 
-that could connect voters to their votes. 
+that could connect voters to their votes~\cite{Wagner2010}. 
 \comment{
 If we were to extend our tool to support one of these systems, it would either be difficult for 
 election officials to use or would compromise voter privacy. This is} These are not fundamental limitations 
@@ -430,7 +430,7 @@ were lines earlier in the day that had disappeared by closing time. We perform
 the former 
 analysis for those subset of locations that stayed open late. In other words,
 for those locations that stayed open late, we are able to show through analysis
-of the audit logs, at what other times of day they likely had long
+of the audit logs, at what other times of the day they likely had long
 lines. In Section~\ref{sec:suggestions} we suggest simple improvements to the log
 data that would make our long lines analysis possible for all precincts, not
 just those that stayed open late.
@@ -591,16 +591,12 @@ socio-economic level of the polling location~\cite{Spencer2010,
 applicable to all voting locations, one would have to correct for each
 of these confounding factors. How one might do so is an interesting open
 question, and we feel that extending the long lines analysis to all voting locations
-might be amenable to deeper analysis.
-
-\comment{
-This test does make a fair number of assumptions, and we offer no proof that
+might be amenable to deeper analysis.\comment{ This test does make a fair number of assumptions, and we offer no proof that
 they are valid. However, we feel they are not entirely unreasonable, and more
 important, our goal here is not to prove there were lines, but merely to alert
 election officials about the possibility of lines occurring at certain times
 throughout the day. Election officials can use this information to help them
-allocate resources for future elections.  
-}
+allocate resources for future elections.}
 
 We also report on machines that had an uncalibrated display at the time when a
 vote was cast; there is the possibility that those votes may not have been cast
@@ -611,14 +607,14 @@ machine with states = \{uncalibrated machine with no votes cast, uncalibrated
   machine with at least one vote cast, calibrated machine\} and tracked the
 current state of each terminal as we iterated through the event log. We then
 report any machine that had ever been in the state ``uncalibrated machine with
-at least one vote cast.'' 
+at least one vote cast.''
 
 The procedural errors we are concerned with are: not printing zero tapes,
 casting votes with master PEBs, and opening and closing a machine with
 different PEBs. For each polling location, we check that every machine in the
 location recorded printing zero tapes, that each machine was opened and closed
 with the same PEB, and that no PEB used to open or close a machine was also used
-to cast a vote.  
+to cast a vote.
 
 Last, we consider how to detect missing data: audit data that was not recorded,
 but should have been. In some cases, this may be impossible; if there is no
@@ -678,7 +674,7 @@ missing votes to the number found in a previous study for corroboration.
 \begin{center}
     \includegraphics[width=0.5\textwidth,height=0.1\textheight]{ResetClock.eps}
 \end{center}
-\caption{Resetting an iVotronic clock by one hour in Georgetown County.}
+\caption{Event log entry for resetting an iVotronic clock by one hour in Georgetown County.}
 \label{fig:one-hour-reset}
 \end{figure}
 
@@ -691,7 +687,7 @@ County. The machine was manually corrected about 30 minutes later.
 \begin{center}
     \includegraphics[width=0.5\textwidth,height=0.1\textheight]{DateAnomaly.eps}
 \end{center}
-\caption{This date anomaly occurred in Richland County during election day.}
+\caption{The event log shows a seemingly random date anomaly, which occurred in Richland County during the election day.}
 \label{fig:date-anomaly}
 \end{figure}
 
@@ -705,7 +701,7 @@ during the General 2010 elections.
 \begin{center}
     \includegraphics[width=0.5\textwidth,height=0.1\textheight]{PEBsNotUploaded1.eps}
 \end{center}
-\caption{PEBs not uploaded and their corresponding votes.}
+\caption{The number of PEBs and their corresponding votes per county that were not uploaded.}
 \label{fig:pebs-not-uploaded}
 \end{figure}
 
@@ -714,7 +710,7 @@ machine must be closed in order to collect the votes and audit data from that
 machine. There was a single machine that was not closed in each of the following
 counties: Greenville County, Horry County, and Sumter County. None of the races in 
 the South Carolina 2010 elections were close enough for 2082 votes to affect the 
-outcome~\cite{scresults}\comment{http://www.enr-scvotes.org/SC/19077/40477/en/summary.html}. If this 
+outcome~\cite{scResults}. If this 
 was a close election, information such as this could be cause for an extensive audit 
 or recount of the votes.  
 
@@ -725,7 +721,7 @@ County's log files.
 \begin{center}
     \includegraphics[width=0.5\textwidth,height=0.3\textheight]{VotesNotUploaded.eps}
 \end{center}
-\caption{Feedback for officials when detecting that some votes were not uploaded.}
+\caption{Feedback generated by AuditBear for officials when detecting that some votes were not uploaded.}
 \label{fig:greenville-logs}
 \end{figure}
 
@@ -746,7 +742,7 @@ Mann Whitney U statistical test for long lines.
 \begin{center}
     \includegraphics[width=0.5\textwidth,height=0.3\textheight]{berkeleyopenlate.eps}
 \end{center}
-\caption{Precincts that closed late in Berkeley County.}
+\caption{The number of precincts that closed within certain time intervals after 7:00 P.M. (late) in Berkeley County.}
 \label{fig:precincts-closed-late}
 \end{figure}
 
@@ -754,7 +750,7 @@ Mann Whitney U statistical test for long lines.
 \begin{center}
     \includegraphics[width=0.5\textwidth,height=0.3\textheight]{berkeleyLongLine.eps}
 \end{center}
-\caption{Long lines in Berkeley County.}
+\caption{The number of precincts that may have experience long lines within certain time intervals in Berkeley County.}
 \label{fig:long-lines}
 \end{figure}
 
@@ -762,7 +758,7 @@ Mann Whitney U statistical test for long lines.
 \begin{center}
     \includegraphics[width=0.5\textwidth,height=0.4\textheight]{berkeleyLongLineTable.eps}
 \end{center}
-\caption{Long lines in Berkeley County.}
+\caption{Times when there were likely long lines in Berkeley County on a per-precinct basis.}
 \label{fig:mann-whitney-u}
 \end{figure}
 
@@ -778,7 +774,7 @@ Figure~\ref{fig:calibration-issues}.
 \begin{center}
     \includegraphics[width=0.5\textwidth,height=0.2\textheight]{NotCalibrated.eps}
 \end{center}
-\caption{Feedback for election officials when calibration issues are detected.}
+\caption{Feedback generated by AuditBear for election officials when calibration issues are detected.}
 \label{fig:calibration-issues}
 \end{figure}
 
@@ -813,7 +809,7 @@ shows this relationship in Florence County.
 \begin{center}
     \includegraphics[width=0.5\textwidth,height=0.2\textheight]{OpenClosePEBs.eps}
 \end{center}
-\caption{AuditBear reports machines that were opened and closed with different PEBs.}
+\caption{An example response when AuditBear reports machines that were opened and closed with different PEBs.}
 \label{fig:diff-pebs-open-close}
 \end{figure}
 
@@ -842,7 +838,7 @@ between 56 and 102 instances of this error.}
 \begin{center}
     \includegraphics[width=0.5\textwidth,height=0.2\textheight]{IncompleteAuditData.eps}
 \end{center}
-\caption{Feedback when incomplete audit data is detected.}
+\caption{Feedback generated by AuditBear when incomplete audit data is detected.}
 \label{fig:incomplete-audit-data}
 \end{figure}
 
