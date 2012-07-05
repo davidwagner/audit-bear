@@ -192,7 +192,7 @@ Many studies have examined the various security weaknesses of DRE machines. DREs
 have been found to be susceptible to poor software
 engineering practices leading directly to exploitable
 vulnerabilities~\cite{kohno2008, butler-evt08}, insider attacks~\cite{appel-evtwote09}, viruses that spread
-between voting machines and the election management system
+between voting machines and the Election Management System
 server~\cite{calandrino-toptobottom, Feldman07},  and
 return-oriented programming exploits~\cite{Checkoway2009}. In all these cases, the demonstrated
 payload is usually a vote-stealing or vote-altering attack and often the
@@ -279,8 +279,8 @@ election night.
   external memory device as the terminal's event log and ballot images are written 
   to the CF card when the terminal is closed for voting. Once the polls close, the 
   CF cards are removed from the back of the terminal and delivered to election 
-  headquarters on election night. The CF cards are uploaded to the election management 
-  system during the canvassing process. Election officials generate the election's 
+  headquarters on election night. The CF cards are uploaded to the Election Management 
+  System during the canvassing process. Election officials generate the election's 
   ballot image and event log databases from each precinct's set of CF cards.  For the 
   remainder of this paper, any reference to the iVotronic logs will refer to the 
   aggregated data from all precincts in a single county.
@@ -857,13 +857,6 @@ election officials.
  In addition, audit logs should have a universal 
 electronic file format.  This would allow for a more extendable tool.
 
-Future voting system standards introduce stronger
-requirements for audit logs; this could make it easier to apply our analyses to
-other voting systems~\cite{Wagner2010}. \cks{What exactly are those stronger
-  requirements? Are they the same as what we're suggesting here? A subset?
-  Superset? Depending on the answer, this piece might do better at the end of
-  the section.} 
-
 Vendors should document the meaning of all events. We found audit logs with
 event messages, such as ``UNKNOWN,'' ``Warning – PEB I/O flag set,'' and
 ``Warning – I/O flagged PEB will be used,'' which sound ominous, however we
@@ -893,6 +886,23 @@ could use this information in order to determine a voter's choice.  This
 is a simple change that would not compromise voter privacy, and would make it
 simple for an automated tool such as AuditBear to extract information
 about long lines during the day.
+
+Future voting system standards introduce stronger
+requirements for audit logs; this could make it easier to apply our analyses to
+other voting systems~\cite{Wagner2010}. The current standards require voting systems 
+to keep a permanent record of audit data, but does not specify a particular format. 
+These standards also address the matter of timestamps; they state 
+``All systems shall include a real-time clock as part of the system’s hardware.
+The system shall maintain an absolute record of the time and date or a record
+relative to some event whose time and data are known and recorded''~\cite{CurrentStandards}. Newly proposed, 
+but not yet approved standards, make additional requirements: voting systems must 
+produce electronic records that are exportable and transmitted to the Election Management 
+System.  Another proposal under these standards is that voter privacy be maintained 
+even when reports are combined~\cite{ProposedStandards}.  Many of these standards align with our suggestions for 
+future voting systems.\comment{What exactly are those stronger
+  requirements? Are they the same as what we're suggesting here? A subset?
+  Superset? Depending on the answer, this piece might do better at the end of
+  the section.} 
  
  \section{Related Work}
 Two recent studies used event logs from the iVotronic voting system to audit
