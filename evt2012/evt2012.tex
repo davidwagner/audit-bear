@@ -753,7 +753,7 @@ one polling location. Figure~\ref{fig:diff-pebs-open-close} shows this report
 from Colleton County.  
 
 A poll worker assigns each voter a PEB to use when it is that voter's turn. When 
-voters cast votes, they should do so with a non-master PEB. For most precincts
+voters cast votes, they should not do so with a Master PEB. For most precincts
 in Florence County, this error never occurred, however, four precincts had large
 numbers of this error; Mill Branch had  
 this error on 56 out of 540 votes, Pamplico 2 had this error on 82 out of 579 
@@ -776,7 +776,7 @@ shows this relationship in Florence County.
     \includegraphics[width=0.5\textwidth,height=0.4\textheight]{PEBactivateHist.eps}
 \end{center}
 \caption{This histogram shows the percentage of votes at each precinct that were 
-cast with a master PEB.  The precincts that showed the highest percentages had 
+cast with a Master PEB.  The precincts that showed the highest percentages had 
 between 56 and 102 instances of this error.}
 \label{fig:master-peb-activated}
 \end{figure}
