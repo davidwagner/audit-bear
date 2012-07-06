@@ -394,13 +394,19 @@ this section we present a description of our analyses.
 
 \subsection{Analyses of Interest}
 We focus on analyses that we expect to be most useful to election officials or
-interested third parties. First, since vote-counting is fundamental to
+interested third parties. First, since incorrectly set internal clocks on the
+DREs make analysis of the audit log data more difficult and less reliable, we
+identify erroneous timestamps in the audit logs. Incorrectly set
+clocks may also prevent a voting machine from starting up on
+time~\cite{VotUn2007}.
+
+Then, since vote-counting is fundamental to
 elections, we use the audit logs to detect instances of cast votes being
 under-counted. We do this by looking for discrepancies between the
 different log files that indicate some votes have been left out of the final
 tally. 
 
-Second, we use audit logs to identify incidents of lines at polling
+Third, we use audit logs to identify incidents of lines at polling
 locations. Long lines in the voting place can
 negatively affect the fairness of elections. There is a positive correlation
 between line length and the likelihood of a voter reneging -- that is, leaving
@@ -440,18 +446,14 @@ voting place can deter voters from casting their ballot. Knowing when and where
 to expect lines might help election officials better allocate resources at the
 next election. }
 
-In our third set of analyses, we identify a number of seemingly small
+In our fourth set of analyses, we identify a number of seemingly small
 election-day issues that can have a very real, negative effect on the accuracy
 and fairness of an election. These include:
-failure to follow procedures on the part of poll workers, incorrectly set
-internal clocks on the DREs, malfunctioning machines, and malfunctioning
+failure to follow procedures on the part of poll workers, malfunctioning machines, and malfunctioning
 displays that go unnoticed.  
 
 Failing to follow election-day protocol can lead to a loss of votes when a
-machine is not correctly closed out at the end of the day. Incorrectly set
-clocks may prevent a voting machine from starting up on
-time~\cite{VotUn2007}. In addition, incorrectly set clocks make analysis of the
-audit log data more difficult and less reliable. Malfunctioning machines could
+machine is not correctly closed out at the end of the day. Malfunctioning machines could
 result in fewer working machines on election day. Fewer machines can mean longer
 lines at the polling place. Also, the number of machines per voter appears to have an 
 affect on the percentage of votes not included in the final tally due to error: 
