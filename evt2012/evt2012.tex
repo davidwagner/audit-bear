@@ -119,7 +119,7 @@ tallies are cumbersome, time consuming, and prone to human error if done
 manually. For these reasons, election officials do not regularly perform
 countywide post-election analysis of the log data.
 
-However, log data contains a trove of information that can shed light
+However, log data contain a trove of information that can shed light
 on what takes place at the polling place on election day. For example,
 election officials can use the information to learn about voting machines that
 may need maintenance, or ways that poll workers and other resources may be
@@ -187,7 +187,7 @@ log tampering is outside the scope of this work.
 }
 In this work we assume that DRE audit logs
 are complete, accurate, trustworthy, and free of accidental or malicious
-tampering
+tampering. 
 Many studies have examined the various security weaknesses of DRE machines. DREs
 have been found to be susceptible to poor software
 engineering practices leading directly to exploitable
@@ -222,7 +222,7 @@ components follows.
   the back of the terminal prior to deployment to the precinct; this is 
   used to store audit data and ballot images (cast vote records). Typically, 
   each polling location is assigned several iVotronic machines as well as one audio 
-  (ADA) terminal .
+  (ADA) terminal.
 \item{Personalized Electronic Ballot (PEB).} The PEB is a proprietary cartridge
   required to operate the iVotronic terminal. The voting terminal is 
   delivered to the precinct with no ballot style information; that is later supplied 
@@ -235,9 +235,9 @@ components follows.
   and b) an Activator PEB. They are interchangeable, but poll workers are trained 
   to keep them separate and use them for different purposes.
 \begin{itemize}
-\item{Master PEB.} Poll workers use the master PEB to open and close all
-  terminals on election day. The same master PEB should be used to open all 
-  terminals in the polling location.  In the same fashion, the master PEB should
+\item{Master PEB.} Poll workers use the Master PEB to open and close all
+  terminals on election day. The same Master PEB should be used to open all 
+  terminals in the polling location.  In the same fashion, the Master PEB should
   be used to close all terminals in the polling location at the end of the voting
   day.  When a terminal is closed, it uploads its vote totals onto the PEB 
   inserted into it. The Master PEB accumulates the precinct totals so that they can 
@@ -265,7 +265,7 @@ exterior. Thus, a Master PEB can be used to activate a voter's ballot
 and an Activator PEB can be used to open and close terminals; though,
 as a matter of procedure and training, they should not be used this
 way. Poll workers are trained so that they put each precinct's Master
-PEB, CF cards and totals tapes in a designated bag that is
+PEB, CF cards and totals tape in a designated bag that is
 transported to Election Central after polls close; Activator PEBs
 may be left behind. Thus, if an Activator PEB is used to close terminals, its
 vote data may not be uploaded to the aggregated totals on
@@ -306,7 +306,7 @@ in chronological order, all events that occurred on that machine during the
 election. It typically begins at election headquarters, before the election, 
 with a \textquotedblleft clear and test\textquotedblright \hspace{1 mm} of the 
 terminal to delete previous election data from the terminal's memory.  It also 
-records all election day events, including polls open and polls closing and 
+records all election day events, including polls open, polls closing, and 
 the number of ballots cast. Each event log entry includes the iVotronic's 
 terminal serial number, the PEB's serial number, the date and time, the event 
 that occurred and a description of the event.
@@ -323,7 +323,7 @@ saved in a random order to protect the privacy of the voter.
 The system log listing file (EL68a.lst) chronologically tracks activity in the
 election reporting database at the election headquarters. Its entries reflect 
 the commands executed by the operators during pre-election testing, election 
-night reporting, post-election testing and canvassing.  It also contains the totals
+night reporting, post-election testing, and canvassing.  It also contains the totals
 accumulated in the various precincts during election night reporting, as well as
 any warnings or errors reported by the software during the tabulation
 process. The system log also tracks the uploading of PEBs and CF cards to the
@@ -331,14 +331,14 @@ election-reporting database. Manual adjustment of precinct totals are also recor
 in the system log file.
 
 \subsection{Voter Privacy}
-Our tool depends on the audit logs being publically available. It is important
+Our tool depends on the audit logs being publicly available. It is important
 that neither the logs themselves, nor our analyses endanger voter privacy. 
 
 None of the logs we use in our analyses contain personally identifiable
 information. The event log contains the times and machines on which votes  
 were cast, but contains no voter information and no form of a ballot image. It
 simply  
-states that a vote was cast on machine X at time Y. The ballot images file is a 
+states that a vote was cast on machine X at time Y. The ballot image file is a 
 record of all cast ballots.  Each ballot image 
 depicts the choices a voter made, which machine they used, and which precinct they 
 voted in. In order to protect voter privacy, the system records the ballot images 
@@ -484,7 +484,7 @@ AuditBear detects whether any votes were left out of the tally. We assume the
 tabulation software is correct and instead use the audit logs to check that all
 cast votes are entered into the tabulation software. Recall that each voting
 terminal's vote totals are loaded onto a PEB when polls are closed and then all
-these PEBs' data are loaded in to the election reporting database. There are two
+these PEBs' data are loaded into the election reporting database. There are two
 points in this process where votes could be omitted: a terminal may be forgotten
 and never closed, so that no PEB contains its vote totals; or a PEB used to
 close a terminal might be forgotten and not uploaded to the database. We show
@@ -492,7 +492,7 @@ how to use the audit logs to detect both of these problems.
 
 In order to find instances of PEBs that were not uploaded, we
 compared the contents of the event log and ballot image files to that of the
-systems log listing file. We first identify, by parsing the event log, the set
+system log listing file. We first identify, by parsing the event log, the set
 of PEBs used to close out all voting terminals in the county and then verify each one appears as
 uploaded in the system log file. When a PEB is missing from the system log file,
 we report the case because it signifies that the PEB was not uploaded and the
@@ -561,7 +561,7 @@ then look for other times throughout the day where the time between votes is
 similar to or less than the time between votes after 7 P.M. Starting at 7 A.M.,
 for each location, we look at each one hour window that starts on the hour and
 compile the set $S_1$ of time-between-consecutive-votes for every machine in
-that location during the window. Next we compare this set to $S_2$, the
+that location during the window. Next, we compare this set to $S_2$, the
 time-between-consecutive-votes for every machine in that location after 7
 P.M. If the mean of $S_1$ is less than the mean of $S_2$, this suggests times in
 $S_1$ were shorter than in $S_2$ and there possibly were long lines in that
@@ -608,7 +608,7 @@ report any machine that had ever been in the state ``uncalibrated machine with
 at least one vote cast.''
 
 The procedural errors we are concerned with are: not printing zero tapes,
-casting votes with master PEBs, and opening and closing a machine with
+casting votes with Master PEBs, and opening and closing a machine with
 different PEBs. For each polling location, we check that every machine in the
 location recorded printing zero tapes, that each machine was opened and closed
 with the same PEB, and that no PEB used to open or close a machine was also used
@@ -628,7 +628,7 @@ must be missing data from those machines.
 \section{Implementation}
 We built a web application called AuditBear to give election officials and
 advocacy groups easy access to our toolset. AuditBear requires the user to
-upload an event log and a ballot images file; we strongly suggest they also
+upload an event log and a ballot image file; we strongly suggest they also
 submit the system log to take advantage of the full range of analyses our tool
 provides. 
 
@@ -778,7 +778,7 @@ Figure~\ref{fig:calibration-issues}.
 
 \subsection{Procedural Errors}
 Our findings reveal the need for improvements in poll worker training. When
-opening and closing a machine, the same master PEB should be used, but in 11
+opening and closing a machine, the same Master PEB should be used, but in 11
 counties there were machines opened and closed with different PEBs. Our results
 showed an association between this error and certain precincts where poll workers
 made those mistakes repeatedly. \comment{The event of opening and closing a machine 
@@ -824,7 +824,7 @@ between 56 and 102 instances of this error.}
 \subsection{Audit Data}
  In several counties, the audit logs appeared to be incomplete. Our analysis
  detected six counties that did not have the same set of machines in both the
- event log and ballot images file. Florence County had the most inconsistencies
+ event log and ballot image file. Florence County had the most inconsistencies
  with 65 machines that had votes cast on them according to the event log, but no
  ballot images. We also saw cases where there were ballot images for votes cast
  on machines that did not record any events on the event log. In addition to an
@@ -859,7 +859,7 @@ Vendors should document the meaning of all events. We found audit logs with
 event messages, such as ``UNKNOWN,'' ``Warning – PEB I/O flag set,'' and
 ``Warning – I/O flagged PEB will be used,'' which sound ominous, however we
 could not determine the gravity of the issue. Despite combing through all of
-ES\&S’s publicly available information about the iVotronic, the meaning of these
+ES\&S`s publicly available information about the iVotronic, the meaning of these
 events still remain a mystery~\cite{VerVot2011, ESS2011a, ESS2011b}. 
  
 Accuracy of date and time logging needs improvement. When the machine has an
@@ -876,10 +876,10 @@ there were any problems that should be addressed.
 Capture the ballot activation event. Recording the time each ballot is activated
 (as opposed to only recording when the ballot is cast) would make it easier to
 learn when the voting machines were heavily used and when they were idle. As the 
-ballot images file is still randomized, there is still no way to connect a voter 
+ballot image file is still randomized, there is still no way to connect a voter 
 to his or her vote.  Even if a spectator watches the polling location and records 
 how long each voter spends in the voting booth, there are hundreds (if not thousands) 
-of ballot images in the ballot images file.  It is unlikely that a malicious person 
+of ballot images in the ballot image file.  It is unlikely that a malicious person 
 could use this information in order to determine a voter's choice.  This
 is a simple change that would not compromise voter privacy, and would make it
 simple for an automated tool such as AuditBear to extract information
