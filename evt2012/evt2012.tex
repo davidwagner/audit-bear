@@ -396,7 +396,7 @@ this section we present a description of our analyses.
 We focus on analyses that we expect to be most useful to election officials or
 interested third parties. First, since incorrectly set internal clocks on the
 DREs make analysis of the audit log data more difficult and less reliable, we
-identify erroneous timestamps in the audit logs. Incorrectly set
+identify erroneous time stamps in the audit logs. Incorrectly set
 clocks may also prevent a voting machine from starting up on
 time~\cite{VotUn2007}.
 
@@ -462,14 +462,14 @@ We describe here the algorithms used in each of our analyses. For the
 majority of these we only consider data from election day between the hours of
 7 A.M. and 7 P.M., which are the times that polls open and close in South
 Carolina. In our preliminary analysis, we found examples of log entries with
-seemingly incorrect timestamps. We identified two types of timestamp errors:
+seemingly incorrect time stamps. We identified two types of time stamp errors:
 errors resulting from incorrectly set clocks and errors resulting from apparent
-bugs in the timestamp mechanism itself. Given only a timestamp in the logs, it
+bugs in the time stamp mechanism itself. Given only a time stamp in the logs, it
 is impossible to know whether it is correct; however, we developed a number of
 heuristics to find those terminals that likely do have an incorrect clock. We
 try to minimize the number of false positive reports we give; therefore, we
 may miss some terminals with an incorrect clock. We provide the user with a report detailing the
-results of this timestamp analysis. 
+results of this time stamp analysis. 
 
 This analysis is meant only to indicate whether a 
 machine had a noticeably incorrect time; we are not concerned with whether
@@ -519,7 +519,7 @@ P.M., AuditBear first compiles a list of every terminal in the event log file
 for which the last vote was cast after 7 P.M. Then, using information from the
 ballot image file, the algorithm groups terminals by polling location and
 computes the mean time of the last cast vote for each group. We take the mean in
-order to account for any chance error in the timestamps. Finally, we report which
+order to account for any chance error in the time stamps. Finally, we report which
 polling locations stayed open late and also provide, for every county, a chart
 detailing the number of polling locations that stayed open late and by how
 long. 
@@ -533,7 +533,7 @@ arriving in a steady stream that keeps the machines at maximum capacity. It is a
 shortcoming of our approach, but seems difficult to avoid given only the log
 data.) The analysis is complicated however, by the fact that the logs do not
 record an event when a new ballot is activated for a voter, only when a ballot
-is cast. Given the timestamps $t_1$ and $t_2$ of two cast vote events for voters
+is cast. Given the time stamps $t_1$ and $t_2$ of two cast vote events for voters
 $v_1$ and $v_2$, it could be the case that $v_2$ walked up to the terminal
 as soon as $v_1$ cast her vote and then spent $t_2-t_1$ minutes marking her
 ballot before casting her vote. Or, it could be that the terminal was idle for
@@ -863,9 +863,9 @@ ES\&S`s publicly available information about the iVotronic, the meaning of these
 events still remain a mystery~\cite{VerVot2011, ESS2011a, ESS2011b}. 
  
 Accuracy of date and time logging needs improvement. When the machine has an
-incorrect clock, timestamps are inaccurate and it becomes difficult to recreate
+incorrect clock, time stamps are inaccurate and it becomes difficult to recreate
 election day events. In addition, some audit log analyses, such as the open late
-analysis, are made more difficult by unreliable timestamps. 
+analysis, are made more difficult by unreliable time stamps. 
  
 Make system manuals available to the public. Voting machine audit logs are
 public information. The general public can request them under the Freedom of
@@ -889,7 +889,7 @@ Future voting system standards introduce stronger
 requirements for audit logs; this could make it easier to apply our analyses to
 other voting systems~\cite{Wagner2010}. The current standards require voting systems 
 to keep a permanent record of audit data, but does not specify a particular format. 
-These standards also address the matter of timestamps; they state 
+These standards also address the matter of time stamps; they state 
 ``All systems shall include a real-time clock as part of the system’s hardware.
 The system shall maintain an absolute record of the time and date or a record
 relative to some event whose time and data are known and recorded''~\cite{CurrentStandards}. Newly proposed, 
