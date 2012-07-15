@@ -85,7 +85,7 @@ through the analysis of audit logs, a variety of problems, including vote
 miscounts. We created a public web application that applies these methods to
 uploaded audit logs and generates useful feedback on any detected issues.
 
- 
+\setlength{\parskip}{1ex plus 2ex minus 2ex}
 
 \section{Introduction}
 Election officials are tasked with the difficult job of ensuring fair
@@ -706,11 +706,11 @@ during the General 2010 elections.
 AuditBear also identified a few instances of machines not being closed. A
 machine must be closed in order to collect the votes and audit data from that
 machine. There was a single machine that was not closed in each of the following
-counties: Greenville County, Horry County, and Sumter County. None of the races in 
+counties: Greenville County, Horry County, and Sumter County. \comment{None of the races in 
 the South Carolina 2010 elections were close enough for 2082 votes to affect the 
-outcome~\cite{scresults}. If this 
+outcome~\cite{scresults}.} If this was a close election, information such as this could be cause for an extensive audit or recount of the votes. In this particular case, we know from previous audits that the missing data amounts to 2082 missing votes, which would not have affected the outcome for any of the races in the South Carolina 2010 elections~\cite{scresults}. \comment{ If this 
 was a close election, information such as this could be cause for an extensive audit 
-or recount of the votes.  
+or recount of the votes.  }
 
 Figure~\ref{fig:greenville-logs} shows some of AuditBear's output on Greenville
 County's log files. 
