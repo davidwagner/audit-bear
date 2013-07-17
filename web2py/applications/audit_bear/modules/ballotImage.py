@@ -15,7 +15,6 @@ class BallotImage:
         del self.precinctVotesMap
         del self.newNameList
         del self.machinesPerPrecinct
-        
 
     """
     First constructor in the case that the el68a is not available.  Parses the ballot images and creates the datastructure(s).  The argument passed to this constructor is an already opened el155 file.
@@ -60,11 +59,14 @@ class BallotImage:
                 electionID = t[len(t)-1]
                 electionID = electionID.strip()
                 if t[32] == 'Absentee' or t[32] == 'Failsafe' or t[32] == 'ABSENTEE' or t[32] == 'FAILSAFE':
+                    print t[32]
                     currentPrecinct = t[32]
-                elif s[13] == '':
-                    currentPrecinct = s[14]
                 else:
-                    currentPrecinct = s[13]
+                    currentPrecinct = self.parsePrecinctNumber(l)
+                #elif s[13] == '':
+                #    currentPrecinct = s[14]
+                #else:
+                #    currentPrecinct = s[13]
                                 
             """
             If the first string in the line is 7 characters long and an asterisk is present, then the vote count per machine and per precinct is adjusted accordingly.
@@ -84,6 +86,7 @@ class BallotImage:
                         machineVotesMap[s[0]] = temp
                     else:
                         machineVotesMap[s[0]] = 1
+
                 """
                 If the current precinct is Absentee (early voting), then the machine serial number is added to the early voting list.  Else if the current precinct is Failsafe (provisional votes), then the machine serial number is added to the failsafe list.  In any other case (than the ones mentioned), where the first string is still 7 characters long, the machine serial number is put into the correct locations in the maps.
                 """
@@ -129,6 +132,7 @@ class BallotImage:
         Parses the name and number of the precincts for the various mappings.
         """
         for m in machinePrecinctMap:
+            #print m, machinePrecinctMap[m]
             x = ''
             y = ''
             t = machinePrecinctMap[m]
@@ -147,7 +151,8 @@ class BallotImage:
                 x = u[1]
             machinePrecinctNumMap[m] = y
             machinePrecinctNameMap[m] = x
-            precinctMap[y] = x     
+            precinctMap[y] = x   
+
         """
         Creates the global variables of the maps.
         """ 
@@ -187,7 +192,7 @@ class BallotImage:
                 if x.eventNumber == '0001672':
                     machinePEBMap[x.serialNumber] = [x.PEBNumber]
                 elif x.eventNumber == '0001673':
-                   print "Does this machine have an opening state?"
+                   #print "Does this machine have an opening state?"
                    pass
 
         PEBprecinctMap = {}
@@ -335,6 +340,27 @@ class BallotImage:
             else:
                 machinesPerPrecinct[mpnMap[x]] = [x]
         self.machinesPerPrecinct = machinesPerPrecinct
+
+
+    def parsePrecinctNumber(self, header):
+        parts1 = header.split(" ")
+        parts2 = []
+        i = 0
+        currentPrecinct = ''
+
+        for p in parts1:
+            if p != ' ':
+                parts2.append(p)
+
+        for p2 in parts2:
+            if p2 == "ELECTION":
+                break
+            if i == 1:
+                currentPrecinct = currentPrecinct+" "+p2
+            if p2 == "PRECINCT":
+                i = 1
+        
+        return currentPrecinct
 
 
     def gvm(self):
