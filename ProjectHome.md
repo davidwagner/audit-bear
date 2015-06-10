@@ -1,0 +1,1 @@
+We are a group of TRUST-REU students at UCB creating a web application to analyze iVotronic audit log data from the South Carolina 2010 elections.
